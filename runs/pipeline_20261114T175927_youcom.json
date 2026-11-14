@@ -1,0 +1,74 @@
+{
+ "provider": "youcom",
+ "started_at": "2026-11-14T17:59:27+00:00",
+ "candidates_file": "candidates/merged/scan_2026-11-14.jsonl",
+ "candidates": [
+  {
+   "candidate_id": "tabpfn-ts-chronos2-heat-load",
+   "judge": {
+    "run_id": "20261114T175927_judge_youcom_tabpfn-ts-chronos2-heat-load_7d26",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 44,
+    "total_cost_usd": 2.699289,
+    "wall_seconds": 237.0
+   },
+   "run_candidate": {
+    "run_id": "20261114T180324_run-candidate_youcom_tabpfn-ts-chronos2-heat-load_5ba4",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 5,
+    "total_cost_usd": 0.4390764,
+    "wall_seconds": 27.0
+   },
+   "run_candidate_report": "The receipt for `tabpfn-ts-chronos2-heat-load` (youcom) is written: the claim **partially transfers**. The model row it needs, `chronos2_temperature`, was already on the leaderboard, so nothing was downloaded, changed or run.\n\n**Claimed (paraphrased):** zero-shot Chronos-2 with temperature as a known-future covariate has the lowest error on hourly district heat load, ahead of every trained baseline. Day-ahead CVRMSE is 12.48% over 2024 in Munich with measured temperature (11.83% against 14.24% for TFT after excluding 24 flagged days). With archived forecast temperature its error rises from 11.41% to 12.56% over 208 days.\n\n**Measured:** error of Chronos-2 with temperature divided by error of the temperature-only regression, week-ahead (below 1 means Chronos-2 is better).\n\n| Zone | Regime | Error ratio | 90% range | Role |\n|---|---|---|---|---|\n| DOM | forecast | 0.730 | 0.665 to 0.805 | primary |\n| JC | forecast | 0.817 | 0.686 to 0.960 | primary |\n| DOM | oracle | 0.663 | 0.579 to 0.759 | secondary |\n| JC | oracle | 0.698 | 0.589 to 0.824 | secondary |\n\n**Verdict:** the tool's per-zone result is \"worth switching\" for DOM and \"inconclusive\" for JC, which gives \"partially\".\n\n**Setup mismatch:**\n- **Target and horizon:** the paper forecasts district heat load in two German networks 24 hours ahead; ours is PJM electric load 168 hours ahead.\n- **Baselines:** theirs are AutoGluon models trained on 2023 (best: TFT) that did not all get future temperature; ours is the temperature-only regression on the identical temperature series.\n- **Weather:** their headline uses measured temperature, and forecast temperature was tested only on the zero-shot models, with later-cycle IFS hindcasts. Our primary comparison uses lead-matched archived forecasts.\n- **Week-ahead:** their week-ahead appendix has no trained baseline.\n- **Metric:** CVRMSE there, the protocol's error ratio here.\n\n**Weeks after the weights:** 48 of 48 scored weeks. The scorecard's notes say \"all 52 weeks follow\" the weights, but the leaderboard rows carry 48 windows; the receipt uses the leaderboard's count.\n\nThe paper's second model, TabPFN-TS, has no leaderboard row and was not run; the receipt covers the central model only. The receipt is in `scorecards/youcom/tabpfn-ts-chronos2-heat-load.json` and nothing is committed.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": "partially"
+  },
+  {
+   "candidate_id": "gb-demand-zero-shot-backtest",
+   "judge": {
+    "run_id": "20261114T175927_judge_youcom_gb-demand-zero-shot-backtest_bbc7",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 29,
+    "total_cost_usd": 3.2315896,
+    "wall_seconds": 219.8
+   },
+   "run_candidate": {
+    "run_id": "20261114T180351_run-candidate_youcom_gb-demand-zero-shot-backtest_3788",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 8,
+    "total_cost_usd": 0.6359828,
+    "wall_seconds": 35.2
+   },
+   "run_candidate_report": "The row this scorecard needs, `timestral_temperature`, was already on the leaderboard, so I wrote the receipt into `scorecards/youcom/gb-demand-zero-shot-backtest.json`. No weights were downloaded, no code changed and no model was run; nothing is committed.\n\n## Receipt: gb-demand-zero-shot-backtest (youcom)\n\n**Verdict: untestable.** Only 1 of the 48 scored weeks starts after the Timestral weights date (15 Oct 2026), so the model may have been trained on almost all of the test period.\n\n**Claimed:** Zero-shot Timestral-209M, on demand history only, had a mean daily error 0.910 times a weekly-lag regression's (90% range 0.885 to 0.935) on GB national demand, day-ahead, over 1,035 days. That is better than the regression but not shown to reach the 10% gain set in advance. Chronos-2 was at 0.928 on the same terms.\n\n**Measured:** `timestral_temperature` against the temperature-only regression, error ratio (MAE) with 90% range:\n\n| Zone | Regime | Ratio | 90% range |\n|---|---|---|---|\n| DOM | forecast | 0.656 | 0.608 to 0.709 |\n| JC | forecast | 0.698 | 0.599 to 0.802 |\n| DOM | oracle | 0.486 | 0.442 to 0.537 |\n| JC | oracle | 0.543 | 0.468 to 0.631 |\n\nIn the forecast regime, which the verdict is read from, both zones clear the 10% bar (\"worth switching\"). The weights-date rule overrides that, so the receipt does not say \"transfers\".\n\n**Setup mismatch:** The study is day-ahead on half-hourly GB national demand, with models and regression both on demand history alone (eight weeks of context, no weather). Ours is week-ahead (168 h) on hourly PJM zonal load, with Timestral and the regression given the same temperature series.\n\nThings to know:\n- **Claim kind:** I passed `model_better`. The study's claim is \"better, but under 10%\", which fits neither option exactly; the choice does not change the verdict here because the weights-date rule decides it.\n- **Scorecard figure differs:** the scorecard's notes say 3 of 52 scored weeks start after the weights date; the leaderboard has 1 of 48. The receipt uses the leaderboard figure.\n- **No univariate Timestral row:** the scorecard's hint calls a load-only Timestral row the closest match to the study's setup. It is not on the leaderboard, so I did not measure it. To add it, a person would run steps 1 to 4 of the skill: add a univariate entry to `SPECS` in `models_ff/run_ff.py`, run the gate, commit, then score once. The weights are already pinned at `9874d25`.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog",
+   "receipt_verdict": "untestable"
+  },
+  {
+   "candidate_id": "pl-forecast-bench",
+   "run_candidate": {
+    "run_id": "20261114T180426_run-candidate_youcom_pl-forecast-bench_63ca",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 7,
+    "total_cost_usd": 0.6812066000000001,
+    "wall_seconds": 38.6
+   },
+   "run_candidate_report": "The receipt for `pl-forecast-bench` (youcom) is written: the claim **partially transfers** \u2014 it transfers in DOM and is inconclusive in JC. The model row it needs, `chronos2_temperature`, was already on the leaderboard, so nothing was downloaded, changed or run.\n\n**Claimed:** on Polish national demand, day-ahead, zero-shot Chronos-2 with forecast-weather covariates has about 23% lower MAE than a ridge regression on weather, lags and calendar (551 against 713 MW). That figure is our arithmetic from the study's table; the study publishes no interval for this pair.\n\n**Measured:** `chronos2_temperature` against the temperature-only regression, as an error ratio where below 1 means Chronos-2 has less error.\n\n| Zone | Regime | Error ratio | 90% range | Protocol verdict |\n|---|---|---|---|---|\n| DOM | forecast | 0.730 | 0.665 to 0.805 | worth switching |\n| JC | forecast | 0.817 | 0.686 to 0.960 | inconclusive |\n| DOM | oracle (secondary) | 0.663 | 0.579 to 0.759 | n/a |\n| JC | oracle (secondary) | 0.698 | 0.589 to 0.824 | n/a |\n\nThe verdict is read in the forecast regime only.\n\n**Setup mismatch:**\n- **Horizon and grid:** theirs is day-ahead (leads of about 14 to 38 hours) on a 15-minute grid; ours is 168 hours, hourly.\n- **Series:** one national series in Poland against PJM zones JC and DOM.\n- **Weather inputs:** ECMWF runs at eight weighted points (for Chronos-2 an index plus temperature) against temperature only.\n- **Baseline:** their ridge is refitted quarterly on about a year of data; ours is the temperature-only regression.\n- **Context:** theirs is 1,024 hours.\n- **Regimes and weights:** the study has no oracle regime and records no weights revision.\n\n**Weeks after the weights:** 48 of 48 (Chronos-2 weights dated 2025-10-30).\n\nI passed `--claim-kind model_better` because the Chronos-2-against-ridge claim is the one that matches our primary comparison. The study's other demand claims (the tie with boosting, the roughly 10% gain from weather) are not covered by this receipt.\n\nThe scorecard passes `tools/validate_scorecard.py`; the change to `scorecards/youcom/pl-forecast-bench.json` is not committed.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": "partially"
+  }
+ ],
+ "total_cost_usd": 7.69
+}

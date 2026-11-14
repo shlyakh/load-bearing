@@ -1,0 +1,223 @@
+{
+ "candidate_id": "gb-demand-zero-shot-backtest",
+ "title": "Results: zero-shot forecasting models and GB electricity demand",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://github.com/AndyMoran/gb-foundation-model-tests/releases/tag/demand-results",
+  "provider": "claude",
+  "retrieved_at": "2026-11-14T18:02:10Z"
+ },
+ "candidate_type": "practitioner_backtest",
+ "primary_sources": [
+  {
+   "url": "https://github.com/AndyMoran/gb-foundation-model-tests/releases/tag/demand-results",
+   "kind": "github",
+   "paraphrase": "Release of 4 Nov 2026: a preregistered zero-shot test of TimesFM 2.5, Chronos-2 and Timestral-209M on GB national demand a day ahead, 1 Jan 2024 to 31 Oct 2026. Chronos-2 and Timestral beat a weekly-lag regression by about 7% and 9%, neither shown to reach the 10% bar set in advance; TimesFM 2.5 was no better.",
+   "evidence_id": "c61b699465ac"
+  },
+  {
+   "url": "https://github.com/AndyMoran/gb-foundation-model-tests/blob/demand-results/RESULTS.md",
+   "kind": "github",
+   "paraphrase": "Results note. Over 1,035 days, mean daily error against the regression's: TimesFM 2.5 1.009, Chronos-2 0.928, Timestral 0.910, with 90% intervals and six Holm-adjusted one-sided tests. Models saw eight weeks of demand only; the regression had lagged demand plus calendar terms. After its release Chronos-2 is at 0.965 (367 days); Timestral has 17 such days.",
+   "evidence_id": "2ec26db62293"
+  },
+  {
+   "url": "https://github.com/AndyMoran/gb-foundation-model-tests/raw/refs/tags/demand-results/plan/PLAN.md",
+   "kind": "github",
+   "paraphrase": "Plan dated 3 Nov 2026, written before any model forecast real GB demand: the forecasters and their pinned revisions, the regression, the full window, six one-sided tests (better at all; better by 10%), the 10% bar as a judgement, the result sentences, and a power check showing 'not shown to reach 10%' was a likely answer.",
+   "evidence_id": "b2bbdfbf7739"
+  },
+  {
+   "url": "https://github.com/AndyMoran/gb-foundation-model-tests/blob/demand-results/deviations/DEVIATIONS.md",
+   "kind": "github",
+   "paraphrase": "Deviation log. Attempt 1 failed two gate checks whose faults lay in the checks; the author saw its results before fixing them and predicted in writing that attempt 2's forecasts would be identical, which the note says held. The amendment's lock reached GitHub only after attempt 2; the code it ran was pushed before.",
+   "evidence_id": "1debd8256a39"
+  },
+  {
+   "url": "https://zenodo.org/records/23962005",
+   "kind": "zenodo",
+   "paraphrase": "Archived record (4 Nov 2026): a snapshot of the repository at the results tag with the plan and lock, the amendment, the deviation log, the code, the outputs of both run attempts, the figures and the results note. It repeats the release's result statement and shows no citations.",
+   "evidence_id": "8d5e87a3e039"
+  },
+  {
+   "url": "https://github.com/AndyMoran/gb-foundation-model-tests",
+   "kind": "github",
+   "paraphrase": "Repository of the study series (MIT). Repeats the demand study's table, lists where the plan, deviations, code and both run attempts are, and gives the Zenodo DOI. Input data are downloaded and hash-checked by fetch.py, not stored. Weights are fetched at pinned revisions: Chronos-2 and TimesFM 2.5 Apache 2.0, Timestral Modified MIT.",
+   "evidence_id": "d0124afe2da0"
+  },
+  {
+   "url": "https://huggingface.co/mistralai/Timestral-209M",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the central model: 209M parameters, zero-shot, takes past-only and known-future covariates, runs on CPU or GPU, weights under a Modified MIT licence. The repository's commit history has two commits, both dated 15 Oct 2026.",
+   "evidence_id": "966584a0f435"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Zero-shot Timestral-209M's mean daily error was 0.910 times the weekly-lag regression's over the full window: credibly better, but not shown to reach the 10% gain set in advance (confirmatory).",
+   "metric": "error_ratio_vs_regression",
+   "value": 0.91,
+   "dataset": "GB national demand (INDO), half-hourly",
+   "horizon": "day-ahead",
+   "baseline": "weekly-lag regression with calendar terms, no weather",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 1035,
+   "citation_idx": 1,
+   "ci90": [
+    0.885,
+    0.935
+   ]
+  },
+  {
+   "text": "Zero-shot Chronos-2's mean daily error was 0.928 times the regression's: credibly better, but not shown to reach the 10% gain set in advance (confirmatory).",
+   "metric": "error_ratio_vs_regression",
+   "value": 0.928,
+   "dataset": "GB national demand (INDO), half-hourly",
+   "horizon": "day-ahead",
+   "baseline": "weekly-lag regression with calendar terms, no weather",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 1035,
+   "citation_idx": 1,
+   "ci90": [
+    0.902,
+    0.955
+   ]
+  },
+  {
+   "text": "Zero-shot TimesFM 2.5's mean daily error was 1.009 times the regression's: not credibly better (confirmatory).",
+   "metric": "error_ratio_vs_regression",
+   "value": 1.009,
+   "dataset": "GB national demand (INDO), half-hourly",
+   "horizon": "day-ahead",
+   "baseline": "weekly-lag regression with calendar terms, no weather",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 1035,
+   "citation_idx": 1,
+   "ci90": [
+    0.978,
+    1.042
+   ]
+  },
+  {
+   "text": "On the 367 days after its release, Chronos-2's error was 0.965 times the regression's, a little worse than over the full window (exploratory).",
+   "metric": "error_ratio_vs_regression",
+   "value": 0.965,
+   "dataset": "GB national demand (INDO), half-hourly, 30 Oct 2025 to 31 Oct 2026",
+   "horizon": "day-ahead",
+   "baseline": "weekly-lag regression with calendar terms, no weather",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 367,
+   "citation_idx": 1,
+   "ci90": [
+    0.923,
+    1.006
+   ]
+  },
+  {
+   "text": "On the 17 days after its release, Timestral-209M's error was 1.089 times the regression's; the note calls 17 days too few to read (exploratory).",
+   "metric": "error_ratio_vs_regression",
+   "value": 1.089,
+   "dataset": "GB national demand (INDO), half-hourly, 15 to 31 Oct 2026",
+   "horizon": "day-ahead",
+   "baseline": "weekly-lag regression with calendar terms, no weather",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 17,
+   "citation_idx": 1,
+   "ci90": [
+    1.018,
+    1.206
+   ]
+  },
+  {
+   "text": "Against the system operator's published day-ahead forecast, which uses weather, Timestral-209M's error was 2.035 times as large; every model's was more than twice as large (secondary).",
+   "metric": "MAE ratio, model / NESO forecast",
+   "value": 2.035,
+   "dataset": "GB national demand (INDO), half-hourly",
+   "horizon": "day-ahead",
+   "baseline": "NESO day-ahead forecast",
+   "baseline_same_inputs": "no",
+   "test_window_days": 1035,
+   "citation_idx": 1,
+   "ci90": [
+    1.961,
+    2.108
+   ]
+  },
+  {
+   "text": "The 10% bar, the six tests and the wording of each possible result were written down and tagged before any model forecast real GB demand.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 2
+  },
+  {
+   "text": "The official run is the second attempt: the first failed two validity checks, was seen by the author, and the second reproduced its forecasts exactly.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 3
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 1,
+  "rationale": "Electric load at sub-daily resolution (GB national demand, half-hourly; ours is hourly zonal PJM load). Day-ahead, issued 09:30 the day before, against our week-ahead 168 h. Univariate: the models see eight weeks of demand and nothing else, and the regression has no weather either, where our spec requires temperature as a known-future input. It is the first study of the series our backtest mirrors: the same three models, the same kind of lag regression and the same 10% bar."
+ },
+ "checks": {
+  "pre_registered": "yes",
+  "training_overlap_risk": "high",
+  "independent_replication": "unknown",
+  "notes": "Central model: Timestral-209M. The headline names two models that beat the regression; Timestral has the larger gain (0.910 against Chronos-2's 0.928) and sits closest to the bar, so runnable_class, licence and training_overlap_risk refer to it. This is a judgement call: with Chronos-2 as the central model the class would be direct_adapter, the licence Apache-2.0 and the overlap risk low. pre_registered: the plan is dated 3 Nov 2026 and the deviation log gives the tag's push time as 3 Nov 18:04 UTC, before attempt 1; a directory listing at the plan tag (from the research call) shows a freeze commit of 3 Nov and a README saying no model had been run. Two deviations are logged by the author: the checks were amended after attempt 1's results were seen, and the amendment's lock reached GitHub after attempt 2. The author's defence is that attempt 2's forecasts equal attempt 1's; this was not checked here. The GitHub activity log and the tag's push time were not inspected. training_overlap_risk is about our run: the Hugging Face commit history for mistralai/Timestral-209M has two commits, both 15 Oct 2026; the listing names no files, so the weights are dated to that day as the only date available. That is inside our scored window (10 Nov 2025 to 2 Nov 2026) with 3 of 52 scored weeks starting after it, hence high. Chronos-2's weights date was not fetched in this run; the results note gives its release as 30 Oct 2025, before our first scored week. The study's own window also overlaps the models' possible training period, which it states; its perturbation check raised no flag and it calls that weak evidence. independent_replication: one research call and one search found no replication or dispute. The research call named a separate benchmark (winderai/demand-forecasting-benchmark) that scores Timestral and Chronos-2 on GB demand over 28 and 5 days with MASE against a seasonal naive; known here only from the source snippet, not fetched, and not a replication. baseline_same_inputs is partly: models and regression both use demand history only, but the regression has day-of-week, bank-holiday and Christmas terms and a year of daily refits, while the models see eight weeks and no calendar. evidence_strength is moderate, not strong, for that reason. Licence: Modified MIT is from the model card and the study's plan; the licence text was not fetched, so whether its modification limits commercial use is not known and license_ok_for_commercial is null. discovered_via: the lead came from the Claude-provider scan of 14 Nov. Not verified: the contents of the Zenodo archive (only its file listing was read), results.json and forecasts.csv, the ratios against the saved forecasts, and the study's code."
+ },
+ "evidence_strength": "moderate",
+ "license": "Modified MIT",
+ "license_ok_for_commercial": null,
+ "runnable_class": "ff_native_exog",
+ "label": "ACCEPT_RUN",
+ "label_reason": "On target (electric load, zero-shot models against a lag regression, with a 10% bar fixed in advance) with a public plan, deviation log, code, results and archive, and its headline comparison can be re-measured now with Timestral-209M and Chronos-2, both in runnable_models. Evidence is moderate rather than strong because the regression had calendar terms the models lacked, the checks were amended after the first attempt's results were seen, and nobody independent has replicated it; the study is day-ahead and without weather, so our run tests transfer, not the same setting.",
+ "implementation_hint": "Timestral-209M through models_ff/run_ff.py (weights mistralai/Timestral-209M, ff_native_exog) against the temperature-only regression, per zone and regime; label the row with its weights date, since only 3 of 52 scored weeks start after 15 Oct 2026. The study ran its models on load history alone, so a univariate Timestral row is the closest match to its setup and the temperature row is the one our spec asks for. Secondary rows for the study's other models: Chronos-2 through models/chronos2.py (amazon/chronos-2, direct_adapter; this is the protocol's primary comparison and already measured) and google/timesfm-2.5-200m-pytorch univariate through models_ff/run_ff.py. The study pinned Timestral at 9874d25, Chronos-2 at 29ec376 and TimesFM 2.5 at 1d95242, and used half-hourly data with an eight-week context; ours is hourly and 168 h ahead.",
+ "receipt": {
+  "claimed": "Zero-shot Timestral-209M, given demand history only, had a mean daily error 0.910 times a weekly-lag regression's (90% range 0.885 to 0.935) on GB national demand, day-ahead, over 1,035 days: better than the regression, but not shown to reach the 10% gain set in advance. Chronos-2 was at 0.928 on the same terms.",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 0.656,
+    "ci90": [
+     0.608,
+     0.709
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 0.698,
+    "ci90": [
+     0.599,
+     0.802
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 0.486,
+    "ci90": [
+     0.442,
+     0.537
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 0.543,
+    "ci90": [
+     0.468,
+     0.631
+    ]
+   }
+  ],
+  "horizon_mismatch": "The study is day-ahead on half-hourly GB national demand, with models and regression both on demand history alone (eight weeks of context, no weather). Ours is week-ahead (168 h) on hourly PJM zonal load, with Timestral and the temperature-only regression both given the same temperature series. No univariate Timestral row exists on our leaderboard, so the study's no-weather setup is not re-measured here.",
+  "n_windows": 48,
+  "n_windows_after_weights": 1,
+  "verdict": "untestable"
+ }
+}

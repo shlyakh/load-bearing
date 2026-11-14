@@ -1,0 +1,195 @@
+{
+ "candidate_id": "tabpfn-ts-chronos2-heat-load",
+ "title": "Systematic Evaluation of TabPFN-TS and Chronos-2 for Zero-Shot Heat Load Forecasting in District Heating Networks",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2608.20024",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T18:03:06Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2608.20024v2",
+   "kind": "arxiv",
+   "paraphrase": "Full text, v2. Zero-shot Chronos-2 and TabPFN-TS against AutoGluon baselines trained on 2023, on hourly heat load of two German district heating networks (Munich private, Flensburg public). 2024, a 24-hour forecast every day (366 starts), 12-week context, realized future temperature. Adds a forecast-weather sensitivity run (208 starts) and a 52-week week-ahead appendix. 95% bootstrap intervals.",
+   "evidence_id": "f7cc58a14455"
+  },
+  {
+   "url": "https://arxiv.org/abs/2608.20024",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page: submitted 20 Aug 2026, revised 6 Oct 2026. Headline: both zero-shot models beat all trained baselines on deterministic accuracy in the full-year benchmarks; Chronos-2 is best (CVRMSE 12.48% on the main data set), TabPFN-TS close (13.07%). The main benchmark assumes perfect weather.",
+   "evidence_id": "424a8347be6c"
+  },
+  {
+   "url": "https://github.com/benspoek/tsfm-heatload",
+   "kind": "github",
+   "paraphrase": "Authors' repository, MIT code, archived on Zenodo. Ships the Flensburg heat and temperature data with scripts for the 2024 full-year runs of TabPFN-TS, Chronos-2 and AutoGluon and for a Flensburg forecast-weather run with IFS temperature (leads 11 to 34 h). Munich inputs are excluded. Names the journal version (Energy and AI).",
+   "evidence_id": "41259754871d"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the central model: licence apache-2.0, created 2025-10-30, head 29ec376 (2026-06-05), about 119.5M parameters, not gated.",
+   "evidence_id": "d33d62d68de3"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the weights repository: weights and config were added on 30 Oct 2025 (commit 95a9710); later commits, up to 29ec376 on 5 Jun 2026, are README, tag or deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Munich, full year 2024, perfect weather: zero-shot Chronos-2 with temperature has the lowest CVRMSE, 12.48%, ahead of every trained baseline (the best is TFT).",
+   "metric": "CVRMSE (%)",
+   "value": 12.48,
+   "dataset": "Munich district heating network, hourly heat load (private)",
+   "horizon": "24 hours (hourly steps)",
+   "baseline": "TFT, best of the AutoGluon suite trained on 2023",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 366,
+   "citation_idx": 1
+  },
+  {
+   "text": "Munich, full year 2024, perfect weather: zero-shot TabPFN-TS with temperature has CVRMSE 13.07%, second to Chronos-2 and ahead of every trained baseline.",
+   "metric": "CVRMSE (%)",
+   "value": 13.07,
+   "dataset": "Munich district heating network, hourly heat load (private)",
+   "horizon": "24 hours (hourly steps)",
+   "baseline": "TFT, best of the AutoGluon suite trained on 2023",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 366,
+   "citation_idx": 1
+  },
+  {
+   "text": "Munich 2024 after excluding 24 flagged days: Chronos-2 CVRMSE 11.83% (95% interval 10.27 to 13.76) against TFT 14.24% (12.62 to 16.20); the ranking is unchanged.",
+   "metric": "CVRMSE (%)",
+   "value": 11.83,
+   "dataset": "Munich district heating network, hourly heat load (private), 342 of 366 days",
+   "horizon": "24 hours (hourly steps)",
+   "baseline": "TFT, CVRMSE 14.24%",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 342,
+   "citation_idx": 0
+  },
+  {
+   "text": "Flensburg 2024 (public data): Chronos-2, TabPFN-TS and TFT are again the top three by CVRMSE, with Chronos-2 first; the leading group by daily rank is broader than in Munich (no CVRMSE values recovered from the fetched table).",
+   "metric": null,
+   "value": null,
+   "dataset": "Flensburg district heating network, hourly heat load (public)",
+   "horizon": "24 hours (hourly steps)",
+   "baseline": "AutoGluon suite trained on 2023",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 366,
+   "citation_idx": 0
+  },
+  {
+   "text": "Forecast-weather sensitivity, Munich, 7 Jun to 31 Dec 2024: with retrospective ECMWF IFS temperature instead of measured, Chronos-2 CVRMSE rises from 11.41% to 12.56% (+10.1%).",
+   "metric": "CVRMSE (%)",
+   "value": 12.56,
+   "dataset": "Munich district heating network, hourly heat load (private)",
+   "horizon": "24 hours (hourly steps)",
+   "baseline": "the same model with measured temperature, CVRMSE 11.41%",
+   "test_window_days": 208,
+   "citation_idx": 0
+  },
+  {
+   "text": "Forecast-weather sensitivity, Munich, 7 Jun to 31 Dec 2024: with retrospective ECMWF IFS temperature, TabPFN-TS CVRMSE rises from 11.89% to 12.77% (+7.4%).",
+   "metric": "CVRMSE (%)",
+   "value": 12.77,
+   "dataset": "Munich district heating network, hourly heat load (private)",
+   "horizon": "24 hours (hourly steps)",
+   "baseline": "the same model with measured temperature, CVRMSE 11.89%",
+   "test_window_days": 208,
+   "citation_idx": 0
+  },
+  {
+   "text": "Week-ahead appendix, 52 weekly forecasts of 168 hourly steps, perfect weather: Chronos-2 CVRMSE 15.64% (95% interval 13.44 to 18.05), ahead of TabPFN-TS; no trained baseline was run at this horizon.",
+   "metric": "CVRMSE (%)",
+   "value": 15.64,
+   "dataset": "full year 2024 (network not named in the fetched text; units suggest Munich)",
+   "horizon": "168 hours (hourly steps)",
+   "baseline": "TabPFN-TS, CVRMSE 17.06%",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 364,
+   "citation_idx": 0
+  },
+  {
+   "text": "Week-ahead appendix: TabPFN-TS CVRMSE 17.06% (95% interval 14.58 to 19.94); its lead over Chronos-2 on three selected weeks did not hold over the full year.",
+   "metric": "CVRMSE (%)",
+   "value": 17.06,
+   "dataset": "full year 2024 (network not named in the fetched text; units suggest Munich)",
+   "horizon": "168 hours (hourly steps)",
+   "baseline": "Chronos-2, CVRMSE 15.64%",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 364,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 2,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly district heat load, not electric load, so target_match is 2. The benchmark and every comparison with trained baselines are day-ahead (24 hourly steps); a week-ahead appendix (168 steps, 52 forecasts) compares only the two zero-shot models, so horizon_match stays 2. Ambient temperature is the sole weather input and is supplied as a known-future covariate, measured in the main benchmark and as archived forecasts in a sensitivity run: the same two regimes as ours, and the same central model as our primary comparison."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: neither the full text nor the repository mentions a plan or registration. training_overlap_risk is about our run: the Chronos-2 weights file was committed on 2025-10-30 (Hugging Face commit list), before our first scored week (2025-11-10), so all 52 weeks follow it. independent_replication: one research call and one search found none; the Flensburg run is the authors' own external validation. evidence_strength is moderate: public code and a public data set (Flensburg) make part of the result reproducible and the test window is a full year, but there is no pre-registration or replication, the main (Munich) data is private, and the baselines did not all get the same inputs: only the tabular models, DeepAR and TFT use future temperature, and the baselines see history from 2023 rather than the 12-week window, hence 'partly'. The paper's intervals are 95%, not 90%, so ci90 is left out and the intervals are in the claim text. Forecast weather was tested on the two zero-shot models only, on 208 days, so the paper has no forecast-regime comparison against a trained baseline; its IFS data are hindcasts from a later model cycle, which the authors say do not show what was published in 2024. A third-party review of v1 (pith.science, search snippet only) notes that the configuration was chosen on 2024 weeks that are also inside the evaluation year. Central model: Chronos-2 (best scores in the headline); TabPFN-TS is the second model. Licence Apache-2.0 is the Hub record's tag for the Chronos-2 weights. Not verified: the unfiltered Munich baseline values (the research answer gives TFT 14.61%, Direct LGBM 15.87%, AutoGluon ensemble 16.54%, but the fetched table lost that column; the anomaly-excluded table was read directly); the Flensburg CVRMSE values; which network the week-ahead appendix uses; the Chronos-2 revision the authors loaded (only chronos-forecasting 2.2.2 is stated); the TabPFN-TS checkpoint and its licence (the research answer says a non-commercial licence for the TabPFN-3 weights, source not fetched); the journal version in Energy and AI (named by the repository, not fetched). The research answer's statement that the main benchmark covered only 208 starts is wrong: the paper and repository give 366 starts for it and 208 for the sensitivity run."
+ },
+ "evidence_strength": "moderate",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_RUN",
+ "label_reason": "Relevant and sourced: a full-year study with public code in which zero-shot Chronos-2 with temperature as a known-future covariate beats trained baselines on an hourly energy load, under both measured and forecast temperature. Its headline comparison can be re-measured now with amazon/chronos-2 through our adapter against the temperature-only regression, at 168 hours instead of 24 and on electric instead of heat load.",
+ "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, weights repository amazon/chronos-2, head 29ec376; weights file from 95a9710). Runnable today: zero-shot Chronos-2 with temperature against the temperature-only regression, oracle and forecast regimes, which is the protocol's primary comparison; LightGBM is our nearest match to the paper's tabular baselines. The paper used a 12-week (2,016 h) rolling context and a 24-hour horizon; ours is 168 hours, which the paper covers only in an appendix without trained baselines. Second model TabPFN-TS: a FoundationForecast wrapper exists (ff_univariate, models_ff/run_ff.py), so it would run without temperature, unlike in the paper; its weights licence is reported as non-commercial (not verified). The paper's own baselines are AutoGluon TimeSeries 1.5.0 models, which we do not run.",
+ "receipt": {
+  "claimed": "Zero-shot Chronos-2 with temperature as a known-future covariate has the lowest error on hourly district heat load, ahead of every trained baseline: day-ahead CVRMSE 12.48% over 2024 in Munich with measured temperature (11.83% against 14.24% for TFT, the best trained model, after excluding 24 flagged days). With archived forecast temperature its error rises to 12.56% from 11.41% over 208 days.",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 0.73,
+    "ci90": [
+     0.665,
+     0.805
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 0.817,
+    "ci90": [
+     0.686,
+     0.96
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 0.663,
+    "ci90": [
+     0.579,
+     0.759
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 0.698,
+    "ci90": [
+     0.589,
+     0.824
+    ]
+   }
+  ],
+  "horizon_mismatch": "The paper forecasts district heat load in two German networks 24 hours ahead; we forecast PJM electric load (JC, DOM) 168 hours ahead. Its trained baselines are AutoGluon models fitted on 2023 (best: TFT) that did not all receive future temperature; ours is the temperature-only regression given the identical temperature series. Its headline uses measured temperature, and forecast temperature was tested only on the zero-shot models with later-cycle IFS hindcasts; our primary comparison is in the forecast regime with lead-matched archived forecasts. Its week-ahead appendix has no trained baseline. Metric is CVRMSE there, the protocol's error ratio here.",
+  "n_windows": 48,
+  "n_windows_after_weights": 48,
+  "verdict": "partially"
+ }
+}

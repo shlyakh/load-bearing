@@ -192,5 +192,49 @@
  "label": "ACCEPT_RUN",
  "label_reason": "A sourced, public benchmark with as-of rules like our forecast regime and a full test year, whose demand comparison (zero-shot Chronos-2 with forecast weather against a regression and a boosted model on the same weather runs, and against Chronos-2 without weather) can be re-measured today with rows our benchmark already has. On demand its own numbers are modest: Chronos-2 with weather is tied with boosting, ahead of ridge day-ahead but behind it intraday, and gains about 10% from weather; it is day-ahead on one national series, not pre-registered and not replicated.",
  "implementation_hint": "Central model: amazon/chronos-2 (direct_adapter, models/chronos2.py, temperature: true, pinned revision; weights of 2025-10-30). No new code is needed: the transfer test reads existing leaderboard rows per zone and regime: chronos2_temperature against lag_regression_temperature (the temperature-only regression; the study's Chronos-2 with weather against ridge, 551 against 713 MW day-ahead), against lightgbm_temperature (the study's tie with boosting, 2.8% with an interval including zero) and against chronos2 without temperature (the study's about 10% gain on demand). The forecast regime is the like-for-like one; the study excludes reanalysis, so it has no oracle regime. Differences to keep in view: day-ahead (leads of about 14 to 38 hours) and intraday on a 15-minute grid against 168 hours hourly, so a split of our errors by lead day would show whether day 1 behaves like theirs; ECMWF at eight weighted points (for Chronos-2 an index plus temperature) against temperature only; a 1,024-hour context; quarterly refits of the trained models on about a year of data; skill against the operator's plan, which we do not have; one national series in Poland against PJM zones JC and DOM. Other models of the study: google/timesfm-2.5-200m-pytorch (ff_univariate, models_ff/run_ff.py; univariate there too, 749 MW day-ahead demand), Chronos-Bolt small and Toto (FoundationForecast wrappers, ff_univariate, not set up here).",
- "receipt": null
+ "receipt": {
+  "claimed": "On Polish national demand, day-ahead, zero-shot Chronos-2 with forecast-weather covariates has about 23% lower MAE than a ridge regression on weather, lags and calendar (551 against 713 MW; our arithmetic from the study's table, no interval published for this pair).",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 0.73,
+    "ci90": [
+     0.665,
+     0.805
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 0.817,
+    "ci90": [
+     0.686,
+     0.96
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 0.663,
+    "ci90": [
+     0.579,
+     0.759
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 0.698,
+    "ci90": [
+     0.589,
+     0.824
+    ]
+   }
+  ],
+  "horizon_mismatch": "Day-ahead (leads of about 14 to 38 hours) on a 15-minute grid against our 168 hours hourly; one national series in Poland against PJM zones JC and DOM; ECMWF runs at eight weighted points (for Chronos-2 an index plus temperature) against temperature only; their ridge is refitted quarterly on about a year of data and takes weather at eight points, our baseline is the temperature-only regression; a 1,024-hour context; the study has no reanalysis (oracle) regime and records no weights revision.",
+  "n_windows": 48,
+  "n_windows_after_weights": 48,
+  "verdict": "partially"
+ }
 }
