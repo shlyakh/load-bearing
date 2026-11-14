@@ -25,6 +25,17 @@ With --v12 (protocol-v1.2, secondary): reads data/model_inputs/<set>_weather_v12
 results/<set>/weather_v12/forecasts/. Same pinned weights and settings. A zone-window
 whose horizon temperature is incomplete is not forecast (y_hat missing), so the per-regime
 drop rule removes it for every model in that regime.
+
+With --v2 (protocol-v2.yaml): reads data/model_inputs/<set>_v2.parquet (zones AEP, AE, DOM,
+JC; the four v1.2 regime names; the harness calendar table beside y and T) and writes to
+results/<set>/v2/forecasts/ three rows, same pinned weights and settings:
+  chronos2_temperature            all four zones (temperature only)
+  chronos2_temperature_calendar   all four zones: temperature plus the harness calendar as
+                                  known-future covariates, holiday and year-end numeric 0/1,
+                                  day of week and hour categorical (strings). Not tuned.
+  chronos2                        AEP and AE, no covariates (identical in every regime)
+A zone-window with incomplete horizon temperature is not forecast by the temperature rows.
+The scored set is refused unless the git tag protocol-v2 exists.
 """
 
 from __future__ import annotations
@@ -53,8 +64,158 @@ def git_commit() -> str:
     return git("rev-parse", "--short", "HEAD") + dirty
 
 
+# ------------------------------------------------------------------ protocol-v2
+V2_VERSION = "protocol-v2"
+V2_NUMERIC = ["hol", "yearend"]  # harness calendar, 0/1
+V2_CATEGORICAL = ["dow", "hour"]  # harness calendar, passed as strings (categorical)
+V2_CALENDAR = ["hour", "dow", "hol", "yearend"]  # the columns of harness.data.calendar
+V2_ROWS = {
+    "chronos2_temperature": {"zones": ("AEP", "AE", "DOM", "JC"), "covariates": ["T"]},
+    "chronos2_temperature_calendar": {
+        "zones": ("AEP", "AE", "DOM", "JC"),
+        "covariates": ["T", *V2_NUMERIC, *V2_CATEGORICAL],
+    },
+    "chronos2": {"zones": ("AEP", "AE"), "covariates": []},
+}
+V2_CALENDAR_LABEL = {
+    "chronos2_temperature": "none",
+    "chronos2_temperature_calendar": "harness: hour, day of week (categorical), holiday, "
+    "year-end (0/1)",
+    "chronos2": "none",
+}
+
+
+def encode_v2(win: pd.DataFrame) -> pd.DataFrame:
+    """The harness calendar in the encoding registered for chronos2_temperature_calendar:
+    holiday and year-end as numbers, day of week and hour as strings. Values unchanged."""
+    win = win.copy()
+    for c in V2_NUMERIC:
+        win[c] = win[c].astype(float)
+    for c in V2_CATEGORICAL:
+        win[c] = win[c].astype(int).astype(str)
+    return win
+
+
+def predict_v2(pipe, win: pd.DataFrame, covariates: list[str]) -> tuple[pd.DataFrame, float]:
+    """One call for the zones in `win` (no cross-learning). Context: the last CONTEXT_HOURS
+    rows up to the cutoff (y and covariates); future: the 168 horizon rows (covariates only,
+    never y)."""
+    hist = win[~win["is_horizon"]].groupby("unique_id").tail(CONTEXT_HOURS)
+    fut = win[win["is_horizon"]]
+    t0 = time.perf_counter()
+    pred = pipe.predict_df(
+        hist[["unique_id", "ds_naive", "y", *covariates]],
+        future_df=fut[["unique_id", "ds_naive", *covariates]] if covariates else None,
+        id_column="unique_id",
+        timestamp_column="ds_naive",
+        target="y",
+        prediction_length=168,
+        quantile_levels=QUANTILES,
+        cross_learning=False,
+    )
+    runtime = (time.perf_counter() - t0) / win["unique_id"].nunique()
+    out = fut[["unique_id", "ds", "ds_naive"]].merge(pred, on=["unique_id", "ds_naive"])
+    assert len(out) == len(fut), "forecast timestamps do not match the horizon"
+    return out, runtime
+
+
+def forecast_v2(pipe, inputs: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    """All v2 Chronos-2 rows for the windows in `inputs` (the exported v2 model inputs)."""
+    inputs = encode_v2(inputs)
+    if "ds_naive" not in inputs:
+        inputs["ds_naive"] = inputs["ds"].dt.tz_localize(None)
+    nan_q = {"0.1": float("nan"), "0.5": float("nan"), "0.9": float("nan")}
+    rows = {name: [] for name in V2_ROWS}
+    for cutoff in sorted(inputs["cutoff"].unique()):
+        at = inputs[inputs["cutoff"] == cutoff]
+        for regime, win in at.groupby("regime"):
+            hz_t = win.loc[win["is_horizon"]].groupby("unique_id")["T"]
+            ok = set(hz_t.apply(lambda t: bool(t.notna().all())).loc[lambda x: x].index)
+            for name in ("chronos2_temperature", "chronos2_temperature_calendar"):
+                spec = V2_ROWS[name]
+                zw = win[win["unique_id"].isin(spec["zones"])]
+                full = zw[zw["unique_id"].isin(ok)]
+                if len(full):
+                    out, rt = predict_v2(pipe, full, spec["covariates"])
+                    rows[name].append(out.assign(regime=regime, cutoff=cutoff, runtime_s=rt))
+                gap = zw[~zw["unique_id"].isin(ok) & zw["is_horizon"]]
+                if len(gap):  # incomplete horizon temperature: not forecast
+                    rows[name].append(
+                        gap[["unique_id", "ds", "ds_naive"]].assign(
+                            **nan_q, regime=regime, cutoff=cutoff, runtime_s=float("nan")
+                        )
+                    )
+        # Univariate: the load context is the same in every regime, so predict once.
+        uni = at[at["unique_id"].isin(V2_ROWS["chronos2"]["zones"])]
+        ref = uni[uni["regime"] == "oracle_era5"]
+        for _, other in uni.groupby("regime"):
+            assert other["y"].reset_index(drop=True).equals(ref["y"].reset_index(drop=True))
+        out, rt = predict_v2(pipe, ref, [])
+        for regime in sorted(uni["regime"].unique()):
+            rows["chronos2"].append(out.assign(regime=regime, cutoff=cutoff, runtime_s=rt))
+    return {name: pd.concat(parts, ignore_index=True) for name, parts in rows.items()}
+
+
+def run_v2(which: str) -> None:
+    base = (ROOT / "results" if which == "scored" else ROOT / "results" / which) / "v2"
+    if which == "scored":
+        tag = subprocess.run(
+            ["git", "tag", "--list", V2_VERSION], cwd=ROOT, capture_output=True, text=True
+        ).stdout.strip()
+        if not tag:
+            sys.exit("git tag protocol-v2 does not exist: scored origins must not be run yet")
+        if git_commit().endswith("-dirty"):
+            sys.exit("commit the code before a scored run")
+        for name in V2_ROWS:
+            if (base / "forecasts" / f"{name}.parquet").exists():
+                sys.exit(f"scored v2 {name} forecasts exist: the scored set is run once")
+    elif which != "gate":
+        sys.exit("protocol-v2 runs on the gate or the scored origins only")
+    pin = json.loads((ROOT / "models" / "pins.json").read_text())[REPO_ID]
+    pipe = Chronos2Pipeline.from_pretrained(
+        REPO_ID, revision=pin["revision"], cache_dir=ROOT / "models_cache", device_map="cpu"
+    )
+    inputs = pd.read_parquet(ROOT / "data" / "model_inputs" / f"{which}_v2.parquet")
+    commit = git_commit()
+    rows = forecast_v2(pipe, inputs)
+    (base / "forecasts").mkdir(parents=True, exist_ok=True)
+    for name, df in rows.items():
+        df = df.rename(columns={"0.5": "y_hat", "0.1": "q10", "0.9": "q90"})
+        df["model"] = name
+        df["weather"] = "temperature" if "temperature" in name else "none"
+        df["calendar"] = V2_CALENDAR_LABEL[name]
+        df["git_commit"] = commit
+        df["protocol_version"] = V2_VERSION
+        df["weights_revision"] = pin["revision"]
+        df["weights_date"] = pin["weights_date"]
+        df["context_hours"] = CONTEXT_HOURS
+        keep = [
+            "model",
+            "unique_id",
+            "regime",
+            "cutoff",
+            "ds",
+            "y_hat",
+            "q10",
+            "q90",
+            "runtime_s",
+            "git_commit",
+            "protocol_version",
+            "weather",
+            "calendar",
+            "weights_revision",
+            "weights_date",
+            "context_hours",
+        ]
+        df[keep].to_parquet(base / "forecasts" / f"{name}.parquet", index=False)
+        print(name, len(df), "rows")
+
+
 def main() -> None:
     which = sys.argv[1] if len(sys.argv) > 1 else ""
+    if sys.argv[2:] == ["--v2"]:
+        run_v2(which)
+        return
     gap48 = sys.argv[2:] == ["--gap48"]
     v12 = sys.argv[2:] == ["--v12"]
     if which not in ("gate", "ordering_gate", "scored") or (sys.argv[2:] and not (gap48 or v12)):
