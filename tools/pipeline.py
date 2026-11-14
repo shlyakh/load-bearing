@@ -3,9 +3,12 @@
     uv run --project core python tools/pipeline.py claude                 # reuse the latest scan
     uv run --project core python tools/pipeline.py claude --scan --judge 5
     uv run --project core python tools/pipeline.py claude --only timestral timesfm-3
+    uv run --project core python tools/pipeline.py youcom --candidates-from claude --judge 5
 
 Steps (each is `claude -p "/<skill> ..."` through tools/run_skill.py):
   1. scan            only with --scan; otherwise the latest candidates/<provider>/scan_*.jsonl
+                     (--candidates-from <other provider> judges another provider's scan, so
+                     both providers are compared on the same candidates)
   2. judge           the first --judge candidates that have no scorecard yet (the file is
                      ordered by fit to the spec), or exactly the ids given with --only
   3. run-candidate   every scorecard of this run's candidates labelled ACCEPT_RUN with no
@@ -26,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from tools.run_skill import run  # noqa: E402
+from tools.run_skill import run, youcom_key  # noqa: E402
 
 NO_MODEL_RUNS = (
     "Headless pipeline run. If the model row this scorecard needs is already in "
@@ -54,17 +57,28 @@ def main() -> None:
     ap.add_argument("--only", nargs="+", default=[], help="candidate ids to process")
     ap.add_argument("--parallel", type=int, default=2, help="judge runs at the same time")
     ap.add_argument("--model", default="", help="model for every step; default is the CLI's own")
+    ap.add_argument(
+        "--candidates-from",
+        choices=["claude", "youcom"],
+        default=None,
+        help="read the latest scan of this provider instead of the run's own",
+    )
     a = ap.parse_args()
+    if a.provider == "youcom":
+        youcom_key()  # refuse before any step starts, not inside a worker thread
+    source = a.candidates_from or a.provider
+    if a.scan and source != a.provider:
+        sys.exit("--scan writes this provider's own candidates; drop --candidates-from")
     started = datetime.now(UTC)
     out: dict = {"provider": a.provider, "started_at": started.isoformat(timespec="seconds")}
 
     if a.scan:
         out["scan"] = step(run("scan", a.provider, [], model=a.model))
     files = sorted(
-        (ROOT / "candidates" / a.provider).glob("scan_*.jsonl"), key=lambda p: p.stat().st_mtime
+        (ROOT / "candidates" / source).glob("scan_*.jsonl"), key=lambda p: p.stat().st_mtime
     )
     if not files:
-        sys.exit(f"no candidates file for {a.provider}: run with --scan")
+        sys.exit(f"no candidates file for {source}: run with --scan or --candidates-from claude")
     out["candidates_file"] = str(files[-1].relative_to(ROOT))
     cands = [json.loads(x) for x in files[-1].read_text().splitlines() if x.strip()]
     ids = [c["candidate_id"] for c in cands]

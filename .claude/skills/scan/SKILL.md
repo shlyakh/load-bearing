@@ -27,6 +27,9 @@ Provider is `claude` unless given (see `.claude/skills/providers.md`).
    provider's `search` (first page of results only). Pass the start date if the
    provider's search takes one; Claude's web search does not, so expect out-of-window
    hits. Never search or open `linkedin.com`; for the open-web group, block it.
+   With `youcom`: `freshness` is the exact range from the start date to today, domains go
+   in the query as `site:` (one query per group), and `linkedin.com` is excluded with
+   `exclude_domains` on every call (details in `providers.md`).
 3. Add one ledger row per distinct URL (collapse arXiv abs/pdf/html/versioned links to
    the abs URL):
    `uv run --project core python tools/ledger.py add --provider <p> --candidate scan-<YYYY-MM-DD> --url <url> --title "<short title>" --published <YYYY-MM-DD|YYYY-MM|unknown> --note "<KEPT|FOLDED|DROPPED: reason. One-line paraphrase. Query: ...>"`

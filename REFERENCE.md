@@ -285,9 +285,32 @@ Every result is normalised to
 `{url, title, snippet, published_at, provider, retrieved_at, raw}` and appended to
 `evidence/*.jsonl`. `/judge` reads only that ledger.
 
-You.com MCP (Saturday):
-`claude mcp add --transport http you-com https://api.you.com/mcp --header "Authorization: Bearer $YDC_API_KEY"`
-The research tool must be requested explicitly (`?tools=you-search,you-contents,you-research`).
+You.com MCP (Saturday; facts from `notes/hackathon_tools.md`, read Nov 13, 2026):
+- Hosted server `https://api.you.com/mcp`, auth header `Authorization: Bearer <key>`.
+  The research tool is off by default: request it in the URL,
+  `https://api.you.com/mcp?tools=you-search,you-contents,you-research` (or header
+  `X-Allowed-Tools`). There is no answer tool.
+- `you-search`: model-settable `query`, `count`, `freshness` (`day|week|month|year` or
+  `YYYY-MM-DDtoYYYY-MM-DD`), `offset`, `exclude_domains` and extraction options.
+  `include_domains`, `boost_domains`, `language`, `country` are host-only: restrict
+  domains with `site:` in the query.
+- `you-contents`: up to 10 URLs a call. `you-research`: `research_effort`
+  lite/standard/deep/exhaustive/frontier, `source_control` (domains, freshness),
+  `output_schema` (strict subset: `additionalProperties: false`, all properties
+  required, no `pattern`/`format`/`minItems`, depth 5, 100 properties; not with
+  `lite`). Sources come back in `output.sources[]`, not inside the schema.
+- Not used here: `claude mcp add ...` (it writes the key into `~/.claude.json`).
+  `tools/run_skill.py` passes the server per run instead.
+
+Claude CLI 2.1.323, VERIFIED Nov 14, 2026 against a local mock MCP server with a fake
+key (no You.com call): `--mcp-config` takes inline JSON
+`{"mcpServers":{"you-com":{"type":"http","url":"...","headers":{"Authorization":"Bearer ${YDC_API_KEY}"}}}}`;
+`${YDC_API_KEY}` is expanded from the child's environment, and an unset variable is
+sent as an empty value without an error. Tool names are `mcp__you-com__you-search`,
+`mcp__you-com__you-contents`, `mcp__you-com__you-research`. `--strict-mcp-config`
+leaves only that server (claude.ai connectors drop out). `--allowedTools` alone leaves
+WebSearch and WebFetch in the session (the user settings pre-approve WebSearch);
+`--disallowedTools WebSearch WebFetch` removes them.
 
 ## Unverified: check before use
 
@@ -309,4 +332,7 @@ The research tool must be requested explicitly (`?tools=you-search,you-contents,
   t0-gamma, TiRex-2, Kumo Forecast (their repos changed in autumn 2026).
 - Residual overlap for every model: earlier years of the same public series may be
   in training, so a model may know these zones' typical shape.
-- That the Zenodo record is findable through You.com search (Friday smoke test).
+- That the Zenodo record is findable through You.com search (first live run;
+  `notes/youcom_provider.md`). Also unverified until a key exists: the tool names and
+  arguments as the live server reports them, date-range `freshness` and `count` through
+  MCP, `page_age` on every web result, and whether Research is in the hackathon credits.

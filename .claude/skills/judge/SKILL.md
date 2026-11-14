@@ -19,6 +19,12 @@ Provider is `claude` unless given (see `.claude/skills/providers.md`).
    A page with more to record gets several rows (same URL, different note). Record a
    search that found nothing too. The 120-day window is for `/scan`, not for sources
    read here. Budget: about 8 searches and 10 fetches.
+   With `youcom`: first `fetch` (contents) the primary URL; then one `research` call at
+   the standard tier, LinkedIn excluded, asking which primary sources support or
+   contradict the claim; then `fetch` the sources it names that you will cite. Ledger
+   rows come from the tool's `sources` list (URL, title, date, your own paraphrase),
+   never from page text (details in `providers.md`). Budget: about 2 research calls,
+   5 searches and 10 fetched pages.
 3. Write the scorecard from the ledger only.
    - Every claim has `citation_idx` pointing at a primary source, or `null`.
    - If no primary source can be found, say so in `label_reason`, leave

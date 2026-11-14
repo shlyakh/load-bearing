@@ -8,6 +8,9 @@ description: Run a judged candidate on the frozen benchmark and write its receip
 Only for scorecards labelled `ACCEPT_RUN`. Read `CLAUDE.md` hard rules 1 to 5, 12, 13.
 
 1. Read `scorecards/<provider>/<candidate_id>.json`. Find the model row it needs.
+   - With `youcom`: when the scorecard leaves the model id, licence, context length or
+     covariate support open, read the model card and repository README with `fetch`
+     (contents; no search; `providers.md`).
    - Already on the leaderboard (`results/leaderboard.csv`): skip to step 5.
    - `ff_native_exog` or `ff_univariate`: add an entry to `SPECS` in
      `models_ff/run_ff.py` (settings fixed now, context 2,048 hours, never tuned).
