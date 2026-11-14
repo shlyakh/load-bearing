@@ -12,6 +12,10 @@
   "text": "Grid operators schedule power plants from a forecast of demand, called load. PJM is the largest in the United States, and forecast error there is real money."
  },
  {
+  "step": "The zones",
+  "text": "Our test bed is four PJM zones: Jersey Central and Dominion to start, then AEP and Atlantic City Electric, kept back for a fresh test."
+ },
+ {
   "step": "The task",
   "text": "Every Monday, each method forecasts the next 168 hours in four PJM zones. Every method gets the same history and the same temperature forecast, and the rules were frozen before any scored run."
  },
@@ -25,11 +29,11 @@
  },
  {
   "step": "Leaderboard",
-  "text": "The leaderboard shows every model against the same baseline, and flags the models published after most of our test weeks."
+  "text": "The leaderboard shows every model against the same baseline, two zones side by side. Chronos-2 leads the first baseline. The grey diamonds, Timestral and TimesFM 3.0, were published after most of our test weeks, so their scores are not out of sample."
  },
  {
   "step": "Weather",
-  "text": "Weather matters more than the model. With better weather forecasts, the regressions catch up."
+  "text": "Weather matters more than the model. With better weather forecasts every method improves, the regressions catch up, and against the standard benchmark Chronos-2 is level under every weather source."
  },
  {
   "step": "New claims",

@@ -748,6 +748,7 @@ a { color: var(--model); }
     { tab: "agents", at: "#flow-weekly", ms: 6000, text: "Live research agents, with results that are verified. Each week three agents find new forecasting claims, check their sources, and measure them on our own data." },
     { tab: "story", at: "header", ms: 7000, text: "Test case: week-ahead electricity load. Not a bid to beat the industry's forecasts: fast enough to prove the idea, and weather matters." },
     { tab: "story", at: "#usmap", ms: 5000, text: "Grid operators schedule power plants from a forecast of demand. PJM is the largest operator in the United States." },
+    { tab: "story", at: "#zonemap", ms: 4500, text: "Four PJM zones: JC and DOM to start, then AEP and AE, kept back for a fresh test." },
     { tab: "story", at: "#week", ms: 6000, text: "Every Monday, each method forecasts the next 168 hours in four PJM zones, from the same history and the same temperature forecast.", act: () => click("#wk-zone button:nth-child(2)", 3000) },
     { tab: "receipt", at: "#receipt", ms: 7500, text: "A study found a tie in Great Britain: " + tourNum.claim + ". Against our first baseline we measured " + tourNum.prim + " on DOM. Against the field's standard benchmark it is " + tourNum.std + ": close to a tie again." },
     { tab: "newzones", at: "#v2-primary", ms: 8000, text: "The fresh test: two zones no model had been run on, with the rules fixed in advance. Chronos-2 against the standard benchmark: " + tourNum.v2("AEP") + " on AEP and " + tourNum.v2("AE") + " on AE. No clear lead." },
