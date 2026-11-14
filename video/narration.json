@@ -1,5 +1,9 @@
 [
  {
+  "step": "Opening",
+  "text": "This project is about live research agents whose results get verified. Every week, new forecasting models are published with claims about how good they are. Our agents find those claims, check them against their sources, and then measure them on our own data. We picked electricity load as the test case. It is a hot topic for two reasons: energy demand is growing, in part because of data centers, and foundation models for time series have improved quickly. A disclaimer: week-ahead load forecasting is a well-known problem. We are not trying to beat what power providers and energy hedge funds already model. We chose it because these forecasts run fast enough to build and test the whole idea in a hackathon, and because they show weather doing real work as an input."
+ },
+ {
   "step": "The grid",
   "text": "Power cannot be stored cheaply, so grid operators schedule power plants from a forecast of demand, called load. PJM is the largest grid operator in the United States. A few percent of forecast error is real money, so every new forecasting model gets attention."
  },

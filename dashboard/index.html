@@ -709,6 +709,7 @@ a { color: var(--model); }
       v2: z => { const p = D.v2 && D.v2.pairs.find(q => q.kind === "primary" && q.zone === z); return p ? f2(p.ratio) : ""; } };
   })();
   const TOUR = [
+    { tab: "story", at: "header", ms: 7000, text: "Live research agents, with results that are verified. Test case: week-ahead electricity load. Not a bid to beat the industry's forecasts: fast enough to prove the idea, and weather matters." },
     { tab: "story", at: "#usmap", ms: 5000, text: "Grid operators schedule power plants from a forecast of demand. PJM is the largest operator in the United States." },
     { tab: "story", at: "#zonemap", ms: 5000, text: "We forecast PJM zones that behave differently: first JC in New Jersey and DOM in Virginia, then AEP and AE, two zones kept back for a fresh test." },
     { tab: "story", at: "#week", ms: 6000, text: "Every Monday, each method forecasts the next 168 hours. Here: a plain regression and Chronos-2, a pretrained model.", act: () => click("#wk-zone button:nth-child(2)", 3000) },
