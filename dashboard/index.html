@@ -134,6 +134,10 @@ svg .hit:focus { outline: none; } svg .hit:focus-visible { stroke: var(--model);
   .flow-row { grid-template-columns: 1fr; }
   .node + .node::before { content: "\2193"; left: 20px; top: -24px; transform: none; }
 }
+#pu-overlap { width: 100%; display: block; margin: 4px 0 8px; }
+#pu-overlap text { font-size: 13px; fill: var(--ink-2); } #pu-overlap text.big { font-size: 20px; font-weight: 600; fill: var(--ink); font-family: var(--display); }
+#pu-only-youcom, #pu-only-claude { margin-top: 10px; }
+#pu-only-youcom .cand, #pu-only-claude .cand { grid-template-columns: minmax(0, 1fr); background: var(--bg); }
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
 .steps .panel { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .steps p { font-size: 14px; }
@@ -417,16 +421,25 @@ a { color: var(--model); }
   <h2>You.com and Claude's own search, on the same work</h2>
   <p>The agent does two kinds of web work: a scan that finds newly published claims, and a judge that checks one claim against its primary sources. Both were run twice on the same inputs, once with Claude's built-in web search and once with You.com through its hosted MCP server. In a You.com run Claude's own search is switched off, so every source cited came through You.com.</p>
   <div class="facts" id="pu-facts"></div>
+  <div class="panel" style="display: grid; gap: 10px;">
+    <h3>The scan: where You.com did better</h3>
+    <p>One scan each over the same 120 days, the same queries and the same sites. You.com returns a date with every result and can be held to one site and an exact date range, so the agent ran one narrow search per site. It kept more claims, and missed fewer of the ones Claude's search found than the other way round.</p>
+    <svg id="pu-overlap" role="img" aria-label="Claims kept by the two scans: found only by Claude's search, found by both, found only by You.com"></svg>
+    <div class="scroll"><table id="pu-scan"></table></div>
+    <details id="pu-only-youcom" open>
+      <summary>The <span class="pu-n-you"></span> claims only You.com found</summary>
+      <div class="cands" id="pu-list-youcom"></div>
+    </details>
+    <details id="pu-only-claude">
+      <summary>The <span class="pu-n-claude"></span> claims only Claude's search found</summary>
+      <div class="cands" id="pu-list-claude"></div>
+    </details>
+    <p class="note">One run of each, so part of the difference is run-to-run variation. Claude's site filter leaked to other sites for the multi-site groups, so its column is not a clean per-site search. Finding a claim is not the same as the claim holding up: each one listed shows whether it has been judged, and how.</p>
+  </div>
   <div class="panel scroll">
     <h3>What You.com does at each stage</h3>
     <table id="pu-stages"></table>
     <p class="note">Not used: the Answer API (not offered through the MCP server), Finance Research, the Inference Router, and the discover tool, which finds agent tools, not web pages.</p>
-  </div>
-  <div class="panel scroll">
-    <h3>The scan, side by side</h3>
-    <p>One scan each over the same 120 days, the same queries and the same sites. With You.com the agent ran one search per site inside an exact date range; with Claude's search, one per group of sites.</p>
-    <table id="pu-scan"></table>
-    <p class="note">One run of each, so part of the difference is run-to-run variation. Claude's site filter leaked to other sites for the multi-site groups, so its column is not a clean per-site search.</p>
   </div>
   <div class="panel scroll">
     <h3>The judge, on average</h3>
@@ -1100,6 +1113,40 @@ a { color: var(--model); }
       ["Found only by this one", show(C.scan.only), show(Y.scan.only)],
       ["Time", C.scan.minutes + " min", Y.scan.minutes + " min"],
       ["Model cost", usd(C.scan.model_cost), usd(Y.scan.model_cost)]]);
+    // Overlap of the two scans: one bar, three direct-labelled segments.
+    const M = D.scan && D.scan.merged ? D.scan.merged.candidates : [], esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+    const onlyY = M.filter(c => c.found_by.length === 1 && c.found_by[0] === "youcom"), onlyC = M.filter(c => c.found_by.length === 1 && c.found_by[0] === "claude");
+    function overlap() {
+      const node = document.getElementById("pu-overlap"); if (!node || !M.length) return;
+      const svg = d3.select(node); svg.selectAll("*").remove();
+      const W = widthOf(node, 700), H = 96, y0 = 44, bh = 22, gap = 2;
+      const segs = [{ n: onlyC.length, name: "only Claude's search", col: "var(--ink-3)" }, { n: U.both, name: "found by both", col: "var(--band)" }, { n: onlyY.length, name: "only You.com", col: "var(--model)" }];
+      const total = d3.sum(segs, d => d.n), x = d3.scaleLinear([0, total], [0, W - gap * 2]);
+      svg.attr("viewBox", "0 0 " + W + " " + H).attr("height", H);
+      let at = 0;
+      segs.forEach((d, i) => {
+        const w = x(d.n), g = svg.append("g");
+        g.append("title").text(d.n + " claims " + d.name);
+        g.append("rect").attr("x", at).attr("y", y0).attr("width", Math.max(w, 1)).attr("height", bh).attr("rx", 4).attr("fill", d.col).attr("stroke", i === 1 ? "var(--line)" : "none");
+        const end = i === 2, mid = i === 1, tx = end ? at + w : mid ? at + w / 2 : at, anchor = end ? "end" : mid ? "middle" : "start";
+        g.append("text").attr("class", "big").attr("x", tx).attr("y", 20).attr("text-anchor", anchor).text(d.n);
+        g.append("text").attr("x", tx).attr("y", 36).attr("text-anchor", anchor).text(d.name);
+        at += w + gap;
+      });
+      svg.append("text").attr("x", 0).attr("y", H - 8).text("Claude's search kept " + (onlyC.length + U.both) + " claims in all; You.com kept " + (onlyY.length + U.both) + ".");
+    }
+    overlap(); drawers.push(overlap);
+    const typeLabel = { model_release: "model release", library_feature: "library", practitioner_backtest: "backtest", paper: "paper", benchmark: "benchmark", vendor_claim: "vendor claim" };
+    const judged = {}; P.forEach(r => { judged[r.candidate_id] = r.label_youcom || r.label_claude; });
+    const WORD = { ACCEPT_RUN: "judged: can be run now", ACCEPT_STAGE3: "judged: needs more work to run", PARTIAL: "judged: thin evidence", REJECT: "judged: off target" };
+    function list(id, rows) {
+      d3.select(id).selectAll("div.cand").data(rows).join("div").attr("class", "cand").html(c =>
+        "<div class='meta'><span>" + esc(c.published_at) + "</span><span class='pill flag'>" + esc(typeLabel[c.candidate_type] || c.candidate_type) + "</span><span>" + esc(new URL(c.primary_url).hostname.replace("www.", "")) + "</span>" +
+        (judged[c.candidate_id] ? "<span class='pill " + (judged[c.candidate_id] === "ACCEPT_RUN" ? "good" : "warn") + "'>" + WORD[judged[c.candidate_id]] + "</span>" : "<span>not judged yet</span>") + "</div>" +
+        "<a class='t' href='" + esc(c.primary_url) + "'>" + esc(c.title) + "</a><p>" + esc(c.claim) + "</p>");
+    }
+    d3.selectAll(".pu-n-you").text(onlyY.length); d3.selectAll(".pu-n-claude").text(onlyC.length);
+    list("#pu-list-youcom", onlyY); list("#pu-list-claude", onlyC);
     const rec = j => Object.entries(j.receipts).map(([k, v]) => v + " " + k.replace(/_/g, " ")).join(", ") || "none";
     table("#pu-judge", ["", "Claude's own search", "You.com"], [
       ["Claims judged", show(C.judge.claims), show(Y.judge.claims)],
