@@ -1,0 +1,187 @@
+{
+  "candidate_id": "item-02",
+  "title": "Weather and zero-shot models on GB electricity demand (pre-registered backtest)",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://www.linkedin.com/posts/andy-graham-moran_energyforecasting-foundationmodels-timeseries-share-7526664711933820928-nIBz/",
+    "provider": "manual",
+    "retrieved_at": "2026-11-14T16:08:33Z"
+  },
+  "candidate_type": "practitioner_backtest",
+  "primary_sources": [
+    {
+      "url": "https://zenodo.org/records/24161799",
+      "kind": "zenodo",
+      "paraphrase": "Archived report (12 Nov 2026): three zero-shot models and a weekly-lag regression get the same ECMWF day-ahead weather for GB national demand over a 960-day backtest. Weather cut error for all four; the models' edge over the regression largely disappears. Plan, code and inputs were frozen on 10 Nov 2026, before scoring.",
+      "evidence_id": "6a48bb94a16a"
+    },
+    {
+      "url": "https://github.com/AndyMoran/gb-foundation-model-tests",
+      "kind": "github",
+      "paraphrase": "Repository for the study series (MIT). Holds plans, locks, code, scored outputs and both results notes; weights are loaded at pinned revisions, and the README states Chronos-2 is under Apache 2.0. The first study, without weather, put Chronos-2 at 0.928 of the regression's error.",
+      "evidence_id": "d0124afe2da0"
+    },
+    {
+      "url": "https://github.com/AndyMoran/gb-foundation-model-tests/blob/main/weather_study/RESULTS.md",
+      "kind": "github",
+      "paraphrase": "Results note. Q1 (confirmatory): weather lowers every forecaster's error, ratios 0.658 to 0.941. Q3 (descriptive): with weather Chronos-2 is at 0.966 of the regression's error, Timestral 1.074, TimesFM 2.5 1.453. The regression also had calendar terms the models lacked; given them too (exploratory), Chronos-2 is at 0.903.",
+      "evidence_id": "76552f2ea0c4"
+    },
+    {
+      "url": "https://github.com/AndyMoran/gb-foundation-model-tests/blob/main/weather_study/PLAN.md",
+      "kind": "github",
+      "paraphrase": "Analysis plan frozen at tag weather-plan (10 Nov 2026), written before any forecaster saw real weather. Only Q1 is confirmatory (four tests at 0.0125); the comparison with the regression (Q3) is an estimate with an interval, no test. Result sentences were written in advance.",
+      "evidence_id": "64998b44485e"
+    },
+    {
+      "url": "https://huggingface.co/amazon/chronos-2",
+      "kind": "hf_card",
+      "paraphrase": "Model card of the central model: 120M parameters, zero-shot, takes past and known-future covariates natively, runs on CPU. The repository's commit history dates the weights file to 30 Oct 2025; later commits change only the README.",
+      "evidence_id": "f090fb358b2c"
+    }
+  ],
+  "claims": [
+    {
+      "text": "With the same weather, Chronos-2's mean daily error was 0.966 times the weekly-lag regression's (the best of the three models; a rough tie).",
+      "metric": "error_ratio_vs_regression",
+      "value": 0.966,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "weekly-lag regression with weather",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [0.931, 1.001]
+    },
+    {
+      "text": "With the same weather, Timestral-209M's mean daily error was 1.074 times the regression's.",
+      "metric": "error_ratio_vs_regression",
+      "value": 1.074,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "weekly-lag regression with weather",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [1.034, 1.115]
+    },
+    {
+      "text": "With the same weather, TimesFM 2.5's mean daily error was 1.453 times the regression's.",
+      "metric": "error_ratio_vs_regression",
+      "value": 1.453,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "weekly-lag regression with weather",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [1.394, 1.51]
+    },
+    {
+      "text": "Weather lowered the regression's mean daily error to 0.658 of its error without weather (confirmatory).",
+      "metric": "MAE ratio, with weather / without",
+      "value": 0.658,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "the same regression without weather",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [0.631, 0.686]
+    },
+    {
+      "text": "Weather lowered Chronos-2's mean daily error to 0.683 of its error without weather (confirmatory).",
+      "metric": "MAE ratio, with weather / without",
+      "value": 0.683,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "Chronos-2 without weather",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [0.658, 0.707]
+    },
+    {
+      "text": "Weather lowered Timestral-209M's mean daily error to 0.773 of its error without weather (confirmatory).",
+      "metric": "MAE ratio, with weather / without",
+      "value": 0.773,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "Timestral-209M without weather",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [0.751, 0.796]
+    },
+    {
+      "text": "Weather lowered TimesFM 2.5's mean daily error to 0.941 of its error without weather (confirmatory).",
+      "metric": "MAE ratio, with weather / without",
+      "value": 0.941,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "TimesFM 2.5 without weather",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [0.913, 0.968]
+    },
+    {
+      "text": "On the 925 days that are not bank holidays or Christmas, Chronos-2 with weather was at 0.940 of the regression's error (exploratory, added after publication).",
+      "metric": "error_ratio_vs_regression",
+      "value": 0.94,
+      "dataset": "GB national demand (INDO), half-hourly, ordinary days",
+      "horizon": "day-ahead",
+      "baseline": "weekly-lag regression with weather",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 925,
+      "citation_idx": 2,
+      "ci90": [0.907, 0.971]
+    },
+    {
+      "text": "Given the regression's calendar as well as the weather, Chronos-2's error was 0.903 times the regression's (exploratory, added after publication).",
+      "metric": "error_ratio_vs_regression",
+      "value": 0.903,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "weekly-lag regression with weather",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [0.871, 0.933]
+    },
+    {
+      "text": "Weather closed 456 MW of Chronos-2's gap to the system operator's own forecast, 62% of the gap; the operator still leads.",
+      "metric": "MAE reduction (MW)",
+      "value": 456,
+      "dataset": "GB national demand (INDO), half-hourly",
+      "horizon": "day-ahead",
+      "baseline": "NESO day-ahead forecast",
+      "baseline_same_inputs": "no",
+      "test_window_days": 960,
+      "citation_idx": 2,
+      "ci90": [414, 500]
+    },
+    {
+      "text": "The plan, code and inputs were frozen and tagged before any model forecast demand with real weather, and the backtest was scored once.",
+      "metric": null,
+      "value": null,
+      "citation_idx": 3
+    }
+  ],
+  "relevance": {
+    "target_match": 3,
+    "horizon_match": 2,
+    "covariates_match": 3,
+    "rationale": "Electric load at sub-daily resolution (GB national demand, half-hourly; ours is hourly zonal PJM load). Day-ahead, issued 09:30 the day before, against our week-ahead 168 h. Weather enters as a known-future input from archived forecasts as public at issue time, which matches our forecast regime; the study uses temperature, wind and solar where our spec requires temperature only."
+  },
+  "checks": {
+    "pre_registered": "yes",
+    "training_overlap_risk": "low",
+    "independent_replication": "unknown",
+    "notes": "pre_registered: the plan is dated at tag weather-plan (10 Nov 2026) and the results note says the backtest was scored once on 11 Nov; the tag time itself was not inspected, only the dates the plan and note state and the PLAN.md commit date GitHub shows. Only Q1 (weather helps each forecaster) was confirmatory; the tie with the regression (Q3) is a pre-specified estimate without a test, and E4/E5 were added after publication. training_overlap_risk is about our run: the Chronos-2 weights file was committed on 2025-10-30 (Hugging Face commit history), before our first scored week (2025-11-10), so all 52 weeks follow it. The study's own backtest does overlap the models' possible training period, which it states. independent_replication: one research call found no replication of the GB experiment; it named related Chronos-2 load studies (arXiv 2609.06656, 2604.28149) with mixed results, known here only from source snippets and not fetched. Central model: Chronos-2, the best model in the headline comparison; Timestral-209M and TimesFM 2.5 are the other two. Licence: Apache 2.0 for Chronos-2 comes from the study's README and the Chronos code repository; the licence tag on the model card was not in the fetched text. Not verified: the contents of the Zenodo archive (only the file listing was read), results.json, and the numbers against the scored outputs."
+  },
+  "evidence_strength": "moderate",
+  "license": "Apache-2.0",
+  "license_ok_for_commercial": true,
+  "runnable_class": "direct_adapter",
+  "label": "ACCEPT_RUN",
+  "label_reason": "On target (electric load with forecast weather as a known-future input, against a lag regression given the same weather), with a public record, plan, code and results, and its headline comparison can be re-measured now with Chronos-2, which is in runnable_models. Evidence is moderate rather than strong because the tie with the regression is a descriptive estimate, not the confirmatory test, and the regression had calendar terms the models did not.",
+  "implementation_hint": "Chronos-2 with temperature through models/chronos2.py (weights amazon/chronos-2, direct_adapter) against the temperature-only regression, forecast regime, per zone: this is the protocol's primary comparison. Secondary rows for the study's other models: mistralai/Timestral-209M with temperature and google/timesfm-2.5-200m-pytorch univariate, both through models_ff/run_ff.py. The study used revision 29ec376 of amazon/chronos-2, half-hourly data, an eight-week context and three weather variables; ours is hourly, 168 h ahead, temperature only.",
+  "receipt": null
+}
