@@ -92,6 +92,10 @@ scan:
     - [arxiv.org]
     - [huggingface.co, github.com]
     - [zenodo.org]
+    # Added Nov 14 from notes/source_seed_list.md (Tier 1 and 2a). The Claude scan of
+    # Nov 14 (comparisons/scan_2026-11-14_claude_baseline) predates these two groups.
+    - [lfenergy.org, pjm.com, gridstatus.io, amperon.co]             # load forecasting practice
+    - [research.google, amazon.science, mistral.ai, nixtla.io]       # model teams
     - []          # open web
   # Direct listings read by tools/feeds.py: exact dates, complete for their site.
   feeds:
@@ -109,3 +113,7 @@ scan:
     - electricity load forecasting foundation model benchmark
     - zero-shot forecasting with covariates weather
     - pre-registered forecasting backtest energy demand
+    # Added Nov 14 from the seed list's query strings (load-specific).
+    - week-ahead OR medium-term electricity load forecasting
+    - probabilistic load forecasting weather covariates
+    - TimesFM OR Chronos-2 OR Timestral OR TabPFN-TS electricity load
