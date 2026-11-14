@@ -4,7 +4,8 @@
 /* Layout: one reading column for prose, wider figure cards, a till-receipt figure at the centre of the story.
    Colour meanings, the same in every figure:
      --model  blue    = a pretrained model (Chronos-2 and the others)
-     --base   orange  = the regression with temperature (the baseline, ratio 1.00)
+     --base   orange  = the comparison's baseline, ratio 1.00 (the temperature-only regression in
+                        chapters 3 to 6, the Vanilla benchmark with trend in chapters 7 to 9)
      --ink            = measured load, and neutral facts
      --band   grey    = the 10% bar fixed in advance
      hatching         = weeks or scores that are not out-of-sample */
@@ -168,9 +169,9 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
 
 <header class="hero" id="top">
   <div class="hero-top">
-    <span class="label">Receipts for forecasting papers &middot; a transfer test &middot; 13 Nov 2026</span>
+    <span class="label">Receipts for forecasting papers &middot; a transfer test &middot; updated 14 Nov 2026</span>
     <h1>A model and a regression tied in Britain. Do they tie on a US grid?</h1>
-    <p class="deck">A study published this week found that a pretrained forecasting model and a plain regression roughly tie on Great Britain's electricity demand once both get the same weather. We asked the same question of two zones of PJM, a US grid operator, forecasting a full week ahead.</p>
+    <p class="deck">A study published this week found that a pretrained forecasting model and a plain regression roughly tie on Great Britain's electricity demand once both get the same weather. We asked the same question of two zones of PJM, a US grid operator, forecasting a full week ahead. Then we checked the answer three ways: against the field's standard benchmark, with better weather forecasts, and on two fresh zones.</p>
   </div>
   <figure class="figure" aria-labelledby="hero-title">
     <div class="fig-head">
@@ -194,13 +195,15 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
   </figure>
   <div class="hero-strip">
     <span><b id="strip-claim"></b>error ratio claimed for Great Britain, day ahead</span>
-    <span><b id="strip-dom"></b>measured on DOM, week ahead</span>
-    <span><b id="strip-jc"></b>measured on JC, week ahead</span>
+    <span><b id="strip-dom"></b>DOM, week ahead, against the first regression</span>
+    <span><b id="strip-jc"></b>JC, against the first regression</span>
+    <span><b id="strip-aep"></b>AEP, fresh zone, against the field's standard</span>
+    <span><b id="strip-ae"></b>AE, fresh zone, against the field's standard</span>
   </div>
 </header>
 
 <nav class="chapters" aria-label="Chapters">
-  <a href="#c1">1 Why forecast</a><a href="#c2">2 Two zones</a><a href="#c3">3 The methods</a><a href="#c4">4 The receipt</a><a href="#c5">5 Inside the week</a><a href="#c6">6 Timestral</a><a href="#sources">Sources</a>
+  <a href="#c1">1 Why forecast</a><a href="#c2">2 Two zones</a><a href="#c3">3 The methods</a><a href="#c4">4 The receipt</a><a href="#c5">5 Inside the week</a><a href="#c6">6 Timestral</a><a href="#c7">7 The standard benchmark</a><a href="#c8">8 Weather</a><a href="#c9">9 New zones</a><a href="#close">Conclusion</a><a href="#sources">Sources</a>
 </nav>
 
 <section class="chapter" id="c1">
@@ -228,14 +231,15 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
   <div class="intro"><span class="label">The benchmark</span><h2>Two PJM zones that behave differently.</h2></div>
   <div class="prose">
     <p>PJM is split into about twenty delivery zones. The benchmark forecasts two of them, one hour at a time, a full week ahead. <strong>JC</strong> is Jersey Central in New Jersey: residential, and driven by summer heat. <strong>DOM</strong> is Dominion in Virginia: large and growing, with heavy data-centre demand.</p>
-    <p>Temperature is the main driver in both, so every method gets the same temperature series: the average of three weather stations per zone. Both zones have public hourly data back to 2019 and sit in different climates 400 km apart.</p>
+    <p>Temperature is the main driver in both, so every method gets the same temperature series: the average of three weather points per zone. A weather point is a place we picked inside the zone, read from a weather model's grid. It is not a weather station, and no station readings are used. Both zones have public hourly data back to 2019 and sit in different climates 400 km apart.</p>
+    <p>Two more zones, AEP and AE, were added later for a fresh test. Chapter 9 covers them.</p>
   </div>
   <figure class="figure" aria-labelledby="f2-title">
     <div class="fig-head"><span class="fig-kicker">Average and peak hourly load per zone</span><h3 id="f2-title">DOM is larger. JC swings further from its own average.</h3></div>
     <div class="split">
       <div class="stack">
-        <div class="chart" id="zone-map" role="img" aria-label="Map of the mid-Atlantic states with the three weather stations of each zone. JC stations: Morristown, Monmouth shore, Toms River. DOM stations: Richmond, Norfolk, Dulles."></div>
-        <p class="caption" id="zone-read">Dots are the weather stations whose temperatures are averaged. The JC stations are Morristown, Monmouth shore and Toms River, and the DOM stations are Richmond, Norfolk and Dulles. Zone boundaries are not drawn.</p>
+        <div class="chart" id="zone-map" role="img" aria-label="Map of the mid-Atlantic states with the three weather points of each zone. JC points: Morristown, Monmouth shore, Toms River. DOM points: Richmond, Norfolk, Dulles."></div>
+        <p class="caption" id="zone-read">Dots are the weather points whose temperatures are averaged. The JC points are Morristown, Monmouth shore and Toms River, and the DOM points are Richmond, Norfolk and Dulles. Zone boundaries are not drawn.</p>
       </div>
       <div class="stack">
         <div class="seg" id="bar-mode" role="group" aria-label="Scale"></div>
@@ -250,7 +254,7 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
       <tr><td>Peak load, MW</td><td class="n" id="t-jc-peak"></td><td class="n" id="t-dom-peak"></td></tr>
       <tr><td>Peak as a multiple of average</td><td class="n" id="t-jc-x"></td><td class="n" id="t-dom-x"></td></tr>
       <tr><td>Trend</td><td>Flat</td><td>Growing; a regression fitted on the past year ran about 2% low</td></tr>
-      <tr><td>Extra regression error when forecast weather replaces actual weather</td><td class="n">+12%</td><td class="n">+29%</td></tr>
+      <tr><td>Extra regression error when forecast weather replaces analysed weather (ECMWF IFS analysis)</td><td class="n">+12%</td><td class="n">+29%</td></tr>
     </table></div></details>
     <figcaption>Load: EIA hourly data, 2019 onward. Weather: Open-Meteo. The multiples are computed on this page as peak divided by average.</figcaption>
   </figure>
@@ -258,10 +262,11 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
 </section>
 
 <section class="chapter" id="c3">
-  <div class="intro"><span class="label">The methods</span><h2>Seven methods, the same history and the same temperature.</h2></div>
+  <div class="intro"><span class="label">The methods</span><h2>Eight methods, the same history and the same temperature.</h2></div>
   <div class="prose">
     <p>Every Monday at midnight each method forecasts the next 168 hours. Nothing after that moment may be used. A week ahead is hard because the weather forecast gets worse each day out, and because holidays and heat waves break the weekly rhythm.</p>
     <p>Error is the average gap in megawatts between forecast and measured load over the 168 hours, averaged over 48 test weeks. Two methods are compared by dividing one error by the other. A ratio of 0.73 means 27% less error than the regression with temperature.</p>
+    <p>The regression with temperature is the first baseline, the temperature-only regression. It was chosen from one recent study and fixed before scoring. The Vanilla benchmark, the field's standard, was added afterwards as a secondary row (chapter 7).</p>
   </div>
   <figure class="figure" aria-labelledby="f3-title">
     <div class="fig-head"><span class="fig-kicker">Error ratio to the regression with temperature &middot; forecast weather &middot; 48 weeks &middot; bars are 90% ranges</span><h3 id="f3-title">Pick a method to see how it works and how it scored</h3></div>
@@ -275,13 +280,13 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
       </div>
     </div>
     <details><summary>Read the values (all methods, forecast weather)</summary><div class="scroll" id="m-table"></div></details>
-    <figcaption>Left of 1.00 a method has less error than the regression with temperature. Ranges come from reshuffling the 48 weeks 2,000 times. Methods without weather give the same forecast under either weather setting. Source: results of protocol-v1.</figcaption>
+    <figcaption>Left of 1.00 a method has less error than the regression with temperature. Ranges come from reshuffling the 48 weeks 2,000 times. Methods without weather give the same forecast under either weather setting. Source: results of protocol-v1, and protocol-v1.1 for the Vanilla benchmark.</figcaption>
   </figure>
-  <div class="takeaway"><span class="label">What this establishes</span><p>Every score in this story is a ratio to one baseline, the regression with temperature, on the same weeks and the same inputs. The baseline was named before any scoring.</p></div>
+  <div class="takeaway"><span class="label">What this establishes</span><p>Chapters 3 to 6 score every method as a ratio to one baseline, the regression with temperature, on the same weeks and the same inputs. That baseline was named before any scoring. Chapters 7 to 9 change the baseline to the field's standard.</p></div>
 </section>
 
 <section class="chapter" id="c4">
-  <div class="intro"><span class="label">The receipt</span><h2>The tie does not transfer to DOM and is undecided on JC.</h2></div>
+  <div class="intro"><span class="label">The receipt &middot; protocol-v1</span><h2>Against the first regression, the tie does not transfer to DOM and is undecided on JC.</h2></div>
   <div class="prose">
     <p>The Great Britain study forecast one day ahead over 960 days. With the same weather given to both, Chronos-2's error was 0.966 of the regression's, and the 90% range reached 1.</p>
     <p>The rule for reading our result was fixed before scoring. If the whole 90% range sits below 0.90, the model is worth switching to. If the whole range sits between 0.90 and 1.10, the two are a practical tie and the claim transfers. Anything else is undecided.</p>
@@ -301,7 +306,7 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
     <details style="font-family:var(--body)"><summary>Read the values</summary><div class="scroll" id="rc-table"></div></details>
   </div>
   <p class="caption">Error ratio: Chronos-2's average error divided by the regression's, both with temperature. Below 1 the model has less error, and the bars are 90% ranges. Claim: Zenodo record 24161799. Measured: results of protocol-v1, 48 weeks from 10 Nov 2025 to 19 Oct 2026.</p>
-  <div class="takeaway"><span class="label">Keep the two studies separate</span><p>This is a transfer test and says nothing about whether the Great Britain result is correct. That study is day ahead, and its regression also had a 2-day lag, wind and solar. Ours is a week ahead with a 7-day lag and temperature only. Our regression is also not the strongest simple method: LightGBM on the same inputs scores 0.857 on JC and 0.947 on DOM.</p></div>
+  <div class="takeaway"><span class="label">Keep the two studies separate</span><p>This is a transfer test and says nothing about whether the Great Britain result is correct. That study is day ahead, and its regression also had a 2-day lag, wind and solar. Ours is a week ahead with a 7-day lag and temperature only. Our regression is also not the strongest simple method: LightGBM on the same inputs scores 0.857 on JC and 0.947 on DOM, and the field's standard benchmark closes most of the gap (chapter 7).</p></div>
 </section>
 
 <section class="chapter" id="c5">
@@ -348,18 +353,100 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
   <div class="takeaway"><span class="label">What this establishes</span><p>Timestral's score cannot be told apart from leakage with this window, so it is shown and marked as not out-of-sample. The ratio on weeks after the weights would rest on a single week and is not reported.</p></div>
 </section>
 
+<section class="chapter" id="c7">
+  <div class="intro"><span class="label">A second check &middot; protocol-v1.1, secondary</span><h2>Against the field's standard benchmark, the lead largely disappears.</h2></div>
+  <div class="prose">
+    <p>After scoring, we searched review papers and forecasting competitions for the load-forecasting field's own standard baseline. It is Tao's Vanilla Benchmark: no lagged load, a curved temperature response that varies by month and hour, two years of history, plus a trend. It was added in two forms, with and without the trend, and scored once.</p>
+    <p>Vanilla with trend has 23% less error than our first regression on DOM and 18% less on JC. Against it, Chronos-2's lead is gone on JC and small on DOM.</p>
+  </div>
+  <figure class="figure" aria-labelledby="f7-title">
+    <div class="fig-head"><span class="fig-kicker">Chronos-2 with temperature &middot; forecast weather (GFS/HRRR) &middot; 48 weeks &middot; bars are 90% ranges</span><h3 id="f7-title">The same model against two baselines</h3></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--model)"></i>Against the Vanilla benchmark with trend</span>
+      <span><i class="ring"></i>Against the first regression (protocol-v1)</span>
+      <span><i style="background:var(--base)"></i>1.00 = that row's baseline</span>
+      <span><i class="box" style="background:var(--band)"></i>Practical tie, 0.90 to 1.10</span>
+    </div>
+    <div class="chart" id="s-chart"></div>
+    <div class="read" id="s-read" aria-live="polite"></div>
+    <details><summary>Read the values</summary><div class="scroll" id="s-table"></div></details>
+    <figcaption>Left of 1.00 Chronos-2 has less error than the baseline of that row. Source: results of protocol-v1 and protocol-v1.1.</figcaption>
+  </figure>
+  <div class="takeaway"><span class="label">What this establishes</span><p>The verdicts in chapter 4 stand, because their baseline was fixed in advance. What changes is how much they can bear: Chronos-2 beats our first regression, not a standard load-forecasting regression. Against the standard one, the tie reported for Great Britain largely reappears: a practical tie on JC, inconclusive on DOM.</p></div>
+</section>
+
+<section class="chapter" id="c8">
+  <div class="intro"><span class="label">Weather sources &middot; protocol-v1.2, secondary</span><h2>As the weather forecast gets better, the regression catches up.</h2></div>
+  <div class="prose">
+    <p>Every model gets the same temperature. Here it comes from four sources: the GFS/HRRR mix used in the main results, ECMWF IFS at 0.25&deg;, ECMWF AIFS, and ERA5. ERA5 is the reference record of past weather, which we treat as the true temperature from here on; using it for the forecast week gives perfect weather.</p>
+    <p>A correction came with it. The series the earlier results called actual weather was an ECMWF IFS analysis, not ERA5 reanalysis. This page now calls it analysed weather.</p>
+  </div>
+  <figure class="figure" aria-labelledby="f8-title">
+    <div class="fig-head"><span class="fig-kicker">Chronos-2 with temperature against the Vanilla benchmark with trend &middot; ERA5 history &middot; bars are 90% ranges</span><h3 id="f8-title">The ratio under each weather source</h3></div>
+    <div class="controls"><div class="seg" id="wx-zone" role="group" aria-label="Zone"></div></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--model)"></i>Chronos-2 with temperature</span>
+      <span><i style="background:var(--base)"></i>Vanilla benchmark with trend = 1.00</span>
+      <span><i class="box" style="background:var(--band)"></i>Practical tie, 0.90 to 1.10</span>
+    </div>
+    <div class="chart" id="wx-chart"></div>
+    <div class="read" id="wx-read" aria-live="polite"></div>
+    <details><summary>Read the values (average error in MW and ratios)</summary><div class="scroll" id="wx-table"></div></details>
+    <figcaption>Sources are ordered from the weakest temperature forecast to perfect weather. The AIFS archive misses parts of three April weeks, so its row has 45 weeks and the others 48; each ratio is paired within its own weeks. Source: results of protocol-v1.2.</figcaption>
+  </figure>
+  <div class="takeaway"><span class="label">What this establishes</span><p>Against the Vanilla benchmark with trend, Chronos-2 is level under every source (0.94 to 1.04). On DOM the ratio climbs as the weather improves. AIFS gives the lowest load error for every model; IFS was no better than the GFS/HRRR mix for load this year. ERA5 is a model product, not station readings, and AIFS was trained on it, so an ERA5 truth may favour AIFS.</p></div>
+</section>
+
+<section class="chapter" id="c9">
+  <div class="intro"><span class="label">The fresh test &middot; protocol-v2</span><h2>On two zones no model had been run on, Chronos-2 has no clear lead.</h2></div>
+  <div class="prose">
+    <p>Every model had already been seen on DOM and JC, and the first baseline turned out weaker than the field's standard. So the comparison, the baseline, the weather source and two new zones were fixed in advance, and the scored weeks were run once. The comparison is Chronos-2 with temperature against the Vanilla benchmark with trend, with ECMWF AIFS forecast weather.</p>
+    <p>The zones were picked by a written rule, as the closest matches on load statistics from before the test year. <strong>AEP</strong>, American Electric Power, from Indiana to Virginia, matches DOM: as large, and growing. <strong>AE</strong>, Atlantic City Electric in southern New Jersey, matches JC: strongly summer-peaking. AE borders JC and their daily load moves closely together. The rule was written with all 20 zones' load statistics in view, but before any model ran on a new zone.</p>
+    <p>For these zones the weather points are the weather-model grid cells that hold the airports PJM uses, averaged with PJM's weights: five for AEP, one for AE.</p>
+  </div>
+  <figure class="figure" aria-labelledby="f9-title">
+    <div class="fig-head"><span class="fig-kicker">ECMWF AIFS forecast weather &middot; bars are 90% ranges</span><h3 id="f9-title">Chronos-2 with temperature against the Vanilla benchmark with trend</h3></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--model)"></i>AEP and AE: the new zones, the primary result</span>
+      <span><i class="dot" style="background:var(--ink2)"></i>DOM and JC: development zones, seen before</span>
+      <span><i style="background:var(--base)"></i>Vanilla benchmark with trend = 1.00</span>
+      <span><i class="box" style="background:var(--band)"></i>Practical tie, 0.90 to 1.10</span>
+    </div>
+    <div class="chart" id="v2-chart"></div>
+    <div class="read" id="v2-read" aria-live="polite"></div>
+    <div class="stack" id="v2-sentences"></div>
+    <figcaption id="v2-cap"></figcaption>
+  </figure>
+  <figure class="figure" aria-labelledby="f9b-title">
+    <div class="fig-head"><span class="fig-kicker">Error with calendar inputs divided by error without &middot; ECMWF AIFS forecast weather &middot; secondary</span><h3 id="f9b-title">Does giving the models the calendar help?</h3></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--model)"></i>Chronos-2: with calendar inputs, against without</span>
+      <span><i class="dot" style="background:var(--ink2)"></i>Vanilla with trend: with holiday terms, against without</span>
+      <span><i style="background:var(--base)"></i>1.00 = the same method without them</span>
+    </div>
+    <div class="chart" id="cal-chart"></div>
+    <div class="read" id="cal-read" aria-live="polite"></div>
+    <details><summary>Read the values (average error of every row, MW)</summary><div class="scroll" id="v2-table"></div></details>
+    <figcaption>Right of 1.00 the calendar made the forecast worse. The calendar is the same table for every model: hour, day of week, US federal holiday and the Christmas to New Year week. Chronos-2 gets it as known-future inputs; Vanilla gets holiday and year-end terms by hour. Source: results of protocol-v2.</figcaption>
+  </figure>
+  <div class="takeaway"><span class="label">What this establishes</span><p>On the fresh zones both readings are inconclusive: neither clears the 10% bar, and neither is a confirmed tie. The calendar made Chronos-2 worse in all four zones, and holiday terms left the Vanilla benchmark within 3%. Lowest error on AEP is a competition-grade LightGBM; that comparison is also inconclusive.</p></div>
+</section>
+
 <section class="chapter" id="close">
   <div class="intro"><span class="label">Conclusion</span><h2>What the evidence supports.</h2></div>
   <div class="prose">
-    <p>Under a protocol frozen before scoring, the rough tie reported for Great Britain does not transfer to DOM, where Chronos-2 with temperature clears the 10% bar. On JC the range crosses the bar, so 48 weeks cannot separate a tie from a real difference.</p>
-    <p>The result has limits. The model saw load up to the cutoff, the regression has a 7-day lag and temperature only, LightGBM on the same inputs is closer to the model than the regression is, and one year of weekly origins gives wide ranges.</p>
+    <p>Under the first protocol, frozen before scoring, the rough tie reported for Great Britain does not transfer to DOM, where Chronos-2 with temperature clears the 10% bar against the temperature-only regression. On JC the range crosses the bar, so 48 weeks cannot separate a tie from a real difference.</p>
+    <p>That baseline was weaker than the field's standard. Against the Vanilla benchmark with trend the lead largely disappears, and on DOM it shrinks further as the weather forecast improves. On two fresh zones, fixed in advance, the comparison reads inconclusive on both.</p>
+    <p>The results have limits. The models saw load up to the cutoff, one year of weekly origins gives wide ranges, ERA5 is a model product rather than observations, and AE rests on a single grid cell.</p>
   </div>
-  <p class="closing">Would the tie return against a stronger simple method, or on the other PJM zones?</p>
-  <div class="prose"><p>Not done yet, as listed in the results:</p></div>
+  <p class="closing">One year of past weeks cannot settle it. The next test runs forward in time.</p>
+  <div class="prose"><p>Not done yet:</p></div>
   <ul class="plain">
+    <li>A prospective panel: forecasts committed each Monday before the week's load exists, read after 13, 26 and 52 weeks. Planned, not built.</li>
+    <li>The scored run of TabPFN-TS, registered but not run (about 50 hours on CPU).</li>
     <li>A fair test of Timestral and other models whose weights fall inside the scored window.</li>
+    <li>A check of the weather sources against station observations.</li>
     <li>A test of TimesFM 2.5 with a curved temperature term in place of the straight line.</li>
-    <li>Runs of other pretrained models on the same 48 weeks.</li>
   </ul>
 </section>
 
@@ -367,15 +454,16 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
   <div class="intro"><span class="label">Source ledger</span><h2>Where each number comes from.</h2></div>
   <ol class="ledger">
     <li><b>The claim.</b> "Weather and zero-shot forecasting models: backtest results for GB electricity demand (part 1 of 2)", Zenodo record 24161799, published 12 Nov 2026. <a href="https://zenodo.org/records/24161799">zenodo.org/records/24161799</a>. Figure used: Chronos-2 error divided by the regression's, same weather, day ahead, 960 days: 0.966 (0.931 to 1.001). Read from the record's results file on 13 Nov 2026.</li>
-    <li><b>Measured results.</b> Project results summary for protocol-v1 (results/README.md) and the dashboard data file built from it (dashboard/data.js): ratios, 90% ranges, per-day ratios, weights dates, zone averages and peaks, and the 12 sample weeks of hourly load and forecasts. Scored once, on 12 and 13 Nov 2026.</li>
-    <li><b>What was fixed in advance.</b> protocol.yaml, tagged protocol-v1 on 12 Nov 2026: the 52 Monday origins, the baseline, the 10% bar, the verdict rule, the wording of each outcome, and the bootstrap (whole weeks, 2,000 draws, 90% percentile range).</li>
-    <li><b>Load data.</b> EIA Open Data API v2, hourly demand by PJM sub-area, zones JC and DOM. Operator-reported, not settlement quality.</li>
-    <li><b>Weather data.</b> Open-Meteo: reanalysis archive for the weather that occurred, and archived earlier forecast runs matched by lead day for forecast weather. Temperature only.</li>
+    <li><b>Measured results.</b> Project results summary (results/README.md), protocol-v1 to protocol-v2, and the dashboard data file built from it (dashboard/data.js): ratios, 90% ranges, per-day ratios, weights dates, zone averages and peaks, the 12 sample weeks of hourly load and forecasts, the weather-source results and the protocol-v2 rows. Each version scored once, between 12 and 14 Nov 2026.</li>
+    <li><b>What was fixed in advance.</b> protocol.yaml, tagged protocol-v1 on 12 Nov 2026: the 52 Monday origins, the baseline, the 10% bar, the verdict rule, the wording of each outcome, and the bootstrap (whole weeks, 2,000 draws, 90% percentile range). Later versions, each tagged before its scored run: protocol-v1.1 (Vanilla benchmark), protocol-v1.2 (weather sources), protocol-v1.3 (more model rows), protocol-v2 (new zones and the new primary comparison). Changes are dated in DEVIATIONS.md.</li>
+    <li><b>Load data.</b> EIA Open Data API v2, hourly demand by PJM sub-area, zones JC, DOM, AEP and AE. Operator-reported, not settlement quality.</li>
+    <li><b>Weather data.</b> Open-Meteo, temperature only, at our weather points. Protocol-v1: an ECMWF IFS analysis from the archive for analysed weather (first described as reanalysis, which was wrong), and archived GFS/HRRR forecast runs matched by lead day. From protocol-v1.2: ERA5 as the true temperature and history, and archived ECMWF IFS 0.25&deg; and ECMWF AIFS forecasts, matched by lead day.</li>
+    <li><b>Zone choice and weather points for AEP and AE.</b> The project's zone-selection and zone-geography notes (notes/zone_selection.md, notes/zone_geography.md), with PJM's station weights from its 2026 Load Forecast Supplement.</li>
     <li><b>Model weights.</b> Chronos-2 weights file dated 30 Oct 2025; TimesFM 2.5 dated 1 Oct 2025; Timestral dated 15 Oct 2026.</li>
     <li><b>Background on operators and zones.</b> The project dashboard (dashboard/index.html). The map uses its state-level shading, which is a simplification.</li>
   </ol>
   <div class="prose">
-    <p class="caption">Method notes. The ratio is the mean weekly error of one method divided by another's over the same 48 weeks. Ranges are 90% percentile intervals from resampling whole weeks, the same weeks for both methods. The primary comparison is Chronos-2 with temperature against the regression with temperature under forecast weather, per zone. Every other number here is secondary and does not change the verdicts. Average-miss figures in the first chart and the peak-to-average multiples are computed on this page from the data file.</p>
+    <p class="caption">Method notes. The ratio is the mean weekly error of one method divided by another's over the same weeks (48 per zone in protocol-v1, fewer where a weather source or the data has gaps). Ranges are 90% percentile intervals from resampling whole weeks, the same weeks for both methods. Protocol-v1's primary comparison is Chronos-2 with temperature against the temperature-only regression under forecast weather, on DOM and JC. Protocol-v2's is Chronos-2 with temperature against the Vanilla benchmark with trend under ECMWF AIFS forecast weather, on AEP and AE. Every other number here is secondary and does not change the verdicts. Average-miss figures in the first chart and the peak-to-average multiples are computed on this page from the data file.</p>
   </div>
 </section>
 
@@ -483,6 +571,8 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
   playLabel(); tick();
   const P = { DOM: row("chronos2_temperature", "DOM", "forecast"), JC: row("chronos2_temperature", "JC", "forecast") };
   $("#strip-claim").textContent = f3(D.claim.ratio); $("#strip-dom").textContent = f3(P.DOM.ratio); $("#strip-jc").textContent = f3(P.JC.ratio);
+  const V2 = D.v2, v2pair = (kind, z, a) => V2.pairs.find(p => p.kind === kind && p.zone === z && p.regime === "forecast_aifs" && (!a || p.a === a));
+  $("#strip-aep").textContent = f3(v2pair("primary", "AEP").ratio); $("#strip-ae").textContent = f3(v2pair("primary", "AE").ratio);
 
   /* ---------------- chapter 1: operators */
   const ISO = { PJM: [10, 11, 24, 34, 39, 42, 51, 54], MISO: [5, 17, 18, 19, 22, 26, 27, 28, 29, 38, 55], SPP: [20, 31, 40, 46], ERCOT: [48], CAISO: [6], NYISO: [36], "ISO-NE": [9, 23, 25, 33, 44, 50] };
@@ -530,7 +620,7 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
       const pts = D.zones[zone].stations.map(s => ({ name: s.name.replace("_", " "), xy: proj([s.lon, s.lat]) }));
       svg.selectAll(null).data(pts).join("circle").attr("cx", d => d.xy[0]).attr("cy", d => d.xy[1]).attr("r", 5 * k)
         .attr("fill", "var(--ink)").attr("stroke", "var(--surface)").attr("stroke-width", 2 * k)
-        .append("title").text(d => d.name + ": weather station for " + zone);
+        .append("title").text(d => d.name + ": weather point for " + zone);
       const cx = d3.mean(pts, p => p.xy[0]), cy = d3.mean(pts, p => p.xy[1]);
       svg.append("text").attr("class", "strong sans").attr("x", cx - (zone === "JC" ? 26 * k : 30 * k)).attr("y", cy + (zone === "JC" ? 6 * k : 26 * k))
         .attr("text-anchor", "end").style("font-size", 17 * k + "px")
@@ -596,7 +686,8 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
   const METHODS = [
     { id: "naive", name: "Same hour last week", fam: "simple", rows: [["seasonal_naive", "simple"]], how: "Copies the load from 168 hours earlier. The floor any method must beat.", learns: "Nothing", temp: "No" },
     { id: "reg", name: "Regression, no weather", fam: "simple", rows: [["lag_regression", "simple"]], how: "24 small straight-line fits, one per hour of the day: last week's load, day of week, holidays.", learns: "The past year of this zone, refitted every Monday", temp: "No" },
-    { id: "regt", name: "Regression with temperature", fam: "base", tag: "baseline", rows: [["lag_regression_temperature", "base"]], how: "The same fits plus temperature and its square, so both heat and cold can raise load.", learns: "The past year of this zone", temp: "Yes" },
+    { id: "regt", name: "Regression with temperature", fam: "base", tag: "first baseline", rows: [["lag_regression_temperature", "base"]], how: "The same fits plus temperature and its square, so both heat and cold can raise load. Chosen from one recent study and fixed as the baseline before the search for the field's standards.", learns: "The past year of this zone", temp: "Yes" },
+    { id: "vanilla", name: "Vanilla benchmark", fam: "simple", tag: "field standard", rows: [["vanilla_benchmark_trend", "simple"], ["vanilla_benchmark", "simple"]], how: "Tao's Vanilla Benchmark, the organisers' benchmark in the GEFCom forecasting competitions. One regression with no lagged load: month, day of week by hour, and a curved temperature response that varies by month and by hour. Scored with and without a straight-line trend; the competition form has the trend.", learns: "The past two years of this zone", temp: "Yes" },
     { id: "lgbm", name: "LightGBM with temperature", fam: "simple", rows: [["lightgbm_temperature", "simple"]], how: "Hundreds of small decision trees on exactly the regression's inputs. Can find patterns a straight line cannot.", learns: "The past year of this zone", temp: "Yes" },
     { id: "chronos", name: "Chronos-2", fam: "model", tag: "challenger", rows: [["chronos2_temperature", "model"], ["chronos2", "alt"]], how: "A neural network pretrained on a very large collection of other time series. It reads 12 weeks of the zone's load and continues the pattern. Nothing is trained on the benchmark data.", learns: "Other series, before Oct 2025", temp: "Optional: past and coming week" },
     { id: "timesfm", name: "TimesFM 2.5", fam: "model", rows: [["timesfm25_temperature", "model"], ["timesfm25", "alt"]], how: "Another pretrained network. It has no weather input, so temperature is added outside it by a straight-line fit, with the network forecasting what is left.", learns: "Other series, before Oct 2025", temp: "Only through that outside fit" },
@@ -642,7 +733,7 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
   function rcRead() {
     const d = rcRows().find(r => r.id === item); let t;
     if (item === "claim") t = "<b>Claimed.</b> In the Great Britain study, one day ahead over 960 days, Chronos-2's error was " + f3(d.ratio) + " of the regression's when both had the same weather (90% range " + f3(d.lo) + " to " + f3(d.hi) + "). The range reaches 1: a rough tie.";
-    else if (regime === "oracle") t = "<b>Secondary result.</b> With the weather that occurred in place of archived forecasts, Chronos-2's error on " + item + " was " + f3(d.ratio) + " of the regression's (90% range " + f3(d.lo) + " to " + f3(d.hi) + "). The verdict is read from forecast weather only, so this row does not change it.";
+    else if (regime === "oracle") t = "<b>Secondary result.</b> With analysed weather (an ECMWF IFS analysis of the weather that occurred, not ERA5 reanalysis) in place of archived forecasts, Chronos-2's error on " + item + " was " + f3(d.ratio) + " of the regression's (90% range " + f3(d.lo) + " to " + f3(d.hi) + "). The verdict is read from forecast weather only, so this row does not change it.";
     else if (item === "DOM") t = "<b>Does not transfer.</b> On DOM, a week ahead with archived forecast weather, Chronos-2's error was " + f3(d.ratio) + " of the regression's (90% range " + f3(d.lo) + " to " + f3(d.hi) + "). The whole range is below 0.90, so the model clears the 10% bar.";
     else t = "<b>Undecided.</b> On JC, a week ahead with archived forecast weather, Chronos-2's error was " + f3(d.ratio) + " of the regression's (90% range " + f3(d.lo) + " to " + f3(d.hi) + "). The range crosses the 10% bar, so " + d.b.n + " weeks cannot separate a tie from a real difference.";
     if (item !== "claim") t += " " + d.b.n_after + " of " + d.b.n + " scored weeks start after the date of the model's weights. Earlier years of the same public series may be in its training data.";
@@ -657,11 +748,11 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
         "</span><span class='big'>" + f3(d.ratio) + "</span><span class='verdict'><span>90% range " + f3(d.lo) + " to " + f3(d.hi) + "</span><span class='tag'>" +
         (d.id === "claim" ? "rough tie" : regime === "oracle" ? "secondary \u00b7 no verdict" : VERD[d.id]) + "</span></span>")
       .on("click", (ev, d) => { item = d.id; rcRead(); });
-    $("#rc-meta").textContent = D.protocol + " \u00b7 bar " + Math.round(D.bar * 100) + "% \u00b7 " + (regime === "forecast" ? "primary comparison" : "secondary");
+    $("#rc-meta").textContent = "protocol-v1 \u00b7 bar " + Math.round(D.bar * 100) + "% \u00b7 " + (regime === "forecast" ? "primary comparison" : "secondary");
     table("rc-table", ["Line", "Ratio", "90% range", "Reading"], rows.map(d => [d.label, f3(d.ratio), f3(d.lo) + " to " + f3(d.hi), d.id === "claim" ? "rough tie" : regime === "oracle" ? "secondary, no verdict" : VERD[d.id]]));
     drawRc(); rcRead();
   }
-  seg("rc-regime", [{ label: "Forecast weather (primary)", value: "forecast" }, { label: "Weather that occurred (secondary)", value: "oracle" }], regime, v => { regime = v; setRc(); });
+  seg("rc-regime", [{ label: "Forecast weather (primary)", value: "forecast" }, { label: "Analysed weather (secondary)", value: "oracle" }], regime, v => { regime = v; setRc(); });
   setRc();
 
   /* ---------------- chapter 5: by forecast day, with a data delay, without weather */
@@ -761,6 +852,64 @@ ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66
   });
   seg("w-model", WM.map(d => ({ label: d.name, value: d.id })), wm, v => { wm = v; drawW(); wDefault(); });
   wDefault();
+
+  const READ = { worth_switching: "worth switching", practical_tie: "practical tie", inconclusive: "inconclusive", baseline_clearly_better: "baseline clearly better",
+    A_better_beyond_bar: "better beyond the bar", B_better_beyond_bar: "worse beyond the bar" };
+  // The pre-registered verdict rule, for pairs whose reading is not stored in the data file.
+  const readOf = d => d.reading ? READ[d.reading] || d.reading : d.hi < 0.9 ? "worth switching" : d.lo >= 0.9 && d.hi <= 1.1 ? "practical tie" : d.lo > 1.1 ? "baseline clearly better" : "inconclusive";
+
+  /* ---------------- chapter 7: against the field's standard benchmark (protocol-v1.1) */
+  const sRows = ["DOM", "JC"].flatMap(z => { const b = row("chronos2_temperature", z, "forecast"), s = D.vs_standard[z];
+    return [{ label: z + " \u00b7 against Vanilla with trend", ratio: s.ratio, lo: s.lo, hi: s.hi, kind: "model", base: "the Vanilla benchmark with trend", n: b.n },
+      { label: z + " \u00b7 against the first regression", ratio: b.ratio, lo: b.lo, hi: b.hi, kind: "alt", base: "the temperature-only regression", n: b.n }]; });
+  const sPick = d => { $("#s-read").innerHTML = "<b>" + d.label + ".</b> Chronos-2's error was <b class='num'>" + f3(d.ratio) + "</b> of " + d.base + "'s (90% range " + f3(d.lo) + " to " + f3(d.hi) + ", " + d.n + " weeks): " + readOf(d) + "."; };
+  sized("s-chart", W => strip("s-chart", W, sRows, [0.6, 1.2], sPick, true));
+  $("#s-read").innerHTML = "<b>Against Vanilla with trend.</b> JC " + f3(sRows[2].ratio) + rng(sRows[2]) + ", " + readOf(sRows[2]) + ". DOM " + f3(sRows[0].ratio) + rng(sRows[0]) + ", " + readOf(sRows[0]) +
+    ". Against the first regression the same model scored " + f3(sRows[1].ratio) + " on DOM and " + f3(sRows[3].ratio) + " on JC. Select a row for its range.";
+  table("s-table", ["Comparison", "Ratio", "90% range", "Reading"], sRows.map(d => [d.label, f3(d.ratio), f3(d.lo) + " to " + f3(d.hi), readOf(d)]));
+
+  /* ---------------- chapter 8: weather sources (protocol-v1.2) */
+  const W12 = D.weather_v12;
+  const SRC = [["forecast_gfs", "GFS/HRRR mix"], ["forecast_ifs", "ECMWF IFS 0.25\u00b0"], ["forecast_aifs", "ECMWF AIFS"], ["oracle_era5", "ERA5, perfect weather"]];
+  const wxPair = (kind, z, rg) => W12.pairs.find(p => p.kind === kind && p.zone === z && p.regime === rg);
+  const wxMae = (m, z, rg) => W12.rows.find(r => r.model === m && r.zone === z && r.regime === rg);
+  let wxz = "DOM";
+  const wxRows = () => SRC.map(([rg, name]) => { const p = wxPair("chronos2_vs_vanilla_benchmark_trend", wxz, rg); return { label: name + " \u00b7 " + p.n + " weeks", name: name, ratio: p.ratio, lo: p.lo, hi: p.hi, n: p.n, reading: p.reading, kind: "model" }; });
+  const wxPick = d => { $("#wx-read").innerHTML = "<b>" + wxz + " \u00b7 " + d.name + ".</b> Chronos-2's error was <b class='num'>" + f3(d.ratio) + "</b> of the Vanilla benchmark with trend's (90% range " + f3(d.lo) + " to " + f3(d.hi) + ", " + d.n + " weeks): " + readOf(d) + "."; };
+  function wxDefault() {
+    const r = wxRows();
+    $("#wx-read").innerHTML = "<b>" + wxz + ".</b> " + r.map(d => f3(d.ratio) + " with " + d.name).join(", ") + "." + (wxz === "DOM" ? " The better the weather, the smaller Chronos-2's lead." : " Level under every source.") + " Select a row for its range.";
+  }
+  const drawWx = sized("wx-chart", W => strip("wx-chart", W, wxRows(), [0.8, 1.2], wxPick, true));
+  seg("wx-zone", [{ label: "DOM", value: "DOM" }, { label: "JC", value: "JC" }], wxz, v => { wxz = v; drawWx(); wxDefault(); });
+  wxDefault();
+  table("wx-table", ["Zone \u00b7 weather source", "Weeks", "Chronos-2, MW", "Regression, MW", "Vanilla + trend, MW", "Chronos-2 / Vanilla + trend", "Reading"],
+    ["DOM", "JC"].flatMap(z => SRC.map(([rg, name]) => { const p = wxPair("chronos2_vs_vanilla_benchmark_trend", z, rg), mm = m => fmt(Math.round(wxMae(m, z, rg).mae));
+      return [z + " \u00b7 " + name, p.n, mm("chronos2_temperature"), mm("lag_regression_temperature"), mm("vanilla_benchmark_trend"), f3(p.ratio) + " (" + f3(p.lo) + " to " + f3(p.hi) + ")", readOf(p)]; })));
+
+  /* ---------------- chapter 9: the fresh test on new zones (protocol-v2) */
+  const V2Z = [["AEP", "AEP \u00b7 new zone, matches DOM", "primary", "model"], ["AE", "AE \u00b7 new zone, matches JC", "primary", "model"],
+    ["DOM", "DOM \u00b7 development zone", "development_primary_pair", "simple"], ["JC", "JC \u00b7 development zone", "development_primary_pair", "simple"]];
+  const v2Rows = V2Z.map(([z, label, kind, k]) => { const p = v2pair(kind, z); return { label: label, z: z, ratio: p.ratio, lo: p.lo, hi: p.hi, n: p.n, reading: p.reading, kind: k }; });
+  const v2Pick = d => { $("#v2-read").innerHTML = "<b>" + d.label + ".</b> Chronos-2's error was <b class='num'>" + f3(d.ratio) + "</b> of the Vanilla benchmark with trend's (90% range " + f3(d.lo) + " to " + f3(d.hi) + ", " + d.n + " weeks): " + readOf(d) + "." + (d.kind === "simple" ? " Shown for comparison; not part of the verdict." : ""); };
+  sized("v2-chart", W => strip("v2-chart", W, v2Rows, [0.7, 1.3], v2Pick, true));
+  $("#v2-read").innerHTML = "<b>Both new zones read inconclusive.</b> AEP " + f3(v2Rows[0].ratio) + rng(v2Rows[0]) + ", AE " + f3(v2Rows[1].ratio) + rng(v2Rows[1]) +
+    ". Neither clears the 10% bar, and neither is a confirmed tie. Select a row for its range.";
+  d3.select("#v2-sentences").selectAll("p").data(V2.primary_text.split("\n").filter(t => t.startsWith("**"))).join("p").attr("class", "caption")
+    .html(t => t.replace(/\*\*(.+?)\*\*/, "<b>$1</b>"));
+  $("#v2-cap").textContent = "The two sentences above were written before scoring and filled in afterwards. AEP and AE: " + v2Rows[0].n + " weeks each; DOM and JC: " + v2Rows[2].n +
+    " weeks each, shown for comparison and not part of the verdict. Source: results of protocol-v2.";
+  const calRows = V2Z.flatMap(([z]) => [["chronos2_temperature_calendar", "Chronos-2 + calendar", "model"], ["vanilla_benchmark_trend_holiday", "Vanilla + holidays", "simple"]].map(([a, name, k]) => {
+    const p = v2pair("calendar_vs_temperature_only", z, a); return { label: z + " \u00b7 " + name, ratio: p.ratio, lo: p.lo, hi: p.hi, n: p.n, reading: p.reading, kind: k }; }));
+  const calPick = d => { $("#cal-read").innerHTML = "<b>" + d.label + ".</b> Error with the calendar was <b class='num'>" + f3(d.ratio) + "</b> of the error without it (90% range " + f3(d.lo) + " to " + f3(d.hi) + ", " + d.n + " weeks): " + readOf(d) + "."; };
+  sized("cal-chart", W => strip("cal-chart", W, calRows, [0.8, 1.2], calPick, true));
+  const cc = calRows.filter(d => d.kind === "model").map(d => d.ratio), vv = calRows.filter(d => d.kind === "simple").map(d => d.ratio);
+  $("#cal-read").innerHTML = "<b>Not here.</b> Handed the calendar, Chronos-2 got worse in all four zones (" + f2(d3.min(cc)) + " to " + f2(d3.max(cc)) + " of its error without it). Holiday terms left the Vanilla benchmark almost where it was (" +
+    f2(d3.min(vv)) + " to " + f2(d3.max(vv)) + "). Federal holidays are only about 4% of the scored hours, so they can move a weekly average very little.";
+  const V2M = [["chronos2_temperature", "Chronos-2 + temperature"], ["vanilla_benchmark_trend", "Vanilla benchmark with trend"], ["vanilla_benchmark_trend_holiday", "Vanilla with trend + holidays"],
+    ["chronos2_temperature_calendar", "Chronos-2 + temperature + calendar"], ["lightgbm_competition", "LightGBM, competition-grade"], ["lag_regression_temperature", "Regression + temperature (first baseline)"], ["chronos2", "Chronos-2, no weather"]];
+  const v2cell = (m, z) => { const r = V2.rows.find(q => q.model === m && q.zone === z && q.regime === "forecast_aifs"); return r ? fmt(Math.round(r.mae)) : "not run"; };
+  table("v2-table", ["Row, ECMWF AIFS weather"].concat(V2Z.map(d => d[0] + ", MW")), V2M.map(([m, label]) => [label].concat(V2Z.map(([z]) => v2cell(m, z)))));
 
   /* ---------------- chapter nav highlight (cosmetic; nothing is hidden without it) */
   const links = Array.from(document.querySelectorAll(".chapters a"));
