@@ -359,6 +359,28 @@ def main() -> None:
     out["protocol"] = sorted(set(out["protocol"]) | set(out["weather_v12"]["protocol"]))
     out["v2"] = protocol_v2(res / "v2")
     out["protocol"] = sorted(set(out["protocol"]) | {"protocol-v2"})
+    v21_stats = res / "v21" / "stats.csv"
+    if v21_stats.exists():  # protocol-v2.1: Chronos-2 calendar encodings (secondary)
+        st = pd.read_csv(v21_stats)
+        st = st[(st["metric"] == "mae") & (st["kind"] == "encoding_vs_temperature_only")]
+        out["v21"] = {
+            "n_ratios": len(st),
+            "n_above_1": int((st["ratio"] > 1).sum()),
+            "n_range_above_1": int((st["ci90_low"] > 1).sum()),
+            "min": round(float(st["ratio"].min()), 2),
+            "max": round(float(st["ratio"].max()), 2),
+            "aifs": [
+                {
+                    "zone": r.unique_id,
+                    "encoding": r.model_a.replace("chronos2_temperature_calendar_", ""),
+                    "ratio": round(r.ratio, 3),
+                    "lo": round(r.ci90_low, 3),
+                    "hi": round(r.ci90_high, 3),
+                }
+                for r in st[st["regime"] == "forecast_aifs"].itertuples()
+            ],
+        }
+        out["protocol"] = sorted(set(out["protocol"]) | {"protocol-v2.1"})
     (ROOT / "dashboard" / "data.js").write_text("window.DATA = " + json.dumps(out) + ";\n")
     print("data.js:", len(board), "leaderboard rows,", len(weeks), "sample weeks")
 

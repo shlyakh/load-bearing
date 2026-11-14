@@ -351,6 +351,12 @@ a { color: var(--model); }
     <svg id="v2-cal" role="img" aria-label="Error with calendar inputs divided by error without, for Chronos-2 and for the Vanilla benchmark with trend, in four zones"></svg>
     <p class="note">Above 1 the calendar made the forecast worse. The calendar is the same table for every model: hour, day of week, US federal holiday and the Christmas to New Year week. Chronos-2 gets it as known-future inputs; Vanilla gets holiday and year-end terms by hour. Secondary results.</p>
   </div>
+  <div class="panel stack" id="v21-panel" hidden>
+    <h3>Was it the way the calendar was written down?</h3>
+    <p id="v21-lede"></p>
+    <div class="scroll"><table id="v21-table"></table></div>
+    <p class="note">Chronos-2 with temperature and the calendar, divided by Chronos-2 with temperature only; ECMWF AIFS forecast weather; 90% range in brackets. Above 1 the calendar made the forecast worse. The four lower rows were added after a paper published in October (arXiv 2610.13676) reported that how calendar features are encoded changes the accuracy of pretrained models. Secondary, protocol-v2.1, scored once on weeks already used for the first row and for the temperature-only model: a follow-up, not a fresh test.</p>
+  </div>
   <div class="panel stack">
     <h3>Average error of every row, in megawatts</h3>
     <div class="scroll"><table id="v2-table"></table></div>
@@ -1084,6 +1090,21 @@ a { color: var(--model); }
       });
     }
     draw(); drawers.push(draw);
+  })();
+
+  // ---------- protocol-v2.1: the calendar in other encodings
+  (function calendarEncodings() {
+    const V = D.v21; if (!V || !D.v2) return;
+    document.getElementById("v21-panel").hidden = false;
+    const zones = ["AEP", "AE", "DOM", "JC"].filter(z => V.aifs.some(r => r.zone === z));
+    const cat = z => D.v2.pairs.find(q => q.kind === "calendar_vs_temperature_only" && q.zone === z && q.a === "chronos2_temperature_calendar" && q.regime === "forecast_aifs");
+    const names = [["categorical", "Hour and weekday as categories (the first try)"], ["ordinal", "Hour and weekday as plain numbers"], ["cyclic", "Hour and weekday as sine and cosine"], ["target1", "Typical load for that hour and day, holiday counted as a Sunday"], ["target2", "Typical load by hour and weekday, and by hour and holiday"]];
+    const cell = r => r ? f2(r.ratio) + " (" + f2(r.lo) + " to " + f2(r.hi) + ")" : "\u2013";
+    const t = d3.select("#v21-table");
+    t.append("tr").selectAll("th").data(["How the calendar is given to the model", ...zones]).join("th").text(d => d);
+    names.forEach(([k, label]) => { const tr = t.append("tr"); tr.append("td").text(label);
+      zones.forEach(z => tr.append("td").attr("class", "num").text(cell(k === "categorical" ? cat(z) : V.aifs.find(r => r.zone === z && r.encoding === k)))); });
+    d3.select("#v21-lede").text("No. We tried four more ways of writing the same calendar. None made it help: all " + V.n_ratios + " ratios across encodings, zones and weather sources are above 1 (" + f2(V.min) + " to " + f2(V.max) + "), and in " + V.n_range_above_1 + " the whole range is. The encoding matters a little, in the order the paper reports, but less than leaving the calendar out.");
   })();
 
   // ---------- You.com tab: usage and comparison, from the run records
