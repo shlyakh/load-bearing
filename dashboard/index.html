@@ -421,7 +421,7 @@ a { color: var(--model); }
   <h2>You.com and Claude's own search, on the same work</h2>
   <p>The agent does two kinds of web work: a scan that finds newly published claims, and a judge that checks one claim against its primary sources. Both were run twice on the same inputs, once with Claude's built-in web search and once with You.com through its hosted MCP server. In a You.com run Claude's own search is switched off, so every source cited came through You.com.</p>
   <div class="facts" id="pu-facts"></div>
-  <div class="panel" style="display: grid; gap: 10px;">
+  <div class="panel" id="pu-scan-panel" style="display: grid; gap: 10px;">
     <h3>The scan: where You.com did better</h3>
     <p>One scan each over the same 120 days, the same queries and the same sites. You.com returns a date with every result and can be held to one site and an exact date range, so the agent ran one narrow search per site. It kept more claims, and missed fewer of the ones Claude's search found than the other way round.</p>
     <svg id="pu-overlap" role="img" aria-label="Claims kept by the two scans: found only by Claude's search, found by both, found only by You.com"></svg>
@@ -712,6 +712,7 @@ a { color: var(--model); }
     { tab: "leaderboard", at: "#board", ms: 6500, text: "Every model against the same baseline, DOM and JC side by side. The grey diamonds, Timestral and TimesFM 3.0, were published after most test weeks, so they may have seen them." },
     { tab: "weather", at: "#wx-ratio", ms: 7500, text: "With better weather forecasts the regressions catch up. Against the field's standard benchmark the model is level under every source (" + tourNum.min + " to " + tourNum.max + "); on DOM it goes from " + tourNum.gfs + " with GFS weather to " + tourNum.era5 + " with perfect weather." },
     { tab: "candidates", at: "#cands", ms: 6000, text: "Two scans, one with Claude's search and one with You.com, find new claims that cite a primary source. Here they are combined.", act: () => type("#cand-q", "PJM", 2600) },
+    { tab: "providers", at: "#pu-scan-panel", ms: 7000, text: (pu => pu && pu.youcom.scan && pu.claude.scan ? "Same scan, two search engines: You.com kept " + pu.youcom.scan.kept + " claims, Claude's search " + pu.claude.scan.kept + ". " + pu.both + " were found by both, " + pu.youcom.scan.only + " only by You.com." : "The same scan and the same judge, run with You.com and with Claude's own search.")(D.provider_usage) },
     { tab: "agents", at: "#flow-weekly", ms: 5000, text: "Every week: read the listings, scan, judge, run, receipt. From a new claim to a measured answer, with every source cited." }
   ];
   // ?tourms=5000,6000,... sets each step's length (used to fit the tour to a narration)

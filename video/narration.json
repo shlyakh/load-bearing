@@ -33,7 +33,11 @@
  },
  {
   "step": "New claims",
-  "text": "Each week, two scans look for new forecasting claims: one uses Claude's built-in search, the other uses You.com. Combined, they found sixty claims, thirty-seven of them found by both. The judge agent then checks each claim against its primary sources. On the five claims judged both ways, the verdicts were the same."
+  "text": "Each week, two scans look for new forecasting claims: one uses Claude's built-in search, the other uses You.com. Combined, they found sixty claims, thirty-seven of them found by both. The judge agent then checks each claim against its primary sources, with every statement cited."
+ },
+ {
+  "step": "You.com",
+  "text": "Here are the two scans side by side. With You.com, every search result carries a date, and a search can be limited to one site and an exact date range. So the agent ran one narrow search per site. It kept fifty-three claims against forty-four, sixteen of which Claude's search missed. And on the five claims judged both ways, the verdicts were the same."
  },
  {
   "step": "How it works",
