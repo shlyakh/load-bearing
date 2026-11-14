@@ -4,7 +4,7 @@
 # do not edit (CLAUDE.md rule 5).
 version: protocol-v2.1
 based_on: protocol-v2
-status: draft            # set to frozen in the commit that is tagged protocol-v2.1
+status: frozen           # tagged protocol-v2.1 on 2026-11-14; do not edit
 unchanged: >
   Everything in protocol-v2 and the files it builds on: zones (AEP and AE primary, DOM and
   JC development), horizon, origins, load and weather data, the four regimes, the harness
