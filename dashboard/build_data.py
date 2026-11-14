@@ -170,9 +170,16 @@ def main() -> None:
             src = json.loads(x)["source"]
             feed_counts[src] = feed_counts.get(src, 0) + 1
     spec = yaml.safe_load((ROOT / "spec.yaml").read_text())
+    # The judge under two search providers on the same claims
+    # (tools/compare_providers.py writes the file; absent until both have run).
+    pc_file = ROOT / "results" / "provider_comparison.csv"
+    provider_comparison = (
+        json.loads(pd.read_csv(pc_file).to_json(orient="records")) if pc_file.exists() else []
+    )
 
     out = {
         "scan": scan,
+        "provider_comparison": provider_comparison,
         "feed_counts": feed_counts,
         "scan_window_days": spec["scan"]["window_days"],
         "built_from_commit": lb["git_commit"].dropna().unique().tolist(),

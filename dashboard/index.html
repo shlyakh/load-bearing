@@ -388,7 +388,14 @@ a { color: var(--model); }
 <section data-tab="candidates">
   <span class="eyebrow">What the scan found</span>
   <h2>New forecasting claims from the last <span id="scan-days"></span> days</h2>
-  <p>The scan reads three public listings (arXiv papers, Hugging Face models, Zenodo records), runs web searches, and keeps items that are dated, about forecasting, and point at a primary source. Nothing here has been judged yet. Closest to our problem first.</p>
+  <p>The scan reads public listings (arXiv papers, Hugging Face models, Zenodo records, two journals through Crossref, and new releases of the main forecasting libraries on PyPI and GitHub), runs web searches, and keeps items that are dated, about forecasting, and point at a primary source. Closest to our problem first. The few that have been judged so far are in the table below.</p>
+  <div class="panel" id="prov-panel" hidden>
+    <h3>Two search providers, the same claims</h3>
+    <p>Each claim below was judged twice against the same problem spec: once with Claude's own web search and once with You.com (search, page contents and research). A verdict that holds under both providers does not depend on one search engine.</p>
+    <div class="facts" id="prov-facts"></div>
+    <div class="scroll"><table id="prov-table"></table></div>
+    <p class="note">Sources and calls are per judge run. Model cost is the client's estimate and leaves out You.com's own charges. File: results/provider_comparison.csv.</p>
+  </div>
   <div class="facts" id="scan-funnel"></div>
   <div class="controls">
     <div class="seg" id="cand-src" role="group" aria-label="Found by"></div>
@@ -793,7 +800,7 @@ a { color: var(--model); }
     d3.select("#scan-days").text(D.scan_window_days);
     d3.select("#scan-file").text(S.file);
     d3.select("#scan-funnel").selectAll("div").data([
-      [fmt(listed), "items in the three listings (" + Object.entries(D.feed_counts).map(([k, v]) => k + " " + v).join(", ") + ")"],
+      [fmt(listed), "items in the listings (" + Object.entries(D.feed_counts).map(([k, v]) => ({ arxiv: "arXiv", huggingface: "Hugging Face", zenodo: "Zenodo", crossref: "journals", pypi: "PyPI releases", github_releases: "GitHub releases" }[k] || k) + " " + v).join(", ") + ")"],
       [short, "shortlisted from the listings by title"],
       [S.hits.length - short, "more pages from web search"],
       [S.candidates.length, "kept as candidates"]]).join("div").attr("class", "fact").html(d => "<b>" + d[0] + "</b><span>" + d[1] + "</span>");
@@ -822,6 +829,36 @@ a { color: var(--model); }
       tr.append("td").text(h.published_at);
       tr.append("td").html("<a href='" + esc(h.url) + "'>" + esc(h.title || h.url) + "</a>");
       tr.append("td").text(h.note.replace(/^(KEPT|FOLDED[^.:]*|DROPPED)[.:]?\s*/i, ""));
+    });
+  })();
+
+  // ---------- the judge under two search providers
+  (function providers() {
+    const P = D.provider_comparison || []; if (!P.length) return;
+    document.getElementById("prov-panel").hidden = false;
+    const both = P.filter(r => r.label_claude && r.label_youcom), agree = both.filter(r => r.agree === "yes").length;
+    const has = (r, k) => r[k + "_claude"] != null && r[k + "_claude"] !== "" && r[k + "_youcom"] != null && r[k + "_youcom"] !== "";
+    const tot = (k, p) => both.filter(r => has(r, k)).reduce((a, r) => a + (+r[k + "_" + p] || 0), 0), nCost = both.filter(r => has(r, "judge_cost_usd")).length, usd = v => v == null || v === "" ? "" : "$" + (+v).toFixed(2);
+    d3.select("#prov-facts").selectAll("div").data([
+      [both.length, "claims judged under both providers"],
+      [agree + " of " + both.length, "with the same verdict"],
+      [tot("primary_sources", "claude") + " / " + tot("primary_sources", "youcom"), "primary sources cited on those claims, Claude / You.com"],
+      [usd(tot("judge_cost_usd", "claude")) + " / " + usd(tot("judge_cost_usd", "youcom")), "model cost on the " + nCost + " claims with a recorded cost for both, Claude / You.com"]]).join("div").attr("class", "fact").html(d => "<b>" + d[0] + "</b><span>" + d[1] + "</span>");
+    const t = d3.select("#prov-table"), WORDS = { ACCEPT_RUN: "Relevant, can be run now", ACCEPT_STAGE3: "Relevant, needs more work to run", PARTIAL: "Relevant, thin evidence", REJECT: "Off target" },
+      show = v => v == null || v === "" ? "not judged" : (WORDS[v] || String(v).replace(/_/g, " "));
+    const head = t.append("tr");
+    ["Claim", "Verdict, Claude", "Verdict, You.com", "Same?", "Primary sources", "Evidence rows", "Search and fetch calls", "Model cost"].forEach(h => head.append("th").text(h));
+    const pair = (r, k, f) => (f || (v => v == null || v === "" ? "–" : v))(r[k + "_claude"]) + " / " + (f || (v => v == null || v === "" ? "–" : v))(r[k + "_youcom"]);
+    P.forEach(r => {
+      const tr = t.append("tr");
+      tr.append("td").text(r.candidate_id);
+      tr.append("td").text(show(r.label_claude));
+      tr.append("td").text(show(r.label_youcom));
+      tr.append("td").html(r.agree ? "<span class='pill " + (r.agree === "yes" ? "good" : "flag") + "'>" + r.agree + "</span>" : "");
+      tr.append("td").text(pair(r, "primary_sources"));
+      tr.append("td").text(pair(r, "ledger_rows"));
+      tr.append("td").text(pair(r, "provider_tool_calls"));
+      tr.append("td").text(pair(r, "judge_cost_usd", v => usd(v) || "–"));
     });
   })();
 
