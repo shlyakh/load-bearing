@@ -67,6 +67,37 @@ Waiting on Yuri:
    this morning's v2 and dashboard work is dated Nov 14. Correct it once the event's
    start time is known.
 
+## State on Nov 14, about noon (hackathon, You.com live)
+
+- **You.com runs live.** Key in `.env`. Smoke test, one scan (40 candidates) and nine
+  judges done; all nine scorecards validate. On the five claims judged under both
+  providers the verdicts agree, five of five (`results/provider_comparison.csv`).
+  Receipts written for two claims from existing leaderboard rows, both "partially".
+- **What the live runs showed, costs and feedback:** `notes/youcom_usage_and_feedback.md`.
+  Most important: only one `site:` per query restricts a search; `(site:a OR site:b)`
+  silently searches the open web. `.claude/skills/providers.md` is corrected.
+- **Sources widened** from `notes/source_seed_list.md`: two domain groups and three
+  load queries in `spec.yaml`; `tools/feeds.py` also lists two journals (Crossref),
+  PyPI releases and GitHub releases (`tests/test_feeds.py`). The GitHub listing failed
+  once during the scan with an HTTP error, probably the unauthenticated limit of 60
+  requests an hour (not confirmed); the run kept the earlier rows.
+- **Dashboard:** New claims has a provider comparison table and a switch between the
+  Claude and You.com scans.
+- **Spend:** $48.06 of model cost on You.com runs today, cap $75 (Yuri). You.com credit
+  left: 917 cents when checked late morning.
+- **To do after 15:30 (Yuri, Nov 14): a fair scan comparison.** Rerun the Claude scan
+  on the current `spec.yaml`. The You.com scan of today ran before the `site:` fix, so
+  it needs a rerun too for both to be on the same configuration; that second rerun is
+  not yet agreed (about $10 of model cost).
+- **Not done:** the Kafritsas Substack post was not judged (the Substack robots
+  question is open); research tasks are still counted as calls in the comparison (48
+  calls were 6 tasks); You.com charges are not in the run records.
+- **After the hackathon:** scheduling per `notes/agent_runtime_and_scheduling.md`
+  (verify its check list first; design with the prospective panel, decision 35); a
+  written study of LinkedIn routes for Yuri to decide (rule 10 and decision 21 unchanged,
+  no LinkedIn access before that).
+- Item 1 under "Waiting on Yuri" above is done.
+
 ## Open decisions (Yuri)
 
 1. **protocol-v2.** Proposal: ERA5 truth, AIFS forecast weather, Vanilla with trend as
