@@ -44,6 +44,15 @@ SPECS = {
         "build": lambda path: Timestral(repo_id=path, context_length=CONTEXT_HOURS, alias="m"),
         "temperature": True,
     },
+    # Added 2026-11-14 (Yuri), secondary, flagged: the weights were uploaded on 2026-08-24,
+    # so most scored weeks precede them. The library picks its version-3 class when the
+    # path contains "3.0", which the pinned snapshot path does. Library defaults: symmetric
+    # averaging, forecasts made positive, quantiles sorted. Weights are non-commercial.
+    "timesfm3_temperature": {
+        "repo_id": "google/timesfm-3.0-pytorch",
+        "build": lambda path: TimesFM(repo_id=path, context_length=CONTEXT_HOURS, alias="m"),
+        "temperature": True,
+    },
 }
 
 
