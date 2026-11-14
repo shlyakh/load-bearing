@@ -529,3 +529,42 @@ the first-named model is better.
   to 1.267), AE 0.935; inconclusive.
 - Chronos-2 with temperature against the v1 lag regression: AEP 0.672, AE 0.765, beyond
   the bar in both. Temperature against no weather for Chronos-2: AEP 0.495, AE 0.607.
+
+## protocol-v2.1: calendar encodings for Chronos-2 (scored once, 2026-11-14, secondary)
+
+Four more Chronos-2 rows that pass the same harness calendar beside temperature in other
+encodings, after arXiv 2610.13676 (`protocol-v2.1.yaml`; files in `results/v21/`). Scored
+on the windows protocol-v2 kept (45 to 50 per zone and regime); no window was dropped.
+Ratios are mean weekly error, row A over row B, with 90% ranges. Secondary: nothing here
+changes a primary outcome.
+
+**No encoding made the calendar help.** Against Chronos-2 with temperature only, every one
+of the 64 ratios (4 encodings, 4 zones, 4 weather settings) is above 1, from 1.01 to 1.23,
+and in 54 of them the whole range is above 1. Four cells, all on DOM, are worse beyond the
+10% bar; the rest are ties or inconclusive at the bar.
+
+AIFS forecast weather, each encoding against temperature only:
+
+| Encoding | AEP | AE | DOM | JC |
+|---|---|---|---|---|
+| One target encoding (holiday as Sunday) | 1.04 (1.00 to 1.09) | 1.06 (1.03 to 1.09) | 1.07 (1.02 to 1.12) | 1.02 (0.99 to 1.05) |
+| Two target encodings | 1.05 (1.00 to 1.11) | 1.09 (1.06 to 1.13) | 1.11 (1.06 to 1.16) | 1.04 (1.01 to 1.06) |
+| Ordinal | 1.06 (0.99 to 1.12) | 1.10 (1.07 to 1.14) | 1.13 (1.08 to 1.18) | 1.06 (1.03 to 1.08) |
+| Sine and cosine | 1.07 (1.01 to 1.14) | 1.14 (1.10 to 1.19) | 1.17 (1.11 to 1.22) | 1.08 (1.05 to 1.12) |
+
+**The encoding matters a little, in the direction the paper reports.** Against the
+categorical row of protocol-v2, all 64 ratios are practical ties at the 10% bar (0.95 to
+1.04). The single target encoding is the best calendar row in 13 of 16 zone and weather
+cells and is below the categorical row with its whole range under 1 in 11; sine and cosine
+is the worst in 15 of 16. The gap between the best and the worst encoding is 2% to 9%.
+
+**Holiday hours** (288 scored hours, descriptive): the calendar rows are not better there
+either. The single target encoding has lower holiday-hour error than temperature only in
+3 of 16 cells, the other encodings in 0 or 1.
+
+What this does and does not say about the paper: the ordering of encodings carries over
+(target encoding best, cyclic worst), and so does its finding that ordinal and cyclic
+calendars are worse than none. Its finding that target encodings improve on no calendar
+does not carry over to our setting. The settings differ: our rows also have temperature,
+a week-ahead horizon and a 2,048-hour context in which most windows contain no holiday,
+where the paper used no weather, a 24-hour horizon and 8,192 hours.
