@@ -1,0 +1,160 @@
+{
+ "candidate_id": "covariate-copies-tsfm-temperature",
+ "title": "Covariate Copies Count as Evidence in Time-Series Foundation Models",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://zenodo.org/records/23003932",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T16:52:00Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://zenodo.org/records/23280722/files/copy-evidence-v5.pdf?download=1",
+   "kind": "zenodo",
+   "paraphrase": "Full text of version 5. GEFCom2012 and GEFCom2017 load tasks of fev-bench, horizon 168 hours, 10 and 20 weekly windows, temperature as a known-future covariate with actual values. Table 4 gives WQL ratios of four temperature copies to one for Chronos-2, t0-beta and TiRex-2 with 95% intervals. Weights pinned by revision; code on request only.",
+   "evidence_id": "57f4459313c9"
+  },
+  {
+   "url": "https://zenodo.org/records/23280722",
+   "kind": "zenodo",
+   "paraphrase": "Record of version 5 (10 Oct 2026), a non-peer-reviewed preprint with the PDF as its only file. Corrects the t0-beta results; headline unchanged. States that averaging channels does better than the source bias in point estimate on correlated measurements and that the bias is not consistently better on forecast loss.",
+   "evidence_id": "62b2107fbe45"
+  },
+  {
+   "url": "https://zenodo.org/records/23003932",
+   "kind": "zenodo",
+   "paraphrase": "Record of version 1 (28 Sep 2026), the page the scan found. Its abstract carries the GEFCom sentence the candidate's claim is built on: four temperature copies multiply WQL by 0.878 to 1.018 depending on model and dataset, and the source bias returns the one-temperature forecast.",
+   "evidence_id": "5508f83e602a"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the central model's weights repository: weights and config added on 30 Oct 2025 (commit 95a9710); later commits up to 29ec376 (5 Jun 2026, the revision the preprint pins) are README, tag or deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the central model: licence apache-2.0, created 30 Oct 2025, head 29ec376, about 119.5M parameters, library chronos-forecasting.",
+   "evidence_id": "d33d62d68de3"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Chronos-2, t0-beta and TiRex-2 treat repeated copies of a covariate as extra evidence: on a synthetic probe, eight exact copies raise the implied log evidence ratio of the source by 0.81, 0.71 and 2.28 nats where the Bayes reference does not move (the headline as the version 5 abstract states it).",
+   "metric": null,
+   "value": null,
+   "dataset": "synthetic probe worlds",
+   "horizon": "32 steps",
+   "baseline": "closed-form Bayes reference",
+   "citation_idx": 1
+  },
+  {
+   "text": "Chronos-2, GEFCom2012: four copies of the temperature against one give a WQL ratio of 0.997, 95% interval [0.976, 1.018]; the interval includes 1.",
+   "metric": "WQL ratio (four copies / one temperature)",
+   "value": 0.997,
+   "dataset": "GEFCom2012 (fev-bench proenfo_gfc12), 11 hourly load series",
+   "horizon": "168 hours",
+   "baseline": "the same model with the temperature supplied once",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 70,
+   "citation_idx": 0
+  },
+  {
+   "text": "Chronos-2, GEFCom2017: four copies of the temperature against one give a WQL ratio of 1.018, 95% interval [0.999, 1.037]; the interval includes 1.",
+   "metric": "WQL ratio (four copies / one temperature)",
+   "value": 1.018,
+   "dataset": "GEFCom2017 (fev-bench proenfo_gfc17), 8 ISO New England zones, hourly load",
+   "horizon": "168 hours",
+   "baseline": "the same model with the temperature supplied once",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 140,
+   "citation_idx": 0
+  },
+  {
+   "text": "t0-beta, GEFCom2012: WQL ratio 1.009, 95% interval [0.984, 1.039]; the interval includes 1.",
+   "metric": "WQL ratio (four copies / one temperature)",
+   "value": 1.009,
+   "dataset": "GEFCom2012 (fev-bench proenfo_gfc12), 11 hourly load series",
+   "horizon": "168 hours",
+   "baseline": "the same model with the temperature supplied once",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 70,
+   "citation_idx": 0
+  },
+  {
+   "text": "t0-beta, GEFCom2017: WQL ratio 0.931, 95% interval [0.895, 0.964]; copies lower the loss.",
+   "metric": "WQL ratio (four copies / one temperature)",
+   "value": 0.931,
+   "dataset": "GEFCom2017 (fev-bench proenfo_gfc17), 8 ISO New England zones, hourly load",
+   "horizon": "168 hours",
+   "baseline": "the same model with the temperature supplied once",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 140,
+   "citation_idx": 0
+  },
+  {
+   "text": "TiRex-2, GEFCom2012: WQL ratio 0.928, 95% interval [0.855, 0.994]; copies lower the loss.",
+   "metric": "WQL ratio (four copies / one temperature)",
+   "value": 0.928,
+   "dataset": "GEFCom2012 (fev-bench proenfo_gfc12), 11 hourly load series",
+   "horizon": "168 hours",
+   "baseline": "the same model with the temperature supplied once",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 70,
+   "citation_idx": 0
+  },
+  {
+   "text": "TiRex-2, GEFCom2017: WQL ratio 0.878, 95% interval [0.825, 0.931]; copies lower the loss by about 12%, the largest change in the table and the source of the claim's 'up to about 12%'.",
+   "metric": "WQL ratio (four copies / one temperature)",
+   "value": 0.878,
+   "dataset": "GEFCom2017 (fev-bench proenfo_gfc17), 8 ISO New England zones, hourly load",
+   "horizon": "168 hours",
+   "baseline": "the same model with the temperature supplied once",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 140,
+   "citation_idx": 0
+  },
+  {
+   "text": "A training-free source bias (minus log 4 on the attention keys of the copies) returns the one-temperature forecast from four copies, to within 4.6e-6 of the interval width on all GEFCom windows; it thereby gives up the gain copies produced, raising WQL against uncorrected copies by up to a factor of 1.140 (TiRex-2, GEFCom2017).",
+   "metric": "largest forecast difference, in units of the 80% interval width",
+   "value": 4.6e-06,
+   "dataset": "GEFCom2012 and GEFCom2017 (fev-bench)",
+   "horizon": "168 hours",
+   "baseline": "the same model with the temperature supplied once",
+   "baseline_same_inputs": "yes",
+   "citation_idx": 0
+  },
+  {
+   "text": "GEFCom2017 day-ahead pipeline test: inputs constructed to repeat a zone's station temperature change the forecasts of all three models, with a mean log-WQL difference of -0.064 to -0.007 against the one-column input and the lower loss for the repeated input in 12 of 12 cells.",
+   "metric": "mean log WQL difference (repeated - canonical), largest in size",
+   "value": -0.064,
+   "dataset": "GEFCom2017 / ISO New England, 8 zones",
+   "horizon": "24 hours",
+   "baseline": "the same model with one temperature column per station",
+   "baseline_same_inputs": "yes",
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 3,
+  "covariates_match": 3,
+  "rationale": "Hourly zonal electric load (GEFCom2012 and the eight ISO New England zones of GEFCom2017), forecast 168 hours ahead with temperature as a known-future covariate: the same target kind, horizon and covariate as our benchmark, and the same model as our primary comparison (Chronos-2 with temperature). The study does not ask which model is more accurate; it asks whether the forecast depends on how many times the temperature column is supplied, which bears on rule 3 (same inputs for every model) and on how each adapter builds its covariate table. Its weather is actual values only, so it corresponds to our oracle regime; it has no forecast-weather arm and no regression baseline."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: Chronos-2, the first model in the headline and the one our primary comparison uses; t0-beta and TiRex-2 are in implementation_hint. Note that the load effect is weakest for the central model: both Chronos-2 intervals in Table 4 include 1, and the 12% figure is TiRex-2 on GEFCom2017, an improvement, not a degradation. pre_registered: no registry or plan file; version 5 says one synthetic comparison had its statistics fixed before the results, an in-paper statement that does not cover the GEFCom runs. training_overlap_risk is about our run: the Chronos-2 weights file was committed on 2025-10-30 (Hub commit list, fetched), before our first scored week (2025-11-10). The Chronos repository's news list gives 20 Oct 2025 for the release (research source, not fetched); the commit date is used. The paper itself says the pretraining corpora may include GEFCom, which does not affect a same-model comparison. independent_replication: one research call and one search found only the authors' own Zenodo versions. evidence_strength is weak by the spec's rule: data, windows and weight revisions are public and pinned and intervals are given, but the code is on request only and no results files are attached; GEFCom2012 has 10 weekly windows (70 days, under the 90-day minimum), GEFCom2017 has 20 (140 days). The preprint is not peer reviewed and changed five times in two weeks, including a correction of the t0-beta results and a reversal of the bias-versus-averaging comparison. Intervals in the source are 95%, so they are in the claim text and ci90 is left out. baseline_same_inputs is 'yes' because every comparison is the same model on the same series with only the number of temperature columns changed. Not verified: version 4 (never seen) and version 3 (research source only, not fetched); the appendix tables (20 to 26) beyond Table 4 and the passages read; whether version 5 is the latest version on Zenodo; licence and weights dates of t0-beta and TiRex-2; whether our installed chronos-forecasting version matches the paper's 2.3.2. The version 1 record page came back without its header, so its date comes from the Zenodo API record."
+ },
+ "evidence_strength": "weak",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_RUN",
+ "label_reason": "On target on all three scales (hourly zonal load, 168 hours, temperature as a known-future covariate) with a full-text primary source, and its headline comparison, the same model given the temperature four times against once, can be re-measured now with Chronos-2 on our frozen windows. The evidence is weak by the spec's rule (preprint, code on request, no results files, one dataset under 90 days), and for Chronos-2 on load the paper's own intervals include no change, so the run tests whether 'the forecast depends on the copy count' transfers, not an accuracy gain.",
+ "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, weights at the pinned revision 29ec376, the same revision the paper uses). Add an arm that passes the temperature column four times (identical values under four names, past and future) and compare with the existing one-temperature rows per zone and regime: ratio of errors and the shift of the median forecast. The paper's arm is oracle weather only; our forecast regime is an extension and must be reported separately. The paper scores WQL; our metrics are point errors, so the ratio is on MAE, with WQL only if the quantiles are already stored. Other models: TiRex-2 (largest effect in the paper) and t0-beta have FoundationForecast wrappers with native covariates (ff_native_exog, models_ff/run_ff.py) but are not run here yet; mistralai/Timestral-209M (ff_native_exog) is not in the paper and would be a secondary row. The source-bias correction changes the model's attention code and is not runnable through our adapters; only the uncorrected copy effect can be measured.",
+ "receipt": null
+}

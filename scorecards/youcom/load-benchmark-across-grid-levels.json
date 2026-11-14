@@ -1,0 +1,201 @@
+{
+ "candidate_id": "load-benchmark-across-grid-levels",
+ "title": "A Benchmark for Electrical Load Forecasting Across Grid Levels: Time-Series Transformers Outperform Established Methods",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2607.15705",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T16:41:42Z"
+ },
+ "candidate_type": "benchmark",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2607.15705v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text. Hourly load, 96-hour horizon, a forecast every hour, on a TSO control area (TransnetBW, test 2024-2025), 200 low-voltage feeders (test Apr 2024 to Mar 2025) and 287 clients (test Aug to Dec 2014). Ten methods plus a persistence baseline, 100 HPO trials each, monthly retraining. Weather is ERA5 reanalysis or short-term forecasts, which the authors say is unavailable at forecast time.",
+   "evidence_id": "01425887a37b"
+  },
+  {
+   "url": "https://arxiv.org/pdf/2607.15705",
+   "kind": "arxiv",
+   "paraphrase": "PDF, read for the appendix results table that the HTML rendering dropped: MAE, RMSE, nMAE and nRMSE for all eleven rows on the three datasets. The plain Transformer is lowest on TransnetBW and FeederBW, Chronos-2 on Electricity-287; on TransnetBW zero-shot Chronos-2 is level with LightGBM and about 30% above the Transformer.",
+   "evidence_id": "d013b17b80dd"
+  },
+  {
+   "url": "https://arxiv.org/abs/2607.15705",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page, v1 submitted 17 Jul 2026. Headline: Transformer-based methods cut forecast error by 6.6 to 10.7% against established methods across three grid levels; the plain Transformer beats the modified YAformer; Chronos-2 is competitive zero-shot on two datasets and misses special events on the TSO series.",
+   "evidence_id": "c1a3f2542846"
+  },
+  {
+   "url": "https://github.com/KIT-IAI/load-forecasting-benchmark",
+   "kind": "github",
+   "paraphrase": "Authors' repository: preprocessing scripts, model code and configs, a uv lock file; preprocessed data, ERA5 weather and the best models' predictions sit on a KIT file share. Eight commits from 2 Jun to 6 Jul 2026, before the arXiv submission. The Chronos-2 evaluation used a separate script that is not in the repository as listed.",
+   "evidence_id": "ce9a11431202"
+  },
+  {
+   "url": "https://raw.githubusercontent.com/KIT-IAI/load-forecasting-benchmark/main/LICENSE",
+   "kind": "github",
+   "paraphrase": "Licence file of the authors' repository: MIT, copyright 2026 Karlsruhe Institute of Technology.",
+   "evidence_id": "932c3a2f7b83"
+  },
+  {
+   "url": "https://huggingface.co/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the pretrained model in the study: 120M parameters, zero-shot, native past and known-future covariates, context up to 8192 steps, prediction length up to 1024, runs on CPU. Its training data excludes only the test portions of datasets that overlap with GIFT-Eval.",
+   "evidence_id": "f090fb358b2c"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the Chronos-2 weights repository: licence tag apache-2.0, created 30 Oct 2025, head 29ec376 last modified 5 Jun 2026.",
+   "evidence_id": "d33d62d68de3"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the Chronos-2 weights repository: weights and config added on 30 Oct 2025 (commit 95a9710); later commits, up to 29ec376 on 5 Jun 2026, are README, tag or deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Transformer-based methods have 6.6 to 10.7% lower forecast error than the best established (non-Transformer) method on each of three load datasets, and the plain Transformer beats the authors' modified YAformer (the headline as the abstract states it).",
+   "metric": null,
+   "value": null,
+   "horizon": "96 hours (hourly steps), a forecast every hour",
+   "citation_idx": 2
+  },
+  {
+   "text": "TransnetBW (control area): the plain Transformer has MAE 143.6 MW, 8.3% below the best non-Transformer model by the text (8.2% from the table values).",
+   "metric": "MAE (MW)",
+   "value": 143.6,
+   "dataset": "TransnetBW control-area load, hourly, ENTSO-E, test 2024-2025",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "CNN, MAE 156.5 MW",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 731,
+   "citation_idx": 1
+  },
+  {
+   "text": "FeederBW (200 low-voltage feeders): the plain Transformer has MAE 3.18 kW, 6.6% below the best non-Transformer model by the text.",
+   "metric": "MAE (kW)",
+   "value": 3.18,
+   "dataset": "FeederBW, 200 low-voltage feeders, hourly, test Apr 2024 to Mar 2025",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "LSTM, MAE 3.41 kW",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 1
+  },
+  {
+   "text": "Electricity-287 (clients): the best Transformer-family model is 10.7% below the best non-Transformer model by the text, which names N-HITS; the table has the plain Transformer at nMAE 7.99% against N-HITS 8.92% and LightGBM 8.86%.",
+   "metric": "nMAE (%)",
+   "value": 7.99,
+   "dataset": "Electricity-287, 287 UCI clients with ERA5 weather, hourly, test 8 Aug to 31 Dec 2014",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "N-HITS, nMAE 8.92% (LightGBM 8.86%)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 146,
+   "citation_idx": 1
+  },
+  {
+   "text": "TransnetBW: the best model is 59.6% below the same-day-type persistence baseline (MAE 355.3 MW).",
+   "metric": "MAE reduction vs persistence (%)",
+   "value": 59.6,
+   "dataset": "TransnetBW control-area load, hourly, ENTSO-E, test 2024-2025",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "persistence from the last day of the same type, MAE 355.3 MW",
+   "baseline_same_inputs": "no",
+   "test_window_days": 731,
+   "citation_idx": 0
+  },
+  {
+   "text": "TransnetBW: zero-shot Chronos-2 with weather and holiday covariates has MAE 186.5 MW, about 30% above the trained Transformer, with large errors around holidays, long weekends and Christmas.",
+   "metric": "MAE (MW)",
+   "value": 186.5,
+   "dataset": "TransnetBW control-area load, hourly, ENTSO-E, test 2024-2025",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "plain Transformer retrained monthly, MAE 143.6 MW",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 731,
+   "citation_idx": 1
+  },
+  {
+   "text": "TransnetBW: zero-shot Chronos-2 (MAE 186.5 MW) is level with LightGBM trained on the same weather and holiday inputs (186.0 MW).",
+   "metric": "MAE (MW)",
+   "value": 186.5,
+   "dataset": "TransnetBW control-area load, hourly, ENTSO-E, test 2024-2025",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "LightGBM, one model per step, MAE 186.0 MW",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 731,
+   "citation_idx": 1
+  },
+  {
+   "text": "TransnetBW: adding long-weekend and school-holiday flags lowers Chronos-2's MAE to 180 MW, still behind the deep models trained from scratch.",
+   "metric": "MAE (MW)",
+   "value": 180,
+   "dataset": "TransnetBW control-area load, hourly, ENTSO-E, test 2024-2025",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "the same model without the extra flags, MAE 186.5 MW",
+   "test_window_days": 731,
+   "citation_idx": 0
+  },
+  {
+   "text": "FeederBW: zero-shot Chronos-2 is second with MAE 3.22 kW, just behind the trained Transformer; the Transformer is significantly better on 46% of feeders and Chronos-2 on 20%.",
+   "metric": "MAE (kW)",
+   "value": 3.22,
+   "dataset": "FeederBW, 200 low-voltage feeders, hourly, test Apr 2024 to Mar 2025",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "plain Transformer retrained monthly, MAE 3.18 kW",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 1
+  },
+  {
+   "text": "Electricity-287: Chronos-2 has the lowest nMAE, 7.92%, ahead of the trained Transformer; the paper says this is not zero-shot because the dataset's training portion is in Chronos-2's pretraining data, and the Transformer is significantly better on 39% of series against 14% for Chronos-2.",
+   "metric": "nMAE (%)",
+   "value": 7.92,
+   "dataset": "Electricity-287, 287 UCI clients with ERA5 weather, hourly, test 8 Aug to 31 Dec 2014",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "plain Transformer, static split, nMAE 7.99%",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 146,
+   "citation_idx": 1
+  },
+  {
+   "text": "Chronos-2 is the most accurate model at short leads (hours 2 to 6 on TransnetBW, the first 6 hours on FeederBW, the first 31 hours on Electricity-287); the trained Transformer's error grows less with lead time and it leads at the longer leads.",
+   "metric": null,
+   "value": null,
+   "horizon": "by lead time, 1 to 96 hours",
+   "citation_idx": 0
+  },
+  {
+   "text": "Removing covariates raises the error of both the Transformer and Chronos-2 on all three datasets, monthly retraining beats one training a year, and Chronos-2 needs about a month of context (shown in figures, no numbers in the text).",
+   "metric": null,
+   "value": null,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load, and one of the three datasets (TransnetBW) is a single control-area series of the same kind as our PJM zones; the feeder and client datasets are far below our aggregation level. The horizon is 96 hours issued every hour, a multi-day horizon between day-ahead and our week, so horizon_match is 2: it is the closest of the judged studies to 168 hours but not a week, and the paper's own lead-time result (Chronos-2 ahead only in the first hours) says the horizon matters. Weather enters as a known-future covariate with temperature among the inputs, for the trained models and for Chronos-2, which is our setup; but TransnetBW and Electricity-287 use ERA5 reanalysis (our oracle regime only), FeederBW uses short-term forecasts whose lead matching is not described, and all three add irradiance and precipitation (TransnetBW also wind) and a holiday flag that our temperature-only inputs do not have."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: the plain encoder-decoder Transformer trained from scratch, since the title and the abstract's headline are about trained Transformers against established methods; Chronos-2 is the study's secondary result. pre_registered: the full text and the repository mention no plan or registration; the repository's commits (2 Jun to 6 Jul 2026) precede the arXiv submission but hold code, not a frozen protocol. training_overlap_risk is about our run and is 'low' by reasoning, not from a weights commit date: the central model has no pretrained weights and would be trained by us on load before each cutoff. For the secondary Chronos-2 rows the weights file was committed on 2025-10-30 (Hugging Face commit list, fetched), before our first scored week (2025-11-10). independent_replication: one research call and one search found no rerun, no fork with results and no contradicting study; a machine-written desk review (pith.science, snippets only) is not a replication. evidence_strength is moderate: code, preprocessed data and predictions are public, the test windows are 731, 365 and 146 days, and trained models share inputs, but the study is neither pre-registered nor replicated, reports one HPO and training outcome per model with no seed spread and no intervals, and its significance tests use hourly origins with overlapping 96-hour windows. baseline_same_inputs is 'partly' for the Chronos-2 rows: it gets the weather and holiday covariates but not the hour, weekday and month encodings, is not retrained, and its context length differs from the trained models' 168 to 720 hours. Points where the abstract is stronger than the tables: the 6.6 to 10.7% margin is against the best non-Transformer model only and comes from single runs; on Electricity-287 the lowest error is Chronos-2's, on a dataset the paper says is in its pretraining data, so 'competitive zero-shot on two datasets' holds strictly only for FeederBW; per series the Transformer is not significantly ahead of Chronos-2 on most feeders or clients. Not verified: which pair of models gives 10.7% on Electricity-287 (the text names N-HITS, the table has LightGBM lower on nMAE, and the table values give 10.4%, 10.6% or 11.2% depending on the pair); the figures' values, including all ablations; the forecast lead of the FeederBW weather forecasts; the Chronos-2 context length used in the main comparison (the context ablation suggests the 8192-step maximum); the contents of the KIT file share (not fetched); the model code itself (only the README, file list and licence were read); that the Chronos-2 script is absent rests on a commit message in the file list. The ACM Energy Informatics Review page shows the same abstract, but its PDF asked for a password, so the published version was not compared with arXiv v1. That training the Transformer per cutoff exceeds our CPU limit is inferred from the paper's GPU runtimes (about 12 minutes per training on an A100 for one series), not measured. Licence is that of the code we would run (the repository's MIT file); Chronos-2 is apache-2.0 by its Hub record."
+ },
+ "evidence_strength": "moderate",
+ "license": "MIT",
+ "license_ok_for_commercial": true,
+ "runnable_class": "not_runnable",
+ "label": "ACCEPT_STAGE3",
+ "label_reason": "On target (hourly control-area load, weather as a known-future input, a 96-hour horizon) and well sourced, with public code, data and predictions, but its headline is about a Transformer trained from scratch with hyperparameter search and monthly retraining, which is not in runnable_models and needs a training pipeline, not an adapter. Its secondary finding, zero-shot Chronos-2 with covariates level with LightGBM and well behind trained models on the control-area series because of holidays, can be read against rows we already have, but that is not the headline comparison.",
+ "implementation_hint": "Central model: the plain encoder-decoder Transformer from the authors' repository (KIT-IAI/load-forecasting-benchmark, MIT; main.py with config files), not in runnable_models. A stage-3 test would write our own trainer in harness/ for JC and DOM: train on load and temperature before each cutoff (the paper retrains monthly, context 168 to 720 hours, 100 HPO trials on a GPU), forecast 168 hours, score against the temperature-only regression; hyperparameters would have to be fixed before the scored weeks, and the run does not fit the 60-minute CPU limit as the paper describes it. Runnable today without new code, as a secondary reading only: compare the existing amazon/chronos-2 rows with temperature (direct_adapter, models/chronos2.py, pinned revision) with the LightGBM and temperature-only regression rows per zone and regime, and split the errors by weeks that contain a US holiday to see whether the paper's holiday weakness shows up at PJM. Differences to keep in view: 96 hours every hour against 168 hours once a week; reanalysis weather (our oracle regime) with irradiance, precipitation, wind and a holiday flag against temperature only.",
+ "receipt": null
+}

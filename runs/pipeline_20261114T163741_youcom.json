@@ -1,0 +1,63 @@
+{
+ "provider": "youcom",
+ "started_at": "2026-11-14T16:37:41+00:00",
+ "candidates_file": "candidates/youcom/scan_2026-11-14.jsonl",
+ "candidates": [
+  {
+   "candidate_id": "us-day-ahead-load-forecasts-eia930-audit",
+   "judge": {
+    "run_id": "20261114T163741_judge_youcom_us-day-ahead-load-forecasts-eia930-audit_ab4a",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 42,
+    "total_cost_usd": 3.2017544,
+    "wall_seconds": 271.2
+   },
+   "label": "ACCEPT_STAGE3",
+   "runnable_class": "not_runnable",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "covariate-copies-tsfm-temperature",
+   "judge": {
+    "run_id": "20261114T163741_judge_youcom_covariate-copies-tsfm-temperature_fc56",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 40,
+    "total_cost_usd": 2.9263590000000006,
+    "wall_seconds": 239.3
+   },
+   "run_candidate": {
+    "run_id": "20261114T164321_run-candidate_youcom_covariate-copies-tsfm-temperature_9d8b",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 4,
+    "total_cost_usd": 0.5077956,
+    "wall_seconds": 21.4
+   },
+   "run_candidate_report": "Stopped without writing a receipt: the model row this scorecard needs is not in `results/leaderboard.csv`. Nothing was downloaded, changed or run.\n\n## Missing row\n\nThe scorecard's claim is that Chronos-2's forecast depends on how many times the temperature column is supplied (four copies against one). Measuring it needs a **Chronos-2 arm with the temperature passed four times**, for example `chronos2_temperature_x4`, for JC and DOM in both regimes.\n\n- **On the leaderboard:** only the one-temperature side, `chronos2_temperature`, at revision `29ec376`, the same one the paper pins.\n- **Not there:** any four-copy row, and no such file in `results/forecasts/`.\n- **Adapter:** `models/chronos2.py` has no copy-count option; its `predict` passes a single `T` column.\n\n## What a person has to run\n\n1. **Step 1 (`direct_adapter`):** the skill says to stop here and not improvise an adapter. Someone has to add the four-copy arm to `models/chronos2.py`: identical temperature values under four names, past and future, with every other setting unchanged.\n2. **Step 2:** no download needed; the weights are already pinned at `29ec3766\u2026` (dated 2025-10-30).\n3. **Step 3:** run the new arm on the gate origins, then `uv run --project core python -m harness.score gate`, and check the row is complete and plausible.\n4. **Step 4:** commit the code, then run the scored set once, followed by `harness.score scored` and `harness.stats scored`.\n5. **Step 5:** write the receipt with `tools/receipt.py`, then report it (step 6).\n\n## Decisions for you before step 5\n\n- **Protocol:** a new model row after the `protocol-v1` tag probably needs a dated line in `DEVIATIONS.md`, as the other post-tag rows seem to have had; I did not check how those were recorded.\n- **Receipt comparison:** this claim compares the four-copy arm with `chronos2_temperature`, not with the temperature-only regression. I did not check whether `tools/receipt.py` can take a baseline other than the regression; if it cannot, it needs that change before step 5.\n- **Claim kind:** the paper's two Chronos-2 intervals both include 1, so `tie` looks like the right `--claim-kind`.\n- **Regime:** the paper uses actual weather only, so the oracle rows are the matching ones; the forecast-regime rows are an extension and are reported separately.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "load-benchmark-across-grid-levels",
+   "judge": {
+    "run_id": "20261114T163741_judge_youcom_load-benchmark-across-grid-levels_90ae",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 47,
+    "total_cost_usd": 3.4785676,
+    "wall_seconds": 340.5
+   },
+   "label": "ACCEPT_STAGE3",
+   "runnable_class": "not_runnable",
+   "receipt_verdict": null
+  }
+ ],
+ "total_cost_usd": 10.11
+}
