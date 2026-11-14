@@ -1,0 +1,17 @@
+unique_id,regime,n_encodings,best,best_mae,worst,worst_mae,gap_share_of_best
+AE,forecast_aifs,5,chronos2_temperature_calendar_target1,56.8566,chronos2_temperature_calendar_cyclic,68.681,0.208
+AE,forecast_gfs,5,chronos2_temperature_calendar_target1,68.0514,chronos2_temperature_calendar_cyclic,93.7915,0.3782
+AE,forecast_ifs,5,chronos2_temperature_calendar_target1,57.2559,chronos2_temperature_calendar_cyclic,71.241,0.2443
+AE,oracle_era5,5,chronos2_temperature_calendar_target1,41.2901,chronos2_temperature_calendar_cyclic,47.5957,0.1527
+AEP,forecast_aifs,5,chronos2_temperature_calendar_target1,548.1601,chronos2_temperature_calendar_cyclic,622.3377,0.1353
+AEP,forecast_gfs,5,chronos2_temperature_calendar_target1,411.185,chronos2_temperature_calendar_cyclic,461.8802,0.1233
+AEP,forecast_ifs,5,chronos2_temperature_calendar_target1,516.1949,chronos2_temperature_calendar_cyclic,589.3113,0.1416
+AEP,oracle_era5,5,chronos2_temperature_calendar_target1,464.606,chronos2_temperature_calendar_cyclic,525.0464,0.1301
+DOM,forecast_aifs,5,chronos2_temperature_calendar_target1,390.508,chronos2_temperature_calendar_cyclic,441.9137,0.1316
+DOM,forecast_gfs,5,chronos2_temperature_calendar_target1,358.9435,chronos2_temperature_calendar_cyclic,393.1196,0.0952
+DOM,forecast_ifs,5,chronos2_temperature_calendar_target1,367.1529,chronos2_temperature_calendar_cyclic,408.494,0.1126
+DOM,oracle_era5,5,chronos2_temperature_calendar_target1,347.4208,chronos2_temperature_calendar_cyclic,389.9943,0.1225
+JC,forecast_aifs,5,chronos2_temperature_calendar_target1,103.4279,chronos2_temperature_calendar_cyclic,117.279,0.1339
+JC,forecast_gfs,5,chronos2_temperature_calendar_target1,103.8249,chronos2_temperature_calendar_cyclic,116.514,0.1222
+JC,forecast_ifs,5,chronos2_temperature_calendar_target1,108.7139,chronos2_temperature_calendar_cyclic,124.5338,0.1455
+JC,oracle_era5,5,chronos2_temperature_calendar_target1,87.997,chronos2_temperature_calendar_cyclic,99.7631,0.1337

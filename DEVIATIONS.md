@@ -72,3 +72,13 @@ new version file.
   (complete and plausible, existing gate rows unchanged), then the scored origins once.
   Most scored weeks precede the weights, so the row is flagged as not out-of-sample and
   cannot change the primary outcome.
+- **2026-11-14, protocol-v2.1 (addendum to protocol-v2), frozen and tagged:** four
+  secondary Chronos-2 rows that pass the same harness calendar beside temperature in four
+  other encodings (ordinal, sine and cosine, one target encoding with a holiday counted as
+  a Sunday, two target encodings), after arXiv 2610.13676 and the judged claim
+  `calendar-encoding-covariate-tsfm` (Yuri's decision). Written after the gate run
+  (`results/gate/v21/`: every row complete on every window protocol-v2 kept) and before
+  any scored origin. Our choices where the paper is silent: year-end kept as 0/1 in every
+  row, the fallback for a calendar cell missing from the context, the sine and cosine
+  periods. Scored on the windows protocol-v2 kept; output only in `results/v21/`. Every
+  earlier protocol file and result is unchanged.

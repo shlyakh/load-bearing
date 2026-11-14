@@ -1,0 +1,104 @@
+# Addendum to protocol-v2.yaml, which stays frozen and unedited, as do protocol.yaml and
+# protocol-v1.1 to v1.3. Four model rows only. Written 2026-11-14, after gate runs and
+# before any of the four rows was run on a scored origin. Frozen at git tag protocol-v2.1;
+# do not edit (CLAUDE.md rule 5).
+version: protocol-v2.1
+based_on: protocol-v2
+status: draft            # set to frozen in the commit that is tagged protocol-v2.1
+unchanged: >
+  Everything in protocol-v2 and the files it builds on: zones (AEP and AE primary, DOM and
+  JC development), horizon, origins, load and weather data, the four regimes, the harness
+  calendar, every existing row and result file, the bootstrap, the primary comparison, its
+  bar, verdict rule and outcome sentences. The four rows defined here are SECONDARY and
+  cannot change any primary outcome sentence. No v2.1 code writes outside results/v21 and
+  results/gate/v21.
+
+decisions: >
+  Yuri, 2026-11-14: add the Chronos-2 calendar-encoding rows that the judged claim
+  `calendar-encoding-covariate-tsfm` (scorecards/youcom/) needs, as secondary rows.
+
+why: >
+  protocol-v2 found that adding the harness calendar to Chronos-2 with temperature raised
+  its error in all four zones (ratio 1.04 to 1.13). That row passes hour and day of week as
+  categories. arXiv 2610.13676 (read 2026-11-14) reports that the encoding of calendar
+  features changes the accuracy of covariate-informed pretrained models, most of all on
+  holidays, and that target encodings are the only ones that improve on no covariates for
+  Chronos-2. These rows ask whether our result is about the calendar or about its encoding.
+
+# ------------------------------------------------------------------ rows
+added_models:
+  common: >
+    Chronos-2 through models/chronos2.py --v21, weights amazon/chronos-2 at the revision in
+    models/pins.json (29ec376, weights dated 2025-10-30), context 2,048 hours, no
+    cross-learning, point forecast = median, CPU: the settings of chronos2_temperature and
+    chronos2_temperature_calendar, not tuned. Inputs: data/model_inputs/<set>_v2.parquet,
+    the file the protocol-v2 Chronos-2 rows read. Covariates are passed as past and
+    known-future: temperature exactly as in protocol-v2, plus the harness calendar values
+    of harness.data.calendar (hour, day of week with Monday = 0, US federal holiday,
+    year-end), unchanged, in the encoding of the row. All four zones, all four regimes. A
+    zone-window whose horizon temperature is incomplete is not forecast.
+  chronos2_temperature_calendar_ordinal:
+    encoding: hour as a number 0 to 23, day of week as a number 0 to 6, holiday and year-end as 0/1
+    paper_name: ordinal
+  chronos2_temperature_calendar_cyclic:
+    encoding: >
+      sine and cosine of the hour with period 24 and of the day of week with period 7 (four
+      columns), holiday and year-end as 0/1
+    paper_name: cyclic
+  chronos2_temperature_calendar_target1:
+    encoding: >
+      one column: the mean load in the model's 2,048-hour context for the hour and day of
+      week of each timestamp, with a holiday counted as a Sunday; year-end as 0/1
+    paper_name: target encoding of hour and weekday, holiday as Sunday
+  chronos2_temperature_calendar_target2:
+    encoding: >
+      two columns: the context mean load by hour and day of week, and the context mean load
+      by hour and holiday flag; year-end as 0/1
+    paper_name: two separate target encodings
+  target_encoding_rules: >
+    Means are taken over the context rows only (the last 2,048 hours up to the cutoff, the
+    rows handed to the model), recomputed for every window, zone and regime, so no load
+    after the cutoff enters them (CLAUDE.md rule 2; tests/test_chronos2_v21.py). The same
+    cell mean is assigned to context and horizon timestamps. A cell that does not occur in
+    the context takes the context's Sunday mean for that hour, and failing that the context
+    mean. No scaling.
+  differences_from_the_paper: >
+    The paper's calendar has hour, weekday and holiday; ours also has year-end, kept as 0/1
+    in every row so that all five calendar rows carry the same information. Its one-hot
+    encoding is not run: the existing row chronos2_temperature_calendar passes hour and day
+    of week as categories, which is the nearest registered form. Its context is 8,192
+    hours and its horizon 24 hours; ours are 2,048 and 168. With 2,048 hours most contexts
+    contain no holiday, so the holiday column of the two-column row usually holds the
+    fallback. The fallback rule and the sine and cosine periods are our choices; the paper
+    does not state them.
+
+# ------------------------------------------------------------------ scoring
+scoring:
+  script: harness/v21.py
+  windows: >
+    Each v2.1 row is scored on exactly the (zone, regime, cutoff) windows protocol-v2 kept
+    (results/v2/windows.parquet, read only). A kept window a v2.1 row did not complete is
+    dropped for that row's comparisons only and listed in dropped_windows.csv.
+  registered_comparisons: >
+    Per zone and regime, ratio of mean window MAE, the protocol's paired whole-week
+    bootstrap (2,000 draws, seed 20261112, 90 percent percentile interval), read against
+    the 10 percent bar with the neutral readings of protocol-v1.3:
+    each v2.1 row vs chronos2_temperature (does the calendar help in this encoding);
+    each v2.1 row vs chronos2_temperature_calendar (does the encoding matter).
+  descriptive: >
+    Not read against the bar: error on US federal holiday hours and on other hours for the
+    six rows (holiday_breakdown.csv); the gap between the best and the worst of the five
+    calendar encodings per zone and regime (encoding_gap.csv).
+  multiplicity: >
+    Eight comparisons per zone and regime, 128 in all, none adjusted. They are reported as
+    a pattern across zones and regimes, not as individual findings.
+  what_it_cannot_show: >
+    Holiday effects are measured on few hours: 12 federal holidays are 3.6 percent of the
+    scored hours. The scored weeks are the 52 of protocol-v1, already seen for the
+    temperature-only and categorical rows; these rows are a follow-up on a known result,
+    not a fresh test.
+
+gate: >
+  Run on the six gate origins before the tag (results/gate/v21/): every row complete on
+  every window protocol-v2 kept, errors of the same order as chronos2_temperature, tests
+  in tests/test_chronos2_v21.py passing. Then the scored origins once, after the tag.
