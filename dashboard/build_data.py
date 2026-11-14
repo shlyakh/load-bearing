@@ -32,6 +32,7 @@ LABELS = {
     "timesfm25": ("TimesFM 2.5, no weather", "fm", "univariate"),
     "timesfm25_temperature": ("TimesFM 2.5 + temperature", "fm", ""),
     "timestral_temperature": ("Timestral + temperature", "flagged", "not out-of-sample"),
+    "timesfm3_temperature": ("TimesFM 3.0 + temperature", "flagged", "not out-of-sample; non-commercial weights"),
 }
 
 

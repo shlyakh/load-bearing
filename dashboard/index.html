@@ -364,7 +364,7 @@ a { color: var(--model); }
     <svg id="board" role="img" aria-label="Error ratio of each model against the regression with temperature, DOM and JC side by side"></svg>
     <p class="note" id="board-caption"></p>
   </div>
-  <p class="note">Dots left of 1 beat the regression with temperature. "Analysed weather" is the series these results first called actual weather; it is an ECMWF IFS analysis, not ERA5 reanalysis (see the Weather tab). Models without weather give the same forecast under either weather setting. The grey diamond row was scored on weeks the model may have been trained on.</p>
+  <p class="note">Dots left of 1 beat the regression with temperature. "Analysed weather" is the series these results first called actual weather; it is an ECMWF IFS analysis, not ERA5 reanalysis (see the Weather tab). Models without weather give the same forecast under either weather setting. The grey diamond rows were scored mostly on weeks the model may have been trained on: TimesFM 3.0 (8 of 48 weeks start after its weights; non-commercial weights) and Timestral (1 of 48).</p>
   <div class="panel stack">
     <div class="controls"><span class="note">Values for</span><div class="seg" id="lb-zone" role="group" aria-label="Zone shown in the table"></div><span class="note" id="board-table-regime"></span></div>
     <div class="scroll"><table id="board-table"></table></div>
@@ -655,7 +655,7 @@ a { color: var(--model); }
     { tab: "methods", at: "section[data-tab='methods'] table", ms: 5000, text: "Every method gets the same history and the same temperature. The regression with temperature is the first baseline." },
     { tab: "receipt", at: "#receipt", ms: 7500, text: "A study found a tie in Great Britain: " + tourNum.claim + ". Against our first baseline we measured " + tourNum.prim + " on DOM. Against the field's standard benchmark it is " + tourNum.std + ": close to a tie again." },
     { tab: "newzones", at: "#v2-primary", ms: 8000, text: "The fresh test: two zones no model had been run on, with the rules fixed in advance. Chronos-2 against the standard benchmark: " + tourNum.v2("AEP") + " on AEP and " + tourNum.v2("AE") + " on AE. No clear lead." },
-    { tab: "leaderboard", at: "#board", ms: 6500, text: "Every model against the same baseline, DOM and JC side by side. Timestral, the grey diamond, was published after most test weeks, so it may have seen them." },
+    { tab: "leaderboard", at: "#board", ms: 6500, text: "Every model against the same baseline, DOM and JC side by side. The grey diamonds, Timestral and TimesFM 3.0, were published after most test weeks, so they may have seen them." },
     { tab: "weather", at: "#wx-ratio", ms: 7500, text: "With better weather forecasts the regressions catch up. Against the field's standard benchmark the model is level under every source (" + tourNum.min + " to " + tourNum.max + "); on DOM it goes from " + tourNum.gfs + " with GFS weather to " + tourNum.era5 + " with perfect weather." },
     { tab: "candidates", at: "#cands", ms: 6000, text: "The scan agent reads arXiv, Hugging Face and Zenodo, and keeps new claims that cite a primary source.", act: () => type("#cand-q", "PJM", 2600) },
     { tab: "agents", at: "#flow-weekly", ms: 5000, text: "Find, judge, run, receipt: from a new claim to a measured answer, with every source cited." }
@@ -1076,7 +1076,7 @@ a { color: var(--model); }
     { title: "Pretrained, with temperature", kind: "fm", models: ["chronos2_temperature_gap48", "timesfm25_temperature"] },
     { title: "Classical, with temperature", kind: "classical", models: ["lag_regression_temperature", "lightgbm_temperature", "vanilla_benchmark_trend", "vanilla_benchmark"] },
     { title: "No temperature input", kind: "noweather", models: ["chronos2", "timesfm25", "lag_regression", "seasonal_naive"], rule: true },
-    { title: "Not out-of-sample", kind: "flagged", models: ["timestral_temperature"], rule: true }
+    { title: "Not out-of-sample", kind: "flagged", models: ["timesfm3_temperature", "timestral_temperature"], rule: true }
   ];
   const famOf = {}; FAM.forEach(f => f.models.forEach(m => famOf[m] = f));
   const LOOK = {
