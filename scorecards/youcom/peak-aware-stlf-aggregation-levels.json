@@ -1,0 +1,241 @@
+{
+ "candidate_id": "peak-aware-stlf-aggregation-levels",
+ "title": "Peak-Aware Short-Term Load Forecasting Across Distribution Grid Aggregation Levels",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2609.18588",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T19:01:12Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2609.18588",
+   "kind": "arxiv",
+   "paraphrase": "Full text, v1 of 16 Sep 2026. Day-ahead forecasts (48 half-hour steps, issued at midnight) of per-meter demand for 115 Swiss postal-code areas, 387 UK substations and 485 UK LV feeders, scored 1 Mar 2024 to 28 Feb 2025 overall and on high-demand timestamps. Two same-time averages, LightGBM, XGBoost, Chronos-Bolt and Chronos-2; the Chronos rows use a tuned upper quantile. No code named.",
+   "evidence_id": "e25f6ec3d939"
+  },
+  {
+   "url": "https://arxiv.org/abs/2609.18588",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page: one version, 16 Sep 2026, 5 pages, accepted at IEEE PES ISGT Europe 2026. Headline: Chronos-2 has the lowest high-demand NMAE and MAPE at all three aggregation levels, about 20 to 51% below LightGBM and XGBoost on high-demand NMAE, and is best or near-best overall. The page links no code or data.",
+   "evidence_id": "658104fd1d3a"
+  },
+  {
+   "url": "https://huggingface.co/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the central model: 120M-parameter encoder-only model giving zero-shot quantile forecasts, with native past and known-future covariates, context up to 8192 steps, prediction length up to 1024, CPU inference supported.",
+   "evidence_id": "f090fb358b2c"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the Chronos-2 weights repository: licence tag apache-2.0, created 30 Oct 2025, head 29ec376 last modified 5 Jun 2026.",
+   "evidence_id": "d33d62d68de3"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the Chronos-2 weights repository: weights and config added on 30 Oct 2025 (commit 95a9710); the nine later commits are README, tag or deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Chronos-2 has the lowest high-demand NMAE at all three aggregation levels, about 20 to 51% below LightGBM and XGBoost, while staying best or near-best on the overall metrics (the headline as the abstract states it; the value is the upper end of the range).",
+   "metric": "HD-NMAE reduction vs boosted trees (%), range over three levels",
+   "value": 51.0,
+   "dataset": "CKW (Switzerland) postal-code areas and Northern Powergrid (UK) substations and LV feeders, 30-minute per-meter demand, 1 Mar 2024 to 28 Feb 2025",
+   "horizon": "24 hours (48 half-hour steps), issued daily at midnight",
+   "baseline": "LightGBM and XGBoost with calendar, holiday and weather features, trained once per season on a fixed 90-day block",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 1
+  },
+  {
+   "text": "Area-code level: Chronos-2 (quantile 0.65) has mean HD-NMAE 0.039 against 0.080 for LightGBM and for XGBoost, 51% lower; the 7-day same-time average has 0.059.",
+   "metric": "HD-NMAE",
+   "value": 0.039,
+   "dataset": "115 CKW postal-code areas, about 41,000 daily forecasts",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "LightGBM and XGBoost, HD-NMAE 0.080 (7-day same-time average 0.059)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Substation level: Chronos-2 (quantile 0.70) has mean HD-NMAE 0.080 against 0.113 for LightGBM and for XGBoost, 29% lower; the 7-day same-time average has 0.117.",
+   "metric": "HD-NMAE",
+   "value": 0.08,
+   "dataset": "387 Northern Powergrid secondary substations, about 141,000 daily forecasts",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "LightGBM and XGBoost, HD-NMAE 0.113 (7-day same-time average 0.117)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "LV-feeder level: Chronos-2 (quantile 0.70) has mean HD-NMAE 0.138 against 0.173 for LightGBM and for XGBoost, 20% lower; the 7-day same-time average has 0.199.",
+   "metric": "HD-NMAE",
+   "value": 0.138,
+   "dataset": "485 Northern Powergrid LV feeders, about 177,000 daily forecasts",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "LightGBM and XGBoost, HD-NMAE 0.173 (7-day same-time average 0.199)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Area-code level: Chronos-2 has HD-MAPE 4.53% against 9.10% for XGBoost and 9.11% for LightGBM.",
+   "metric": "HD-MAPE (%)",
+   "value": 4.53,
+   "dataset": "115 CKW postal-code areas",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "XGBoost, HD-MAPE 9.10% (7-day same-time average 6.84%)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Substation level: Chronos-2 has HD-MAPE 9.45% against 13.20% for XGBoost and 13.19% for LightGBM.",
+   "metric": "HD-MAPE (%)",
+   "value": 9.45,
+   "dataset": "387 Northern Powergrid secondary substations",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "XGBoost, HD-MAPE 13.20% (7-day same-time average 13.54%)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "LV-feeder level: Chronos-2 has HD-MAPE 16.14% against 20.02% for XGBoost and 20.07% for LightGBM.",
+   "metric": "HD-MAPE (%)",
+   "value": 16.14,
+   "dataset": "485 Northern Powergrid LV feeders",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "XGBoost, HD-MAPE 20.02% (7-day same-time average 22.81%)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Area-code level, all timestamps: Chronos-2 has the lowest NMAE, 0.042, against 0.051 for Chronos-Bolt, 0.055 for the 7-day same-time average and 0.081 for XGBoost (48.1% lower than XGBoost).",
+   "metric": "NMAE",
+   "value": 0.042,
+   "dataset": "115 CKW postal-code areas",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "XGBoost, NMAE 0.081 (7-day same-time average 0.055)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Substation level, all timestamps: Chronos-2 ties the 7-day same-time average on NMAE at 0.074 (trees 0.098), and is behind that average on overall MAPE (15.81% against 14.96%).",
+   "metric": "NMAE",
+   "value": 0.074,
+   "dataset": "387 Northern Powergrid secondary substations",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "7-day same-time average, NMAE 0.074 (LightGBM and XGBoost 0.098)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "LV-feeder level, all timestamps: Chronos-2 has NMAE 0.094, 3.3% above the 7-day same-time average (0.091) and below the trees (0.115 and 0.117); its overall MAPE is 22.80% against 20.64% for the average.",
+   "metric": "NMAE",
+   "value": 0.094,
+   "dataset": "485 Northern Powergrid LV feeders",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "7-day same-time average, NMAE 0.091 (LightGBM 0.115)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "LV-feeder level: Chronos-2's HD-NMAE is 30.7% below the best competing model on overall error, which is the 7-day same-time average (0.138 against 0.199); the conclusion generalises this to about 30% lower high-demand error than the best non-Chronos models.",
+   "metric": "HD-NMAE reduction vs 7-day same-time average (%)",
+   "value": 30.7,
+   "dataset": "485 Northern Powergrid LV feeders",
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "7-day same-time average, HD-NMAE 0.199",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Median CPU inference time for one 24-hour Chronos-2 forecast is 9.8 seconds (0.2 seconds on an A100 GPU); Chronos-Bolt takes 1.3 seconds on CPU.",
+   "metric": "median CPU inference time per 24-hour forecast (s)",
+   "value": 9.8,
+   "dataset": null,
+   "horizon": "24 hours (48 half-hour steps)",
+   "baseline": "Chronos-Bolt, 1.3 s on CPU",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 2,
+  "rationale": "Electric load, but at half-hour steps, per meter, and at distribution level: postal-code areas, secondary substations and LV feeders, all far below a PJM zone; the area-code level is the nearest and is where the paper's lead is largest. Scored 3 as for the other feeder-level load studies judged. The horizon is day-ahead from midnight, so 2. Weather is in the study (five Open-Meteo variables over the horizon, feels-like temperature among them) but only as features of the boosted trees; the Chronos models, including the central one, are described as forecasting from history alone, so covariates_match is 2, between the scale's 3 and 1, and not because other covariates were used. The paper does not say whether the weather is observed or forecast. What it adds to our benchmark is the scoring, not the model: error on high-demand hours, which our leaderboard does not report."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: Chronos-2, the model of the headline claim; Chronos-Bolt, LightGBM, XGBoost and the two same-time averages are the comparison. pre_registered: neither the abstract page nor the full text mentions a plan or registration. training_overlap_risk is about our run: the Chronos-2 weights were committed on 2025-10-30 (commit list fetched; later commits are README or guide edits by their titles), before our first scored week (2025-11-10), so all 52 weeks come after. Separately, the paper's own test year (Mar 2024 to Feb 2025) lies before Chronos-2's release and the paper does not discuss whether the CKW or Northern Powergrid data could be in its pretraining corpus; the model card lists the corpus only at collection level, so this was not settled. independent_replication: one research call and two searches found no rerun on these data, no author repository and no results files. A different group's LV-feeder study (arXiv 2607.01966, abstract page only) also puts Chronos-2 ahead with a peak-oriented metric, on other data and another design: agreement in direction, not a replication. evidence_strength is weak: numbers without code, predictions or results files (the two data portals are public, but entity selection, per-meter normalisation and the validation subset would have to be rebuilt), and only mean and standard deviation across entities, no intervals or tests; the test window is a full year, which is its one strength. Points where the headline is stronger than the paper. (1) The Chronos rows are not medians: an upper quantile (0.65 or 0.70) was picked per level on a validation set by a rule that itself looks at high-demand error, while the trees give one untuned point forecast. High-demand timestamps are defined from the actual load, so a forecast shifted upward is favoured on them by construction; Chronos-2's non-HD NMAE and overall MAPE are indeed worse than the 7-day average at substation and feeder level. The paper reports no median row, so how much of the 20 to 51% is the model and how much the quantile cannot be told. (2) The trees are weak baselines: trained once on a fixed earlier 90-day block per season, never retrained, and worse than a plain 7-day same-time average on overall NMAE at every level and on HD-NMAE at area level. Against the 7-day average Chronos-2's HD-NMAE lead is 34, 32 and 31% by level. (3) 'Best or near-best overall' holds for NMAE (best, tied, 3.3% behind) but not for overall MAPE at feeder level (22.80 against 20.64%). (4) Inputs differ in both directions: the trees get calendar, holiday and weather features, Chronos-2 gets 90 days of history and, as described, no covariates; baseline_same_inputs is therefore 'no' for the tree rows and 'partly' for the same-time averages (history only, shorter). Not verified: figures were read from the HTML rendering, not the PDF; the percentages 51, 29 and 20 are our arithmetic from the table means; that Chronos-2 ran without covariates is inferred from the protocol paragraph, the paper never says so outright; the CKW and Northern Powergrid portals were not opened (the Zenodo record the research call gave as an archive of the CKW data holds single-meter samples of dataset A, not the aggregated dataset B the paper uses); the published ISGT Europe version was not compared with arXiv v1; the 9.8 s CPU time is the paper's, on unstated hardware. The research call gave Chronos-2's release as 20 Oct 2025 from the GitHub README; the Hub repository dates from 30 Oct 2025."
+ },
+ "evidence_strength": "weak",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_RUN",
+ "label_reason": "On target (electric load, day-ahead) with a primary source giving per-level numbers, and its headline comparison, Chronos-2 against LightGBM on high-demand hours, can be re-measured with models we already run; what is new is a high-demand error measure, not a model. The evidence itself is weak: no code or results files, a tuned upper quantile for Chronos-2 against untuned point forecasts from trees that are never retrained and lose to a 7-day average overall.",
+ "implementation_hint": "Central model: amazon/chronos-2 (Apache-2.0, weights committed 2025-10-30), direct_adapter, models/chronos2.py at the pinned revision. Comparison model: our LightGBM row (lightgbm_temperature), retrained per cutoff, a stronger baseline than the paper's. The transfer test is a scoring step over forecasts the harness already produces: mark high-demand hours per zone with the paper's rule (actual load at or above 0.8 of the 99th percentile of the previous 14 days), then compute MAE on those hours and on all hours for Chronos-2 and LightGBM, per zone and regime, with the error ratio against the temperature-only regression alongside. Nearest to the paper's inputs is Chronos-2 on load history only against LightGBM with temperature; Chronos-2 with temperature is our like-for-like row and should be reported separately. Two choices must be fixed before any scored week is read: the high-demand rule, and the quantile. Our adapter stores quantiles 0.1, 0.5 and 0.9, so the median can be scored from existing files; the paper's 0.65 to 0.70 needs a rerun with those levels, and should then be shown next to the median so the quantile effect is visible. This is a new metric on protocol-v1 forecasts: a secondary result, recorded as a new protocol version with a line in DEVIATIONS.md. Differences to keep in view: 24 hours at half-hour steps issued daily against 168 hours once a week (day 1 of our horizon is the closest slice); per-meter feeder, substation and area series against two PJM zones; five weather variables of unstated origin for the trees against temperature in two regimes; NMAE on a rolling 14-day scale against our error ratio.",
+ "receipt": {
+  "claimed": "The paper reports Chronos-2, forecasting from load history with a tuned upper quantile (0.65 to 0.70), as having the lowest error on high-demand timestamps at all three distribution levels, day-ahead: HD-NMAE about 20 to 51% below LightGBM and XGBoost (0.039 against 0.080 for postal-code areas, 0.080 against 0.113 for substations, 0.138 against 0.173 for LV feeders) over a one-year test, while best or near-best on overall NMAE.",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 1.342,
+    "ci90": [
+     1.173,
+     1.528
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 1.088,
+    "ci90": [
+     0.939,
+     1.241
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 1.724,
+    "ci90": [
+     1.515,
+     1.955
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 1.214,
+    "ci90": [
+     1.04,
+     1.396
+    ]
+   }
+  ],
+  "horizon_mismatch": "The claim is day-ahead (48 half-hour steps, issued daily at midnight) for per-meter demand of Swiss postal-code areas and UK substations and LV feeders; ours is week-ahead (168 h, weekly) for two PJM zones. The claim's measure is error on high-demand timestamps (HD-NMAE); our results hold no high-demand measure, so what is measured here is MAE over all hours, which the paper claims only as best or near-best. The paper's Chronos-2 rows use a tuned upper quantile; our row is the median at library defaults, context 2,048 h. The paper's baselines are LightGBM and XGBoost trained once per season with calendar, holiday and weather features of unstated origin; the receipt's baseline is the temperature-only regression, refitted per cutoff. The measured row is Chronos-2 on load history only (univariate), as the paper describes its Chronos runs, so the baseline has temperature and the model does not; Chronos-2 with temperature and LightGBM are separate leaderboard rows. The verdict is read in the forecast regime.",
+  "n_windows": 48,
+  "n_windows_after_weights": 48,
+  "verdict": "partially"
+ }
+}

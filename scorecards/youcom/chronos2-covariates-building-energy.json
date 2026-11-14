@@ -1,0 +1,119 @@
+{
+ "candidate_id": "chronos2-covariates-building-energy",
+ "title": "The Impact of Covariates on Zero-Shot Building Energy Forecasting Using Chronos-2 Foundation Model",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://doi.org/10.3390/electronics15153474",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T18:59:41Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://doi.org/10.3390/electronics15153474",
+   "kind": "docs",
+   "paraphrase": "Journal article (Electronics 15(15) 3474, 6 Aug 2026, open access). Zero-shot Chronos-2 on the summed hourly electricity of two office and laboratory buildings at one site, day-ahead, 177 scored days, seven covariate set-ups: day type as past and future covariate is best; weather, with future values from archived forecasts, adds little. Data not public; no code linked.",
+   "evidence_id": "909e8a846803"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the Chronos-2 weights repository: licence apache-2.0, created 30 Oct 2025, head 29ec376 last modified 5 Jun 2026, about 119.5M parameters.",
+   "evidence_id": "d33d62d68de3"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit list of the Chronos-2 weights repository: weights and config added on 30 Oct 2025 (commit 95a9710); every later commit is a README, tag or deployment-guide edit by its title.",
+   "evidence_id": "d67e199eeeac"
+  }
+ ],
+ "claims": [
+  {
+   "text": "With a 28-day context, giving Chronos-2 the day type (working day, weekend or holiday, site closure) as a past and future covariate lowers mean daily CV-RMSE from 14.58% (no covariates) to 10.41% (the headline as the abstract states it).",
+   "metric": "CV-RMSE (%), mean over test days",
+   "value": 10.41,
+   "dataset": "summed hourly electricity of two non-residential buildings, ENEA Portici; test 8 Jul 2024 to 15 Jan 2025, 177 scored days",
+   "horizon": "24 hours (hourly steps), issued daily",
+   "baseline": "Chronos-2 with no covariates, CV-RMSE 14.58%",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 192,
+   "citation_idx": 0
+  },
+  {
+   "text": "The same comparison in MAPE: 6.75% with day type as past and future covariate against 9.33% with no covariates, 28-day context.",
+   "metric": "MAPE (%), mean over test days",
+   "value": 6.75,
+   "dataset": "the same two-building series and test days",
+   "horizon": "24 hours (hourly steps), issued daily",
+   "baseline": "Chronos-2 with no covariates, MAPE 9.33%",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 192,
+   "citation_idx": 0
+  },
+  {
+   "text": "Weather covariates (six variables, future values from archived forecasts) add little: weather alone is about equal to or slightly worse than no covariates, and weather plus day type does not beat day type alone (Holm-corrected p at least 0.32 on changeover days). Replacing the archived forecasts with observed weather gives no significant change on the 177 paired days.",
+   "metric": null,
+   "value": null,
+   "dataset": "the same two-building series and test days",
+   "horizon": "24 hours (hourly steps), issued daily",
+   "baseline": "Chronos-2 with day type only, and Chronos-2 with no covariates",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 192,
+   "citation_idx": 0
+  },
+  {
+   "text": "The gain sits on days whose type differs from the day before; on stable days the two set-ups cannot be told apart. Largest case: the first working day after a closure, CV-RMSE 86.88% without covariates against 22.21% with future day type (28-day context).",
+   "metric": "CV-RMSE (%), closure-to-working-day transitions",
+   "value": 22.21,
+   "dataset": "test days that follow a site closure with a working day (number of days not seen)",
+   "horizon": "24 hours (hourly steps)",
+   "baseline": "Chronos-2 with no covariates, CV-RMSE 86.88%",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Chronos-2 with no covariates already beats both reference methods: weekly seasonal naive has CV-RMSE 31.75% (MAPE 22.24%).",
+   "metric": "CV-RMSE (%), weekly seasonal naive",
+   "value": 31.75,
+   "dataset": "the same two-building series and test days",
+   "horizon": "24 hours (hourly steps), issued daily",
+   "baseline": "weekly seasonal naive against Chronos-2 with no covariates (14.58%)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 192,
+   "citation_idx": 0
+  },
+  {
+   "text": "A calendar lookup (median hourly profile of the target day type, from the training year) has CV-RMSE 19.25% (MAPE 12.57%), against 10.41% for Chronos-2 with the same day type.",
+   "metric": "CV-RMSE (%), day-type template",
+   "value": 19.25,
+   "dataset": "the same two-building series and test days",
+   "horizon": "24 hours (hourly steps), issued daily",
+   "baseline": "day-type median template against Chronos-2 with day type (10.41%)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 192,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load, scored 3 as for the other building study judged, but at the scale of two buildings (peaks near 200 kW) on one research campus, far below a PJM zone and with a work or closure schedule a zone does not have. Day-ahead (24 h, issued daily) against our week ahead. Weather is a known-future input and its future values come from archived forecasts, which is our forecast regime; the paper also swaps in observed weather, which is our oracle regime. The model is the one in our primary comparison. Its question, whether the calendar or the weather carries Chronos-2's covariate gain, is one our benchmark can ask with rows it already has or can add."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: amazon/chronos-2, the only model in the study. pre_registered: the article mentions no plan or registration. training_overlap_risk is about our run: the weights were committed on 2025-10-30 (commit list fetched; later commits are README or guide edits by their titles), before our first scored week (2025-11-10). The paper gives no weights revision; its test period (Jul 2024 to Jan 2025) precedes the release, and whether these private building data could be in pretraining is not something the paper addresses (they are not public). independent_replication: one research call and two searches found no rerun or dispute of this study and no code or data by its authors. Related work by other groups, read from research snippets only and not fetched: an office-building study where zero-shot Chronos-2 gains from a holiday encoding on electrical load (MAE 1.17 to 1.09) and much more from covariates on cooling demand; a German TSO study where covariates lower Chronos-2 MAE by 27% with holiday, temperature and irradiance all contributing; a benchmark where Chronos-2 loses its lead under very noisy future covariates. These agree that the calendar helps and suggest the 'weather adds little' result is specific to these buildings, as the authors themselves say; none is a replication. evidence_strength is weak by the spec's rule: the test window (192 days, 177 scored) is over the minimum and the within-model comparison has matched inputs with paired tests, but the data are private and no code is published, so the numbers cannot be reproduced. Points where the abstract is stronger than the paper: against no covariates the day-type gain is significant after Holm correction at 7, 14 and 21 days but not at the 28-day window of the headline (p 0.077); it comes from changeover days only; 10.6% of hours are imputed from day-type templates and 46% of 28-day contexts contain imputed hours, so the context partly carries the same day-type information the covariate adds; there is no tuned classical baseline and no weather regression, so nothing here speaks to a temperature-only regression. baseline_same_inputs is 'partly' for the template (same day type, no load history). Not verified: the fetched text lacks the cells of Tables 2 to 5 and the heatmaps, so the CV-RMSE of the weather-only and weather-plus-day-type set-ups, the paired differences with their 95% intervals (no ci90 recorded for that reason) and the observed-versus-forecast weather table were not seen, and the weather claim carries no number; the PDF was not opened; the lead time of the archived weather forecasts is not stated in the text seen; the publication date (6 Aug 2026) is from search results, not the page; the research call gave Chronos-2's release as 20 Oct 2025 from the GitHub README, the Hub weights date from 30 Oct 2025."
+ },
+ "evidence_strength": "weak",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_RUN",
+ "label_reason": "Relevant (hourly electric load, Chronos-2 with known-future covariates, weather taken from archived forecasts as in our forecast regime) with a full-text primary source, and its headline comparison, the same model with and without calendar and weather covariates, can be re-measured now with our Chronos-2 adapter. The evidence is weak by the spec's rule (private data, no code, one site, headline window not significant after correction) and the setup is day-ahead at building scale, so the run tests whether 'the calendar carries the gain, weather adds little' transfers to week-ahead zonal load.",
+ "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, pinned revision 29ec376, Apache-2.0). Rows that already exist: chronos2 (no covariates; AEP and AE only), chronos2_temperature and chronos2_temperature_calendar (all four zones, both regimes). Missing for the paper's design: a calendar-only arm (the harness calendar as past and future covariate, no temperature), which is the paper's best set-up, and the no-covariate row on JC and DOM. With those, the 2x2 (none, temperature, calendar, both) is read per zone and regime, with holiday weeks apart from ordinary weeks and their count stated, since the paper's gain is on day-type changes. New rows are secondary and need a protocol version and a DEVIATIONS.md line; gate first, score once. Differences to keep in view: 24 hours issued daily against 168 hours once a week; two buildings against a zone; a three-state day type with site closures against hour, day of week, holiday and year-end; six weather variables against temperature only; context of 7 to 28 days against 2,048 hours, which already shows the model many weekly cycles; CV-RMSE and MAPE averaged per day against our error ratio. Expect the opposite sign on weather: zonal load is weather-driven, so 'weather adds little' is the part least likely to transfer, and the receipt should report the calendar and weather halves separately.",
+ "receipt": null
+}

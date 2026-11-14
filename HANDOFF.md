@@ -100,6 +100,14 @@ Waiting on Yuri:
   `timesfm3_temperature`: gate first, scored once, 8 of 48 weeks after the weights,
   non-commercial weights (`DEVIATIONS.md`). Forecast weather against the temperature-only
   regression: DOM 0.70 (0.65 to 0.77), JC 0.76 (0.65 to 0.88). Spend $123.75; cap $250.
+- **State at 14:10:** 25 claims judged with You.com, 11 with receipts (6 "partially", 5
+  "untestable"); 6 judged with both providers, same label on all 6. Spend $147.09, cap
+  $250. protocol-v2.1 (four Chronos-2 calendar-encoding rows) frozen, tagged and scored
+  once: no encoding makes the calendar help (`results/README.md`, last section; panel on
+  the dashboard's New zones tab). The two seed-list domain groups were removed from
+  `spec.yaml`. Dashboard has a You.com tab; the tour has 11 steps including it.
+  Narrated video: `tools/make_video.py --backend openai` writes
+  `video/out/receipts_demo.mp4` (git-ignored); OpenAI key in `.env`.
 - **Repository renamed** to `load-bearing` (Yuri, Nov 14). Dashboard:
   https://shlyakh.github.io/load-bearing/ ; the old Pages address returns 404. The
   local folder is still `receipts`.

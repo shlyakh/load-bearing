@@ -1,0 +1,99 @@
+{
+ "run_id": "20261114T190541_run-candidate_youcom_timesfm3-university-building-day-ahead_fcf6",
+ "skill": "run-candidate",
+ "provider": "youcom",
+ "args": [
+  "timesfm3-university-building-day-ahead"
+ ],
+ "note": "Headless pipeline run. If the model row this scorecard needs is already in results/leaderboard.csv, write the receipt (step 5) and report. If it is not, do NOT download weights, change code or run any model: stop and report which model row is missing and which steps of the skill a person has to run.",
+ "model_requested": null,
+ "provider_tools_allowed": [
+  "mcp__you-com__you-search",
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research"
+ ],
+ "provider_tools_denied": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "mcp_server": {
+  "name": "you-com",
+  "url": "https://api.you.com/mcp?tools=you-search,you-contents,you-research"
+ },
+ "mcp_servers": [
+  {
+   "name": "you-com",
+   "status": "connected"
+  }
+ ],
+ "search_tools_present": [
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research",
+  "mcp__you-com__you-search"
+ ],
+ "git_commit": "1767b12",
+ "started_at": "2026-11-14T19:05:41+00:00",
+ "wall_seconds": 43.2,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "50e5e88d-ef04-4820-b4f8-7a1c84234541",
+ "is_error": false,
+ "num_turns": 6,
+ "total_cost_usd": 0.6350912,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 29326,
+  "cache_read_input_tokens": 159576,
+  "output_tokens": 3347,
+  "output_tokens_details": {
+   "thinking_tokens": 878
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29326,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1393,
+    "cache_read_input_tokens": 39984,
+    "cache_creation_input_tokens": 5430,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5430
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 10,
+   "outputTokens": 3347,
+   "cacheReadInputTokens": 159576,
+   "cacheCreationInputTokens": 29326,
+   "webSearchRequests": 0,
+   "costUSD": 0.6350912,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 878,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 29326,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Read": 2,
+  "Bash": 3
+ }
+}

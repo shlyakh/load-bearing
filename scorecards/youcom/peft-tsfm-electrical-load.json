@@ -1,0 +1,214 @@
+{
+ "candidate_id": "peft-tsfm-electrical-load",
+ "title": "Parameter-Efficient Adaptation of Time Series Foundation Models for Electrical Load Forecasting",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2610.28200",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T18:56:31Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2610.28200v2",
+   "kind": "arxiv",
+   "paraphrase": "Full text, v2 of 24 Oct 2026. Hourly load at country, region, city and building level from three public datasets; chronological 80/10/10 split, context 2048 h, horizon 96 h, stride 96 h; temperature as a future covariate at city and building level only. MOIRAI 1.0 Large and Chronos-2, pretrained, fine-tuned and with LoRA, against seasonal naive and XGBoost. No code named.",
+   "evidence_id": "7f8a04530ba7"
+  },
+  {
+   "url": "https://arxiv.org/abs/2610.28200",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page: v1 20 Oct 2026, v2 24 Oct 2026, accepted at IEEE PESS 2026 (6 pages). Headline: pretrained models beat the implemented seasonal naive and XGBoost baselines at all four levels, and rank-16 LoRA on MOIRAI Large lowers NMAE by 7.5% on average with about 1% of the weights trained. The page links no code or data.",
+   "evidence_id": "6af3f61f0401"
+  },
+  {
+   "url": "https://huggingface.co/Salesforce/moirai-1.0-R-large",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the study's primary backbone: 311M-parameter masked-encoder transformer pretrained on LOTSA, run through the uni2ts library, with support for covariates known over the horizon. The card describes the release as research-only.",
+   "evidence_id": "faee33c7b814"
+  },
+  {
+   "url": "https://huggingface.co/api/models/Salesforce/moirai-1.0-R-large",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the MOIRAI 1.0 Large weights repository: licence tag cc-by-nc-4.0, created 11 Feb 2024, head b6b84e3 last modified 21 Jan 2025.",
+   "evidence_id": "e30e98172f37"
+  },
+  {
+   "url": "https://huggingface.co/api/models/Salesforce/moirai-1.0-R-large/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the MOIRAI 1.0 Large weights repository: checkpoint added 13 Feb 2024, the last commit that may touch the weights by its title is from 22 Aug 2024, and the head (21 Jan 2025) is a README edit. All commits precede November 2025.",
+   "evidence_id": "1d3fbfa0efe9"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the Chronos-2 weights repository (the study's second model): weights and config added on 30 Oct 2025 (commit 95a9710); later commits are README, tag or deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Pretrained MOIRAI and Chronos-2 beat the implemented seasonal naive and XGBoost baselines at all four load aggregation levels, and rank-16 LoRA on MOIRAI 1.0 Large lowers NMAE by 7.5% on average while training 3.146 million weights, about 1% of the model (the headline as the abstract states it).",
+   "metric": "NMAE reduction vs pretrained (%), mean of four levels",
+   "value": 7.5,
+   "dataset": "84 series after filtering: 10 national, 13 regional, 25 city or market-zone (3 of them Tetouan), 36 building; hourly, 2016-2025; last 10% of each",
+   "horizon": "96 hours (hourly steps), stride 96 hours",
+   "baseline": "pretrained MOIRAI 1.0 Large, no adaptation",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "Region level: pretrained MOIRAI Large has mean NMAE 0.0463 against 0.0933 for XGBoost and 0.1198 for weekly seasonal naive.",
+   "metric": "NMAE",
+   "value": 0.0463,
+   "dataset": "13 regional or system-level load series, last 10% of each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "recursive XGBoost on load lags 1, 24, 168, 336 h, NMAE 0.0933 (seasonal naive 0.1198)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Country level: pretrained MOIRAI Large has mean NMAE 0.0383 against 0.0696 for XGBoost and 0.1098 for weekly seasonal naive.",
+   "metric": "NMAE",
+   "value": 0.0383,
+   "dataset": "10 national load series, last 10% of each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "recursive XGBoost on load lags, NMAE 0.0696 (seasonal naive 0.1098)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "City level: pretrained MOIRAI Large has mean NMAE 0.0622 against 0.1011 for XGBoost and 0.1854 for weekly seasonal naive; temperature over the horizon is an input here.",
+   "metric": "NMAE",
+   "value": 0.0622,
+   "dataset": "22 local market zones and 3 Tetouan zones, last 10% of each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "recursive XGBoost on load lags and temperature, NMAE 0.1011 (seasonal naive 0.1854)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Building level: pretrained MOIRAI Large has mean NMAE 0.0752 against 0.1432 for XGBoost and 0.1843 for weekly seasonal naive; temperature over the horizon is an input here.",
+   "metric": "NMAE",
+   "value": 0.0752,
+   "dataset": "36 educational and office buildings (Building Data Genome 2), last 10% of each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "recursive XGBoost on load lags and temperature, NMAE 0.1432 (seasonal naive 0.1843)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Region level: rank-16 LoRA lowers MOIRAI Large's NMAE by 12.5%, from 0.0463 to 0.0405; full fine-tuning by 13.8%, to 0.0399.",
+   "metric": "NMAE reduction vs pretrained (%)",
+   "value": 12.5,
+   "dataset": "13 regional or system-level load series, last 10% of each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "pretrained MOIRAI 1.0 Large, NMAE 0.0463",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Country level: rank-16 LoRA lowers MOIRAI Large's NMAE by 10.7%, from 0.0383 to 0.0342; full fine-tuning by 12.0%, to 0.0337.",
+   "metric": "NMAE reduction vs pretrained (%)",
+   "value": 10.7,
+   "dataset": "10 national load series, last 10% of each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "pretrained MOIRAI 1.0 Large, NMAE 0.0383",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "City level: rank-16 LoRA lowers MOIRAI Large's NMAE by 6.3%, from 0.0622 to 0.0583; full fine-tuning by 10.1%, to 0.0559.",
+   "metric": "NMAE reduction vs pretrained (%)",
+   "value": 6.3,
+   "dataset": "22 local market zones and 3 Tetouan zones, last 10% of each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "pretrained MOIRAI 1.0 Large, NMAE 0.0622",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Building level: rank-16 LoRA and full fine-tuning each lower MOIRAI Large's NMAE by only 0.8%, from 0.0752 to 0.0746.",
+   "metric": "NMAE reduction vs pretrained (%)",
+   "value": 0.8,
+   "dataset": "36 educational and office buildings (Building Data Genome 2), last 10% of each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "pretrained MOIRAI 1.0 Large, NMAE 0.0752",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Pretrained Chronos-2 has lower NMAE than pretrained MOIRAI Large at every level: 0.0698, 0.0511, 0.0388 and 0.0332 for building, city, region and country.",
+   "metric": "NMAE (region level)",
+   "value": 0.0388,
+   "dataset": "the same in-distribution test sets; region level shown as the value",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "pretrained MOIRAI 1.0 Large, NMAE 0.0463 at region level",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Chronos-2 gains less from adaptation: LoRA lowers its NMAE by 4.2% on average (4.6, 5.9, 3.1 and 3.3% by level) with the best rank per level chosen on the test set, and full fine-tuning by 1.8% on average.",
+   "metric": "NMAE reduction vs pretrained (%), mean of four levels",
+   "value": 4.2,
+   "dataset": "the same in-distribution test sets",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "pretrained Chronos-2",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "On eight held-out series, LoRA lowers Chronos-2's mean NMAE from 0.0636 to 0.0504, mostly from one local-area series (0.0459 to 0.0207) and three buildings; the pretrained model stays best on two buildings, and the national (Ireland) and regional (Denmark) series change by about 0.001.",
+   "metric": "NMAE, mean of eight series",
+   "value": 0.0504,
+   "dataset": "eight series excluded from adaptation: one national, one regional, one local area, five Building Data Genome 2 buildings; one year each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "pretrained Chronos-2, mean NMAE 0.0636",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "On the held-out national and regional series, pretrained MOIRAI has NMAE 0.0246 and 0.0456 against 0.0302 and 0.0584 for seasonal naive and 0.0371 and 0.0713 for XGBoost, which is worse than seasonal naive on both.",
+   "metric": "NMAE (Ireland national)",
+   "value": 0.0246,
+   "dataset": "Ireland national load and a Danish regional series, one year each",
+   "horizon": "96 hours (hourly steps)",
+   "baseline": "weekly seasonal naive, NMAE 0.0302 (XGBoost 0.0371)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 2,
+  "rationale": "Hourly electric load, and the regional or system-level series are the same kind of target as our PJM zones; city and building series are far below our aggregation level. The horizon is 96 hours with a 96-hour stride, a multi-day horizon between day-ahead and our week, scored 2 as for the other 96-hour study judged. Temperature over the horizon is a known-future input, as in our setup, but only at city and building level; at country and region level, the levels nearest ours, every model is univariate. covariates_match is therefore 2, between the scale's 3 and 1, and not because other covariates were used. The temperature is observed, not forecast (our oracle regime only). The question itself, whether adapting a pretrained model is worth it over using it as released, is one step beyond what our benchmark measures: we run pretrained models only."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: MOIRAI 1.0 Large, the backbone of the headline number (rank-16 LoRA, 7.5%); Chronos-2 is the study's cross-check. pre_registered: neither the abstract page nor the full text mentions a plan or registration. training_overlap_risk is about our run: the MOIRAI weights repository's commits all date from 13 Feb 2024 to 21 Jan 2025 (commit list fetched), before our first scored week (2025-11-10); which commit last changed the weights file was read from commit titles, not from the file's own history. Chronos-2's weights were committed on 2025-10-30, also before the window. Separately, the paper says MOIRAI's pretraining data includes Building Data Genome 2 subsets, so its own building results may overlap with pretraining; that does not affect a PJM run. independent_replication: one research call and two searches found no rerun, no author repository and no contradicting study of this setup; the related LoRA studies the research call named (building energy, a GPT-style model on grid load, Chronos-2 on ISO New England) use other models and data and are not replications. evidence_strength is weak: the numbers come without code, adapter weights, preprocessed data or results files (the three source datasets are public, but the filtering and split would have to be rebuilt), there are no seeds, intervals or significance tests, and the in-distribution test windows are the last 10% of series of differing length, so their length in days is not stated; only the held-out series are a full year. Points where the abstract is stronger than the paper: the 7.5% mean is carried by the region, country and city levels (12.5, 10.7 and 6.3%) and is 0.8% for buildings; Chronos-2's LoRA figures, in-distribution and held-out, use the rank that scored best on the test data, so they are upper bounds; 'LoRA below full fine-tuning' for Chronos-2 rests on that selection. The baselines are weak for our purpose: XGBoost is recursive on four load lags with no calendar features and loses to seasonal naive on the held-out national and regional series, and there is no weather regression. baseline_same_inputs is 'partly' for the XGBoost rows (same series and temperature, but four lags against a 2048-hour context) and 'no' for seasonal naive. Not verified: the figures were read from the values printed in the HTML rendering, not the PDF; the dataset records (Mendeley, UCI, BDG2) were not opened; the licence change from Apache-2.0 to CC BY-NC 4.0 in March 2024 is seen only through a research source's snippet (the fetched commit page had no diff), the current cc-by-nc-4.0 tag is from the Hub record; whether the FoundationForecast Moirai wrapper loads the 1.0 Large checkpoint, takes temperature, or fits the 60-minute CPU limit at 311M parameters was not checked against the installed package (models_ff/run_ff.py does not mention Moirai); the published PESS 2026 version was not compared with arXiv v2. The research call gave Chronos-2's release as 20 Oct 2025 from the GitHub README; the Hub repository dates from 30 Oct 2025."
+ },
+ "evidence_strength": "weak",
+ "license": "CC-BY-NC-4.0",
+ "license_ok_for_commercial": false,
+ "runnable_class": "ff_univariate",
+ "label": "ACCEPT_STAGE3",
+ "label_reason": "On target (hourly load including regional series, a 96-hour horizon) with a primary source giving per-level numbers, but its headline is the gain from LoRA adaptation of MOIRAI 1.0 Large, and re-measuring that needs a fine-tuning pipeline on a GPU, not an adapter: every model we run is used as released. The evidence is thin (no code, seeds or intervals, test-selected ranks for Chronos-2) and the central model's weights are non-commercial.",
+ "implementation_hint": "Central model: Salesforce/moirai-1.0-R-large (cc-by-nc-4.0, flagged non-commercial; weights from Feb to Aug 2024). spec.yaml lists Moirai among the FoundationForecast wrappers as ff_univariate (models_ff/run_ff.py), which would cover the pretrained row only, on load history, after checking that the wrapper loads the 1.0 Large checkpoint and fits the CPU limit. The headline needs stage-3 work: a LoRA trainer (uni2ts for MOIRAI, or the chronos-forecasting fit method with a LoRA config for amazon/chronos-2, Apache-2.0, which our models/chronos2.py adapter runs pretrained only), trained on load before each cutoff or once on data before the scored window, rank fixed in advance (16) so no rank is picked on scored weeks, then the adapted and pretrained models scored against the temperature-only regression. The paper trained on a V100 or A100, so this does not fit the 60-minute CPU limit as described. Runnable today as a secondary reading only: the existing pretrained Chronos-2 rows against the LightGBM and temperature-only regression rows speak to 'pretrained beats tree baselines', with a much stronger baseline than the paper's XGBoost. Differences to keep in view: 96 hours every 96 hours against 168 hours once a week; no temperature at region level against temperature in both regimes; NMAE normalised by the series maximum against our error ratio.",
+ "receipt": null
+}

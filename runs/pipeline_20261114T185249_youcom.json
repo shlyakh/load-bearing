@@ -1,0 +1,138 @@
+{
+ "provider": "youcom",
+ "started_at": "2026-11-14T18:52:49+00:00",
+ "candidates_file": "candidates/merged/scan_2026-11-14.jsonl",
+ "candidates": [
+  {
+   "candidate_id": "timestral",
+   "judge": {
+    "run_id": "20261114T185249_judge_youcom_timestral_3787",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 46,
+    "total_cost_usd": 3.8039411999999997,
+    "wall_seconds": 365.5
+   },
+   "run_candidate": {
+    "run_id": "20261114T190513_run-candidate_youcom_timestral_5f52",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 5,
+    "total_cost_usd": 0.4611106,
+    "wall_seconds": 28.1
+   },
+   "run_candidate_report": "The model row this scorecard needs, `timestral_temperature`, was already on the leaderboard, so I only wrote the receipt into `scorecards/youcom/timestral.json`. No weights were downloaded, no code changed and no model was run.\n\n**Verdict: untestable.** Only 1 of the 48 scored weeks starts after the weights were published (2026-10-15), so the tool does not call it \"transfers\" or \"does not transfer\".\n\n**Claimed:** the publisher reports Timestral-209M first among the pretrained zero-shot models it compared on 15 Oct 2026 on GIFT-Eval, TIME and fev-bench (for example GIFT-Eval MASE 0.6575 against 0.6608 for t0-gamma). It does this from one checkpoint that takes known-future covariates such as weather forecasts.\n\n**Measured:** error ratio of `timestral_temperature` to the temperature-only regression, over 48 weeks.\n\n| Zone | Regime | Error ratio | 90% range |\n|---|---|---|---|\n| DOM | forecast | 0.656 | 0.608 to 0.709 |\n| JC | forecast | 0.698 | 0.599 to 0.802 |\n| DOM | oracle | 0.486 | 0.442 to 0.537 |\n| JC | oracle | 0.543 | 0.468 to 0.631 |\n\nThe per-zone result from the tool is `worth_switching` for both DOM and JC. This is a secondary comparison and does not change the outcome sentence.\n\n**Setup mismatch:** the claim is a rank on general multi-domain benchmarks against other pretrained models, pooled over many horizons, with known-future covariates used on fev-bench only and no load result. Ours is hourly load on two PJM zones, a week ahead (168 h), with temperature as a known-future covariate, against the temperature-only regression.\n\nThe scorecard expected 52 scored weeks with 3 after the weights; the leaderboard rows hold 48 with 1 after, and the receipt uses the leaderboard figures.\n\nNothing is committed: the scorecard, its evidence file and the run metadata are still untracked.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog",
+   "receipt_verdict": "untestable"
+  },
+  {
+   "candidate_id": "timesfm3-university-building-day-ahead",
+   "judge": {
+    "run_id": "20261114T185249_judge_youcom_timesfm3-university-building-day-ahead_2dcc",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 35,
+    "total_cost_usd": 3.3028154,
+    "wall_seconds": 266.3
+   },
+   "run_candidate": {
+    "run_id": "20261114T190541_run-candidate_youcom_timesfm3-university-building-day-ahead_fcf6",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 6,
+    "total_cost_usd": 0.6350912,
+    "wall_seconds": 43.2
+   },
+   "run_candidate_report": "The `timesfm3_temperature` row was already on the leaderboard, so I wrote the receipt without running anything; the verdict is **untestable**. The scorecard validates and is not committed.\n\n**Claimed:** TimesFM 3.0 with 30 covariates has the lowest pooled MAE of 11 configurations on one university building, day-ahead, about 43% below weekly seasonal naive over 57 test days. Against XGBoost with the same covariates the MAE ratio is about 0.89, but the paired 95% interval includes zero, so the authors claim no clear advantage over the tree model.\n\n**Measured:** MAE ratio of TimesFM 3.0 with temperature over the temperature-only regression, 48 windows.\n\n| Zone | Regime | Ratio | 90% range |\n|---|---|---|---|\n| DOM | forecast | 0.703 | 0.647 to 0.766 |\n| JC | forecast | 0.761 | 0.650 to 0.878 |\n| DOM | oracle | 0.590 | 0.529 to 0.659 |\n| JC | oracle | 0.652 | 0.558 to 0.760 |\n\n**Verdict:** untestable, because only 8 of the 48 windows start after the weights (dated 2026-08-24), fewer than half. On the numbers alone, both zones read \"worth switching\" in the forecast regime, which would have been \"transfers\" for a model-better claim.\n\n**Setup mismatch:**\n- **Horizon and target:** the paper is day-ahead (24 h) for one building of about 140 kWh an hour; ours is week-ahead (168 h) for two PJM zones.\n- **Inputs:** the paper uses 30 covariates (calendar and schedule, observed weather, two load lags); ours uses temperature only.\n- **Settings:** the paper uses context up to 8,760 h and settings tuned on 90 validation days; ours uses 2,048 h and library defaults.\n- **Weather:** the paper used observed weather, so the oracle regime is the like-for-like one, while the verdict is read in the forecast regime.\n- **Baseline:** the paper compares against seasonal naive and XGBoost; the receipt's baseline is the temperature-only regression.\n\n**Secondary, not in the receipt:** against `lightgbm_temperature`, our nearest analogue of the paper's XGBoost (LightGBM, not XGBoost), the MAE ratios are point values only, with no interval.\n\n| Zone | Oracle | Forecast |\n|---|---|---|\n| DOM | 0.63 | 0.74 |\n| JC | 0.87 | 0.89 |\n\nThings to know:\n- **Claim kind:** I passed `model_better`, since the headline is lowest MAE against a baseline. The paper's same-inputs comparison with XGBoost is closer to a tie claim; the choice does not change the verdict here, because the weights-date rule decides it.\n- **Window count:** the scorecard's notes say 10 of 52 scored weeks start after the weights, while the leaderboard row carries 8 of 48. The receipt uses the leaderboard figures.\n- **Licence:** the weights are non-commercial, so the row stays flagged.\n- **Covariate finding not measured:** the paper's second finding, that covariates help mainly on holidays, needs a TimesFM 3.0 load-only row, which does not exist. That is a new secondary row under a new protocol version with a `DEVIATIONS.md` line, gate origins first \u2014 a person has to run it.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog",
+   "receipt_verdict": "untestable"
+  },
+  {
+   "candidate_id": "peft-tsfm-electrical-load",
+   "judge": {
+    "run_id": "20261114T185249_judge_youcom_peft-tsfm-electrical-load_3f3f",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 45,
+    "total_cost_usd": 3.2162770000000003,
+    "wall_seconds": 246.5
+   },
+   "label": "ACCEPT_STAGE3",
+   "runnable_class": "ff_univariate",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "chronos2-covariates-building-energy",
+   "judge": {
+    "run_id": "20261114T185655_judge_youcom_chronos2-covariates-building-energy_f9fe",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 38,
+    "total_cost_usd": 2.8576234,
+    "wall_seconds": 218.8
+   },
+   "run_candidate": {
+    "run_id": "20261114T190624_run-candidate_youcom_chronos2-covariates-building-energy_e936",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 6,
+    "total_cost_usd": 0.5839928000000001,
+    "wall_seconds": 31.7
+   },
+   "run_candidate_report": "Stopped at step 1: no receipt written, and no weights downloaded, code changed or model run.\n\n**Missing row:** a calendar-only Chronos-2 arm (the harness calendar as past and future covariate, no temperature). I'll call it `chronos2_calendar`; the name is mine. It is not in `results/leaderboard.csv`, and I found no such row in any other leaderboard under `results/`.\n\nThe paper's headline is day type versus no covariates, and that is its best set-up, so the receipt cannot be written without this arm.\n\n**What already exists:**\n\n| Arm | Row | Where |\n|---|---|---|\n| No covariates | `chronos2` | `results/leaderboard.csv`, JC and DOM, both regimes, 48 windows |\n| Temperature | `chronos2_temperature` | `results/leaderboard.csv`, JC and DOM, both regimes, 48 windows |\n| Temperature + calendar | `chronos2_temperature_calendar` | `results/v21/leaderboard.csv` only, not the main leaderboard |\n| Calendar only | none | missing |\n\nThe scorecard's hint says the no-covariate row is missing on JC and DOM. That is out of date for the main leaderboard, where it is present.\n\n**Steps a person has to run:**\n\n1. **Step 1, adapter.** The scorecard is `direct_adapter`, and the skill says to stop there and not improvise. Someone has to add the calendar-only row to `models/chronos2.py`, reusing the calendar encoding already registered for `chronos2_temperature_calendar` with temperature dropped. It is a secondary row, so it also needs a new protocol version and a dated line in `DEVIATIONS.md`.\n2. **Step 2, weights.** No new download should be needed: the scorecard gives the pinned revision as `29ec376`. Confirm the new row loads at that revision.\n3. **Step 3, gate.** Run the new row on the gate origins, then `uv run --project core python -m harness.score gate`, and check the row is complete and plausible.\n4. **Step 4, score once.** Commit the code, run the row on the scored weeks once, then `harness.score scored` and `harness.stats scored`.\n5. **Step 5, receipt.** Run `tools/receipt.py` on this scorecard. The scorecard asks for the calendar and weather halves to be reported separately, and the tool takes one model and one `--claim-kind` per call, so that probably means two calls or a decision on which half the receipt carries.\n\nOne thing to settle before step 3: the temperature-plus-calendar row lives in the v2.1 results set, while the no-covariate and temperature rows are in the main leaderboard. The 2x2 (none, temperature, calendar, both) needs all four arms on the same windows and protocol version, so decide which set the new row goes into.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "peak-aware-stlf-aggregation-levels",
+   "judge": {
+    "run_id": "20261114T185715_judge_youcom_peak-aware-stlf-aggregation-levels_a041",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 39,
+    "total_cost_usd": 3.5189018,
+    "wall_seconds": 253.8
+   },
+   "run_candidate": {
+    "run_id": "20261114T190656_run-candidate_youcom_peak-aware-stlf-aggregation-levels_7b62",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 6,
+    "total_cost_usd": 0.6472072000000001,
+    "wall_seconds": 43.9
+   },
+   "run_candidate_report": "The receipt is written to `scorecards/youcom/peak-aware-stlf-aggregation-levels.json`, and its verdict is **partially**. It measures all-hours MAE only, because the paper's headline measure (error on high-demand hours) is not in `results/`.\n\nThe model row was already on the leaderboard (`chronos2`, pinned at revision `29ec376`, weights dated 2025-10-30), so nothing was downloaded, changed or run.\n\n**Claimed.** Chronos-2, forecasting from load history with a tuned upper quantile (0.65 to 0.70), has the lowest high-demand error at all three distribution levels, day-ahead. Its HD-NMAE is about 20 to 51% below LightGBM and XGBoost over a one-year test, and it is best or near-best on overall NMAE.\n\n**Measured.** MAE ratio of `chronos2` (load history only, univariate) against the temperature-only regression, 48 weeks, with the 90% range:\n\n| Zone | Regime | Error ratio | 90% range | Per-zone reading |\n|---|---|---|---|---|\n| DOM | forecast | 1.342 | 1.173 to 1.528 | regression clearly better |\n| JC | forecast | 1.088 | 0.939 to 1.241 | inconclusive |\n| DOM | oracle | 1.724 | 1.515 to 1.955 | not read for the verdict |\n| JC | oracle | 1.214 | 1.040 to 1.396 | not read for the verdict |\n\n**Verdict.** Partially: in the forecast regime the claim does not transfer in DOM and is inconclusive in JC.\n\n**Weeks after the weights.** 48 of 48.\n\n**Setup mismatch.**\n- **Measure:** this is not a test of the high-demand headline; it covers only the paper's weaker \"best or near-best overall\" claim.\n- **Horizon and series:** the paper is day-ahead at half-hour steps for postal-code areas, substations and LV feeders; ours is week-ahead for two PJM zones.\n- **Quantile:** the paper's Chronos-2 rows use a tuned upper quantile; our row is the median at library defaults.\n- **Baseline:** the paper compares against LightGBM and XGBoost trained once per season; the receipt's baseline is the temperature-only regression, refitted per cutoff.\n- **Inputs:** I chose the history-only row because the paper describes its Chronos runs that way, so here the baseline has temperature and the model does not.\n\nFor comparison, two secondary rows that are not in the receipt (forecast regime, same baseline):\n\n| Row | DOM | JC |\n|---|---|---|\n| `chronos2_temperature` | 0.730 (0.665 to 0.805) | 0.817 (0.686 to 0.960) |\n| `lightgbm_temperature` | 0.947 (0.856 to 1.031) | 0.857 (0.751 to 0.963) |\n\n**Still needed from a person for the high-demand test.** The scorecard's implementation hint asks for a scoring step this skill does not cover:\n1. Fix the high-demand rule and the quantile before reading any scored week.\n2. Record it as a new protocol version with a line in `DEVIATIONS.md`, as a secondary result.\n3. Score the median from the existing forecast files; the paper's 0.65 to 0.70 quantile needs a Chronos-2 rerun, because the adapter stores only 0.1, 0.5 and 0.9.\n\nThe scorecard is still untracked; nothing was committed.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": "partially"
+  },
+  {
+   "candidate_id": "german-stlf-live-challenge",
+   "judge": {
+    "run_id": "20261114T185854_judge_youcom_german-stlf-live-challenge_bb53",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 72,
+    "total_cost_usd": 4.314960000000001,
+    "wall_seconds": 378.4
+   },
+   "label": "ACCEPT_STAGE3",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": null
+  }
+ ],
+ "total_cost_usd": 23.34
+}

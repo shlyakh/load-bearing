@@ -1,0 +1,203 @@
+{
+ "candidate_id": "german-stlf-live-challenge",
+ "title": "Short-term load forecasting under EU-AI Act Requirements in Safety-Critical Environments: Results from a 41-day live challenge on the aggregated German transmission-grid load",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2608.05018",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T19:03:45Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2608.05018v3",
+   "kind": "arxiv",
+   "paraphrase": "Full text, version 3 (13 Aug 2026). Live challenge: 24 hourly values of German load a day ahead, 41 target days (10 June to 20 July 2026), ranked by MAE. Table 6 is the leaderboard, Table 7 the paired tests for the Chronos-2 and MACL2L entries, section 6.3 the Holm-corrected panel. Reference pipeline: recursive LightGBM, 30 calendar, holiday and weather-forecast columns.",
+   "evidence_id": "7d1166c0bfca"
+  },
+  {
+   "url": "https://arxiv.org/abs/2608.05018",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page: cs.AI, version 1 on 5 Aug 2026, version 3 on 13 Aug 2026. Carries the candidate's claim: the spotforecast2-safe pipeline beats the official ENTSO-E day-ahead forecast, and small local models (macl2l) are competitive with Chronos-2. Says the challenge code, all submissions and the archived leaderboard are public.",
+   "evidence_id": "488e9a6ef640"
+  },
+  {
+   "url": "https://bartzbeielstein.github.io/challenge-leaderboard/",
+   "kind": "docs",
+   "paraphrase": "Archived leaderboard of the live phase from target day 10 June 2026 (after a restart; the warm-up phase is listed apart). The top rows agree with the paper's Table 6, and the page holds per-day errors for every entry and metric.",
+   "evidence_id": "d214a8529e3a"
+  },
+  {
+   "url": "https://github.com/bartzbeielstein/challenge-leaderboard",
+   "kind": "github",
+   "paraphrase": "Scoring repository of a TH Koeln course challenge: daily CSV by pull request with a deadline check, MAE per day, missed days carried forward, one joker per team, ENTSO-E forecast and two naives scored from committed data. Archived 24 Jul 2026. Commit titles show rule and submission changes during the live phase, among them a correction of the MACL2L submissions for 22 June to 6 July.",
+   "evidence_id": "6286a74bca90"
+  },
+  {
+   "url": "https://github.com/sequential-parameter-optimization/spotforecast2-safe",
+   "kind": "github",
+   "paraphrase": "The forecasting library behind the reference pipeline: deterministic recursive forecasting, parts ported from skforecast, AGPL-3.0-or-later. Its README leaves it to users to check that it meets their regulatory requirements. Archived read-only on 28 Jul 2026 at release v25.2.0.",
+   "evidence_id": "55d811290dfa"
+  },
+  {
+   "url": "https://advm1.gm.fh-koeln.de/~bartz/sf2-forecast",
+   "kind": "docs",
+   "paraphrase": "The organiser's continuing board, restarted at target day 21 Jul 2026, organiser models only, missed days excluded. Mean MAE in MW: spotoptim_lgbm 1272.44 and optuna_lgbm 1292.49 (78 days), chronos 1356.38 (77), macl2l 1383.98 (78), macl2l_entsoe 1228.29 (78), ENTSO-E forecast 1541.54 (79). Unpaired means, no tests.",
+   "evidence_id": "e4c7bec860b5"
+  }
+ ],
+ "claims": [
+  {
+   "text": "The reference pipeline (recursive LightGBM on spotforecast2-safe, refitted and tuned daily, with calendar, holiday and weather-forecast covariates) has a mean daily MAE of 1369.1 MW against 2097.9 MW for the official ENTSO-E day-ahead forecast on their 35 shared days, 34.7% lower, and is better on 26 of the 35 days (two-sided paired t-test, p = 0.0001).",
+   "metric": "MAE reduction against the baseline, percent",
+   "value": 34.7,
+   "dataset": "ENTSO-E Actual Total Load, Germany (country aggregation), hourly, 35 shared target days, 16 June to 20 July 2026",
+   "horizon": "24 hours (day-ahead, issued by 23:59 UTC the day before)",
+   "baseline": "official ENTSO-E day-ahead load forecast",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 35,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "The best full-coverage entry, the student team Hot Rod, has a mean MAE of 1227.8 MW over all 41 days, 43.0% below the ENTSO-E forecast's 2155.6 MW. In the Holm-corrected panel of 14 entries on 35 days, three student teams are significantly better than the ENTSO-E forecast and the other eight are not.",
+   "metric": "MAE reduction against the baseline, percent",
+   "value": 43.0,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, 41 target days, 10 June to 20 July 2026",
+   "horizon": "24 hours",
+   "baseline": "official ENTSO-E day-ahead load forecast",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 41,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "The ENTSO-E forecast itself is not separable from the weekly seasonal naive in that panel (2155.6 against 2501.7 MW over 41 days, ratio 0.86 computed here; Holm-adjusted p = 1.0 on 35 days), so the baseline being beaten was weak in this period.",
+   "metric": "MAE ratio, ENTSO-E forecast over weekly seasonal naive",
+   "value": 0.86,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, 41 target days",
+   "horizon": "24 hours",
+   "baseline": "seasonal naive, same hour one week earlier",
+   "baseline_same_inputs": "no",
+   "test_window_days": 41,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Chronos-2 run zero-shot and univariate (180 days of load as context, median forecast, no covariates or calendar) ties the daily-retuned Optuna LightGBM pipeline: 1345.8 against 1361.1 MW on 39 shared days (ratio 0.99, computed here), better on 20 of 39 days, p = 0.90.",
+   "metric": "MAE ratio, Chronos-2 univariate over LightGBM with covariates",
+   "value": 0.99,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, 39 shared target days",
+   "horizon": "24 hours",
+   "baseline": "recursive LightGBM with calendar, holiday and weather-forecast covariates, tuned daily with Optuna",
+   "baseline_same_inputs": "no",
+   "test_window_days": 39,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Against the SpotOptim-tuned reference pipeline, Chronos-2 univariate has 1250.4 against 1369.1 MW on 35 shared days (ratio 0.91, computed here), better on 17 of 35 days, p = 0.24: nominally ahead, not significant.",
+   "metric": "MAE ratio, Chronos-2 univariate over LightGBM with covariates",
+   "value": 0.91,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, 35 shared target days",
+   "horizon": "24 hours",
+   "baseline": "recursive LightGBM with calendar, holiday and weather-forecast covariates, tuned daily with SpotOptim",
+   "baseline_same_inputs": "no",
+   "test_window_days": 35,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "The small in-context model MACL2L (plain variant, given renewable-generation forecasts and the day-ahead price, output blended with a ridge regression, clipped and spike-repaired) has 1156.0 against 1283.1 MW for Chronos-2 on 26 shared days (ratio 0.90, computed here), better on 15 of 26 days, p = 0.22. This is the basis of 'competitive with Chronos-2'.",
+   "metric": "MAE ratio, MACL2L over Chronos-2 univariate",
+   "value": 0.9,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, 26 shared target days",
+   "horizon": "24 hours",
+   "baseline": "Chronos-2, zero-shot, univariate",
+   "baseline_same_inputs": "no",
+   "test_window_days": 26,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "MACL2L with the ENTSO-E forecast as an extra input beats the reference pipeline on 29 shared days: 1137.1 against 1391.9 MW (ratio 0.82, computed here), better on 19 of 29 days, p = 0.019. Its first place on the board over plain MACL2L is put down by the authors to three more scored days; the two variants do not differ on shared days (p = 0.80).",
+   "metric": "MAE ratio, MACL2L (ENTSO-E) over the reference pipeline",
+   "value": 0.82,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, 29 shared target days",
+   "horizon": "24 hours",
+   "baseline": "recursive LightGBM reference pipeline (which may not use the ENTSO-E forecast)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 29,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "The choice of tuner made no measurable difference: SpotOptim against Optuna LightGBM, 1369.1 against 1371.6 MW on 35 shared days, p = 0.98.",
+   "metric": "mean daily MAE, MW, SpotOptim-tuned LightGBM",
+   "value": 1369.1,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, 35 shared target days",
+   "horizon": "24 hours",
+   "baseline": "the same pipeline tuned with Optuna (1371.6 MW)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 35,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "After the paper: on the continuing board the pipeline is still ahead of the ENTSO-E forecast but by less, 1272.44 MW (78 days) against 1541.54 MW (79 days), 17.5% lower (computed here from unpaired means; no test on the page).",
+   "metric": "MAE reduction against the baseline, percent",
+   "value": 17.5,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, target days from 21 July 2026, 78 and 79 scored days",
+   "horizon": "24 hours",
+   "baseline": "official ENTSO-E day-ahead load forecast",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 79,
+   "citation_idx": 5,
+   "ci90": null
+  },
+  {
+   "text": "After the paper: on the continuing board Chronos-2 is behind both LightGBM variants, 1356.38 MW (77 days) against 1292.49 MW for Optuna LightGBM (78 days), ratio 1.05 computed here from unpaired means, so the tie reported for the 41 days is not seen in the following months.",
+   "metric": "MAE ratio, Chronos-2 univariate over LightGBM with covariates",
+   "value": 1.05,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, target days from 21 July 2026, 77 and 78 scored days",
+   "horizon": "24 hours",
+   "baseline": "recursive LightGBM with covariates, tuned daily with Optuna",
+   "baseline_same_inputs": "no",
+   "test_window_days": 78,
+   "citation_idx": 5,
+   "ci90": null
+  },
+  {
+   "text": "After the paper: plain MACL2L is behind Chronos-2 on the continuing board, 1383.98 MW (78 days) against 1356.38 MW (77 days), ratio 1.02 computed here from unpaired means; only the variant that is given the ENTSO-E forecast stays first (1228.29 MW).",
+   "metric": "MAE ratio, MACL2L over Chronos-2 univariate",
+   "value": 1.02,
+   "dataset": "ENTSO-E Actual Total Load, Germany, hourly, target days from 21 July 2026, 78 and 77 scored days",
+   "horizon": "24 hours",
+   "baseline": "Chronos-2, zero-shot, univariate",
+   "baseline_same_inputs": "no",
+   "test_window_days": 78,
+   "citation_idx": 5,
+   "ci90": null
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load in MW, the same kind of series as ours, though a national aggregate (roughly 40 to 80 GW) rather than two utility zones. The horizon is day-ahead: 24 hourly values issued the evening before, every day, against our 168 hours issued on Mondays. Weather enters as a known-future input and, over the target day, as a real weather forecast (Open-Meteo, one point, twelve variables including 2 m temperature), so the setup corresponds to our forecast regime, not the oracle one; because it ran live there is no question of lead-matching. The covariate set is wider than ours (calendar, solar and holiday columns besides weather), so the paper cannot say what temperature alone adds. Two things bear on us: a univariate Chronos-2 level with a tuned tree model that has weather forecasts, which is the comparison between our chronos2 and lightgbm_temperature rows; and the comparison against an operator's own forecast, which we do not make. The EU AI Act framing, most of the paper's length, is outside the spec."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "Central model: the reference pipeline 'spotoptim lgbm' (recursive LightGBM on spotforecast2-safe), the model of the paper's first headline result and of the candidate's claim; Chronos-2, MACL2L, the CatBoost, XGBoost and causal variants and the eleven student entries are the others. pre_registered: no. The forecasts are prospective, which is stronger than a backtest: each was filed by pull request before a deadline and scored once the actual load was published. But no registry entry or analysis plan fixed before the results was found. The rules sit in a lecture chapter that was not read; scoring was restarted on 10 June after a warm-up; commit titles show changes during the live phase (naive benchmarks added on 20 July, one-off deadline exceptions on 18 July, a correction of the MACL2L submissions for 22 June to 6 July dated 6 July; the commits themselves were not opened); the covariate set of the pipeline changed during the phase; and the paired comparisons and panels were chosen afterwards. The deadline check applies to team pull requests; whether organiser entries (the pipeline, Chronos-2, MACL2L) went through the same gate was not verified. training_overlap_risk: unknown, because the central model has no pretrained weights (it is fitted from scratch at every origin), so there is no weights date to set against our scored window. For the secondary Chronos-2 comparison the commit list (fetched, ledger row d67e199eeeac) dates the weights to 2025-10-30 14:58 UTC, before our first scored week (2025-11-10), which would be low, and the head 29ec376 is the revision in models/pins.json. For the paper's own test, Chronos-2's weights predate the June and July 2026 targets, so leakage of the test days is not possible; the revision the authors used is not stated. independent_replication: unknown. One research task found no rerun, critique or citing study. The paper reports that every student team's result was reproduced by another team from its published artifact; that is inside the course, covers the student entries and not the organiser models, and no certificate was read. The continuing board is the organiser's own. Moebius et al. (a research source, not fetched) found the ENTSO-E forecast for Germany-Luxembourg biased and improvable in 2016 to 2019, which makes the headline plausible but is a different period and method. evidence_strength: weak by the spec's rule, because the test window is 41 days (35, 39, 26 or 29 on the shared-day comparisons), under the 90-day minimum, and all of it is summer. What is good: live forecasts, public per-day scores for every entry, paired tests on shared days, Holm correction in the panel, numbers recomputed from a committed data bundle, and the authors list the limits themselves. Weak points beyond the window: entries joined on different dates, so board means are over different days; the organiser models are left out of the corrected panel, so the pipeline's p = 0.0001 against ENTSO-E and the Table 7 p-values are uncorrected single tests; the ENTSO-E forecast was itself no better than a weekly naive in this period, and its opening week (a large over-forecast) falls outside the pipeline's 35 days; the first author develops the packages evaluated and operates the organiser entries; MACL2L is described in a few sentences (no architecture, size, training data or code in the paper), was given inputs no other standard entry had (renewable forecasts and the day-ahead price, which is set with knowledge of expected load) and had submissions corrected in mid-phase, so 'competitive with Chronos-2' compares a pipeline with extra inputs to a univariate model on 26 days at p = 0.22. The continuing board (fetched) weakens two of the three claims: the pipeline's margin over ENTSO-E halves to about 17%, Chronos-2 falls behind both LightGBM variants, and plain MACL2L falls behind Chronos-2; these are unpaired means over slightly different day counts, with a different rule for missed days, and are not in any paper. No intervals are given anywhere, so ci90 is empty throughout; ratios marked 'computed here' are not printed in the sources. baseline_same_inputs is 'unknown' against the ENTSO-E forecast because the operators' inputs and method are not public. Licence: spotforecast2-safe is AGPL-3.0-or-later (README, fetched); that permits commercial use, so license_ok_for_commercial is true, but it is strong copyleft with a network clause and not on the spec's preferred list, so it is flagged. Chronos-2 is Apache-2.0 (API record, fetched, ledger row d33d62d68de3). Not verified: figures; the data bundle and DATA.md shipped with the manuscript; the lecture chapter with the rules; any licence on the leaderboard repository; a public repository or weights for MACL2L (the research task found none; a November 2026 preprint by the organiser names a macl2l software package for prior-data fitted networks, without a link on its abstract page); why the continuing board shows 79 scored days when about 100 calendar days separate 21 July from the 30 October date on the page; whether the Chronos-2 pretraining collections contain German ENTSO-E load. Version 1 and version 3 of the paper were both fetched and their results agree; version 2 was not read. Budget used: 1 research task (standard), 0 searches, 10 pages fetched."
+ },
+ "evidence_strength": "weak",
+ "license": "AGPL-3.0-or-later",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_STAGE3",
+ "label_reason": "Relevant (hourly load, day-ahead, real weather forecasts as known-future inputs) and well sourced: the paper, a frozen public leaderboard with per-day scores, the scoring repository and the library are all readable. Its headline comparison, a retrained LightGBM pipeline against the grid operators' own day-ahead forecast, cannot be re-measured with a model in runnable_models: it needs an operator forecast for JC and DOM that we do not hold and a daily day-ahead protocol, which is work beyond an adapter; the evidence is also weak by the spec's rule (41 summer days), and the organiser's later board shows the margin halving and the Chronos-2 tie not holding.",
+ "implementation_hint": "Central model: the recursive LightGBM pipeline of spotforecast2-safe (AGPL-3.0-or-later, public code, no pretrained weights). It is not in runnable_models; running it would need its own adapter in a separate environment, and whether daily surrogate tuning fits the 60-minute CPU limit was not checked. The headline cannot be re-measured as it stands: there is no operator day-ahead forecast for JC and DOM in data/raw (finding and archiving one would be a new raw source with its own hashes), and the paper scores daily origins at 24 hours where protocol.yaml has weekly origins at 168 hours, so it would be a new protocol version with a dated line in DEVIATIONS.md, gate origins first, and a secondary result. What can be read today without a new run, as a secondary note and not a receipt for this candidate: the paper's second finding, univariate Chronos-2 against a tree model that has weather forecasts, is the ratio of the existing chronos2 row (amazon/chronos-2 at 29ec376, models/chronos2.py, weights dated 2025-10-30, all 48 windows after them) to the lightgbm_temperature row in the forecast regime, per zone, with the mae_day1 columns as the nearest thing to day-ahead (day 1 of a Monday-issued week, not a daily forecast). Differences to state if that is done: our LightGBM is not retuned daily and sees temperature only, where theirs has twelve weather variables plus calendar, solar and holiday columns; 168 hours against 24; two zones against a national aggregate; 48 weekly windows over a year against 39 summer days. MACL2L: not runnable, no public weights or code found.",
+ "receipt": null
+}

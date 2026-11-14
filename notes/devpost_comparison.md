@@ -12,7 +12,7 @@ inputs, once with Claude's built-in web search and once with You.com (Search, Co
 and Research through the hosted MCP server), with Claude's own search switched off in
 the You.com runs.
 
-The judge reached the same verdict on all five claims it checked both ways. The scan
+The judge reached the same verdict on all six claims it checked both ways. The scan
 found more with You.com: 53 claims against 44, with 37 in common. The You.com scan ran
 one search per site, 107 in all, each limited to an exact date range, where the
 built-in search ran 42 over groups of sites.
@@ -35,9 +35,9 @@ times as many pages.
 
 | Judging one claim | Claude's built-in search | You.com |
 |---|---|---|
-| Claims judged both ways | 5 | 5 |
-| Same verdict | 5 of 5 | |
-| Primary sources cited, those 5 claims | 23 | 24 |
+| Claims judged both ways | 6 | 6 |
+| Same verdict | 6 of 6 | |
+| Primary sources cited, those 6 claims | 30 | 30 |
 | How the sources are found | a helper agent that searches and fetches | 1 Research task, about 8 pages through Contents, 0 to 2 searches |
 | Time per claim | 3.7 to 5.3 min | 3.1 to 3.7 min |
 | Language-model cost per claim | about $2 | about $3 |

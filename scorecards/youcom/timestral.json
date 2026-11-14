@@ -1,0 +1,271 @@
+{
+ "candidate_id": "timestral",
+ "title": "Timestral",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2610.37585",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T18:57:41Z"
+ },
+ "candidate_type": "model_release",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2610.37585v1",
+   "kind": "arxiv",
+   "paraphrase": "Technical report by the publisher, submitted 27 Oct 2026. Four models (5M to 209M parameters) with native known-future covariates. An appendix table gives unrounded scores for every model compared at the 15 Oct release: the 209M model first and the 123M second on six metrics of GIFT-Eval, TIME and fev-bench. Real post-training data is not named. No load, week-ahead or weather experiment.",
+   "evidence_id": "8ea8a4f05d1b"
+  },
+  {
+   "url": "https://huggingface.co/mistralai/Timestral-209M",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the weights we would run: 209M parameters, 24 layers, context to 32,768 steps, 1,024 steps per forward pass, 21 quantiles, past-only and known-future covariates, CPU inference. Rounded benchmark table against t0-gamma, TimesFM-3, Toto-2.0-2.5B and Chronos-2. Weights under a Modified MIT licence.",
+   "evidence_id": "966584a0f435"
+  },
+  {
+   "url": "https://github.com/mistralai/timestral",
+   "kind": "github",
+   "paraphrase": "Official inference repository, Apache-2.0. The forecast call takes past and known-future covariates, numeric or categorical. States the evaluation setup: GIFT-Eval with past covariates only, fev-bench with past and known covariates, TIME with none, all zero-shot with forecaster defaults. Says the 209M model was first among pretrained and zero-shot models on all three at launch.",
+   "evidence_id": "07890b11a885"
+  },
+  {
+   "url": "https://mistral.ai/news/timestral/",
+   "kind": "blog",
+   "paraphrase": "Publisher's announcement of the release. Claims first place among pretrained zero-shot models on five metrics from a single checkpoint, names weather forecasts as an example of a known-future input, gives CPU latency (17 to 113 ms for a one-day forecast on 8 threads) and says most training data was synthetic. Its worked example is a hypothetical industrial plant.",
+   "evidence_id": "51edf4c64381"
+  },
+  {
+   "url": "https://huggingface.co/api/models/mistralai/Timestral-209M/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit list of the weights repository: one squashed commit carrying weights and config on 2026-10-15 at 15:22:40 UTC (7394bc1) and a README update eleven minutes later (9874d25, the head). No per-file dates.",
+   "evidence_id": "751d6ef806aa"
+  },
+  {
+   "url": "https://huggingface.co/mistralai/Timestral-209M/blob/main/LICENSE",
+   "kind": "hf_card",
+   "paraphrase": "Licence of the weights: an MIT-style grant with attribution, withdrawn for any user whose company or employer had more than 20 million dollars of global consolidated revenue in the preceding month; those users need a commercial licence from the publisher or its hosted service.",
+   "evidence_id": "f058abe00b04"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Timestral-209M and Timestral-123M take the top two places on every reported metric of GIFT-Eval, TIME and fev-bench among the models compared at the release date (15 Oct 2026), zero-shot and from a single checkpoint.",
+   "metric": "rank among compared models",
+   "value": 1,
+   "dataset": "GIFT-Eval, TIME, fev-bench",
+   "horizon": null,
+   "baseline": "t0-gamma, TimesFM-3, Chronos-2, Toto-2.0 and the other pretrained and zero-shot models in the paper's table",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "GIFT-Eval MASE (relative to seasonal naive, geometric mean) of 0.6575 for Timestral-209M, against 0.6608 for t0-gamma and 0.6668 for TimesFM-3.",
+   "metric": "MASE relative to seasonal naive",
+   "value": 0.6575,
+   "dataset": "GIFT-Eval, 97 configurations",
+   "horizon": null,
+   "baseline": "t0-gamma (0.6608), the next model outside the family",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "GIFT-Eval CRPS of 0.4460 for Timestral-209M, against 0.4520 for t0-gamma and 0.4557 for TimesFM-3.",
+   "metric": "CRPS relative to seasonal naive",
+   "value": 0.446,
+   "dataset": "GIFT-Eval, 97 configurations",
+   "horizon": null,
+   "baseline": "t0-gamma (0.4520), the next model outside the family",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "TIME MASE of 0.6262 for Timestral-209M, against 0.6370 for t0-gamma and 0.6398 for TimesFM-3.",
+   "metric": "MASE relative to seasonal naive",
+   "value": 0.6262,
+   "dataset": "TIME, 98 tasks",
+   "horizon": null,
+   "baseline": "t0-gamma (0.6370), the next model outside the family",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "TIME CRPS of 0.5223 for Timestral-209M, against 0.5340 for t0-gamma and 0.5363 for TimesFM-3.",
+   "metric": "CRPS relative to seasonal naive",
+   "value": 0.5223,
+   "dataset": "TIME, 98 tasks",
+   "horizon": null,
+   "baseline": "t0-gamma (0.5340), the next model outside the family",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "fev-bench MASE skill score of 39.49% for Timestral-209M, against 37.99% for t0-gamma and 37.82% for TimesFM-3.",
+   "metric": "MASE skill score (%)",
+   "value": 39.49,
+   "dataset": "fev-bench, 100 tasks",
+   "horizon": null,
+   "baseline": "t0-gamma (37.99%), the next model outside the family",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "fev-bench SQL skill score of 50.39% for Timestral-209M, against 49.42% for t0-gamma and 48.99% for TimesFM-3.",
+   "metric": "SQL skill score (%)",
+   "value": 50.39,
+   "dataset": "fev-bench, 100 tasks",
+   "horizon": null,
+   "baseline": "t0-gamma (49.42%), the next model outside the family",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "On IND-Eval (187 industrial tasks, rerun by the authors) Timestral-209M has a point error of 0.646 relative to seasonal naive, against 0.697 for t0-gamma, about 7% lower.",
+   "metric": "normalised MASE relative to seasonal naive",
+   "value": 0.646,
+   "dataset": "IND-Eval, 187 tasks in energy, manufacturing and transport",
+   "horizon": null,
+   "baseline": "t0-gamma (0.697), rerun by the Timestral authors with context capped at 4,096 steps",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "On IND-Eval Timestral-209M has a probabilistic error of 0.435 relative to seasonal naive, against 0.469 for t0-gamma.",
+   "metric": "normalised CRPS relative to seasonal naive",
+   "value": 0.435,
+   "dataset": "IND-Eval, 187 tasks in energy, manufacturing and transport",
+   "horizon": null,
+   "baseline": "t0-gamma (0.469), rerun by the Timestral authors with context capped at 4,096 steps",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "The model takes covariates known into the future (weather forecasts and holiday calendars are the examples given) as a native input, without letting a target's own future reach its forecast.",
+   "metric": null,
+   "value": null,
+   "dataset": null,
+   "horizon": null,
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 3,
+   "ci90": null
+  },
+  {
+   "text": "The largest model has 209 million parameters, about two thirds of the previous best model's size.",
+   "metric": "parameters (millions)",
+   "value": 209,
+   "dataset": null,
+   "horizon": null,
+   "baseline": "TimesFM-3 (331M) and t0-gamma (256M)",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 3,
+   "ci90": null
+  },
+  {
+   "text": "The model reads up to 32,768 steps of history and forecasts up to 1,024 steps in one forward pass.",
+   "metric": "maximum context (time steps)",
+   "value": 32768,
+   "dataset": null,
+   "horizon": "up to 1,024 steps in one pass; longer horizons block by block",
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "No GPU is needed: a one-day forecast (96 steps) from three weeks of 15-minute history takes 113 ms with the 209M model on 8 CPU threads.",
+   "metric": "latency (ms)",
+   "value": 113,
+   "dataset": "univariate series, 2,048 steps of context, no covariates",
+   "horizon": "96 steps",
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 3,
+   "ci90": null
+  }
+ ],
+ "relevance": {
+  "target_match": 1,
+  "horizon_match": 1,
+  "covariates_match": 3,
+  "rationale": "A general-purpose model release. Its own sources report aggregate scores on mixed-domain benchmarks and on an industrial benchmark that includes energy tasks, with no electric load result broken out, so the target is scored 1. The benchmark claims pool many horizons and state none; our 168 hours fits inside one forward pass (1,024 steps) but the publisher shows nothing at a week ahead on hourly data, so horizon is scored 1. Covariates known into the future are a native input and the announcement names weather forecasts as an example, which is what our spec requires, so covariates are scored 3; note that the publisher's own headline numbers used known-future covariates on fev-bench only."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "high",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: no; a model release, and none of its sources describe a plan fixed before the results. training_overlap_risk is about our run and follows the date rule: the commit list dates the weights to 2026-10-15 15:22:40 UTC (one squashed commit, no per-file dates), which matches the pin in models/pins.json. Of the 52 scored Mondays in protocol.yaml, 3 start after that date (Oct 19, Oct 26, Nov 2), fewer than half, so high. The Timestral rows now in results/leaderboard.parquet hold 48 windows with 1 after the weights. Beyond the date rule: the report does not name the real post-training datasets or give a data cutoff, so whether PJM or other US load series were in training cannot be checked; the research task found nothing on it. independent_replication: unknown. The research task and its 17 sources turned up no neutral rerun of the three benchmarks. Results were submitted to the GIFT-Eval and TIME leaderboards; a third-party mirror of GIFT-Eval (fetched, ledger 5f0e6e4d23af) lost most model names in the fetch, and only the research snippet showed Timestral-123M listed with no leak flag ahead of TimesFM-3, so the 209M entry was not read. What qualifies the claim: it is worded as first among the models compared on 15 Oct 2026, and agentic and fine-tuned leaderboard entries are outside that table; the lead over t0-gamma is small (0.003 MASE on GIFT-Eval, 0.011 on TIME, about 1 to 1.5 skill points on fev-bench) and no intervals are given, so ci90 is empty; Google makes the opposite rank claim for TimesFM-3 on the same benchmarks (secondary articles only, not fetched). Two outside tests exist, neither a replication: a blog test on one daily temperature series (ledger f9d9aa4f9f0d) where the 209M model lost to repeating the last value with 158 days of context and won clearly with three years; and an open issue on the repository (ledger 1296ff14cbde) reporting that upper quantiles explode with a nearly constant known-future covariate under the default symmetric averaging, while the median stays sane. Temperature is not constant, so the second trigger should not apply to us, but our run uses the library defaults with symmetric averaging on and reports 10% and 90% quantiles. baseline_same_inputs is yes only for TIME, which has no covariates; on GIFT-Eval and fev-bench the sources do not say what inputs each compared model received. evidence_strength: moderate. Public weights, code and a report with a full score table, so the result can be rerun; but it is publisher-reported, not pre-registered, without intervals or test windows, and the headline is a descriptive rank. license_ok_for_commercial is null because it depends on the user: allowed below 20 million dollars of monthly revenue, not above without a separate licence. Not verified: the three official leaderboards (not opened); per-task or per-domain scores, including any energy subset (figures only); the IND-Eval numbers, which are the authors' own rerun; the announcement's publication date (taken from the paper and commit date); the WQL versus CRPS label the research answer raised (the fetched announcement has charts, no metric table). The research answer made three statements that the paper text does not contain (a Victoria demand benchmark, an ERCOT price test and a 6.3-point covariate gain); they came from a snippet about another model and are not used. It also dated the upload to about Oct 16; the commit list says Oct 15. One research task at the standard tier, no searches, 10 pages fetched (the leaderboard mirror came back without most names)."
+ },
+ "evidence_strength": "moderate",
+ "license": "Modified MIT (weights; no rights for companies above $20M monthly revenue); Apache-2.0 (code)",
+ "license_ok_for_commercial": null,
+ "runnable_class": "ff_native_exog",
+ "label": "ACCEPT_RUN",
+ "label_reason": "A runnable model release with public weights, code, a model card and a technical report, whose native known-future covariates are what our spec asks for, and which spec.yaml already lists as running with temperature through FoundationForecast. Its accuracy claim is publisher-reported benchmark scores with small margins and no load evidence, and only 3 of the 52 scored weeks start after the weights date, so the run must carry that label.",
+ "implementation_hint": "Run models_ff/run_ff.py with mistralai/Timestral-209M (ff_native_exog, the timestral_temperature entry, temperature as a known-future covariate). The pin in models/pins.json is revision 9874d25 with weights dated 2026-10-15 15:22:40 UTC, which matches the commit list read here. Expect 3 of 52 scored weeks after the weights (the current rows have 1 of 48). 168 hours is one forward pass (limit 1,024 steps) and the 2,048-hour context is far under the 32,768 cap. Record in the row that symmetric averaging and clipping at zero are on (library defaults); given the open issue about upper quantiles with covariates under symmetric averaging, compare the 90% quantile with it off on the gate origins. A univariate row from the same checkpoint would show what temperature adds. The 28M and 123M checkpoints are cheaper alternatives the report places close to the 209M. The weights licence has a revenue threshold, so flag the row.",
+ "receipt": {
+  "claimed": "The publisher reports Timestral-209M first among the pretrained zero-shot models it compared on 15 Oct 2026 on GIFT-Eval, TIME and fev-bench (for example GIFT-Eval MASE 0.6575 against 0.6608 for t0-gamma), from one checkpoint that takes known-future covariates such as weather forecasts.",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 0.656,
+    "ci90": [
+     0.608,
+     0.709
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 0.698,
+    "ci90": [
+     0.599,
+     0.802
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 0.486,
+    "ci90": [
+     0.442,
+     0.537
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 0.543,
+    "ci90": [
+     0.468,
+     0.631
+    ]
+   }
+  ],
+  "horizon_mismatch": "The claim is a rank on general multi-domain benchmarks against other pretrained models, pooled over many horizons, with known-future covariates used on fev-bench only and no load result; ours is hourly load on two PJM zones, a week ahead (168 h), with temperature as a known-future covariate, against the temperature-only regression.",
+  "n_windows": 48,
+  "n_windows_after_weights": 1,
+  "verdict": "untestable"
+ }
+}

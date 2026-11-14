@@ -1,0 +1,211 @@
+{
+ "candidate_id": "timesfm3-university-building-day-ahead",
+ "title": "Machine Learning and Time-Series Foundation Models for Day-Ahead Electricity Forecasting in a University Building",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2610.12638",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T18:56:56Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2610.12638v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text of version 1. One teaching building in Delft, hourly kWh, forecasts issued daily for the next 24 h; 90 validation days pick settings, 57 test days (2 Feb to 30 Mar 2024) score 11 configurations on the same windows. Table 6 gives pooled errors, Table 7 paired daily bootstrap intervals, Table 8 day types, Table 10 the weather-source swap. Code and data promised, not released.",
+   "evidence_id": "1afe7c9be5ad"
+  },
+  {
+   "url": "https://arxiv.org/abs/2610.12638",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page: version 1 submitted 8 Oct 2026, cs.LG and cs.AI, CC BY 4.0. Carries the candidate's claim: TimesFM 3.0 with covariates lowest overall, about 43% under weekly seasonal naive on MAE; no clear paired advantage over XGBoost; covariates help holidays and slightly hurt other days. Weather is retrospective observation. No code link.",
+   "evidence_id": "5753f5cf0584"
+  },
+  {
+   "url": "https://huggingface.co/api/models/google/timesfm-3.0-pytorch/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit list of the central model's weights repository: weights and config uploaded on 2026-08-24 at 22:41 UTC (6455822); the nine later commits, to 2026-09-02 (head 43046b8), are titled as README, LICENSE, licence metadata and tag changes. No per-file dates.",
+   "evidence_id": "8e7ad53c9602"
+  },
+  {
+   "url": "https://huggingface.co/api/models/google/timesfm-3.0-pytorch",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the central model: not gated, licence 'other' named timesfm-non-commercial-license-v1.0, head 43046b8, about 330.7M parameters in one safetensors file, created 24 Aug 2026.",
+   "evidence_id": "520ebc8a1b39"
+  },
+  {
+   "url": "https://huggingface.co/google/timesfm-3.0-pytorch/blob/main/LICENSE",
+   "kind": "hf_card",
+   "paraphrase": "Licence text of the weights: non-commercial, non-production use only. Testing, evaluation, internal benchmarking and academic research are allowed as long as results do not feed commercial decisions, client deliverables or paid products. The model may not be redistributed.",
+   "evidence_id": "16fe23b7a5ff"
+  }
+ ],
+ "claims": [
+  {
+   "text": "TimesFM 3.0 with 30 covariates (calendar and schedule, observed weather, two load lags) has the lowest pooled MAE of 11 configurations, 19.97 kWh, which is 43.4% below the weekly seasonal-naive forecast (35.27 kWh).",
+   "metric": "MAE reduction against the baseline, percent",
+   "value": 43.4,
+   "dataset": "one university building (THUAS, Delft campus), hourly whole-building electricity, 57 test days, 2 Feb to 30 Mar 2024",
+   "horizon": "24 hours",
+   "baseline": "weekly seasonal naive (same hour one week earlier)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 57,
+   "citation_idx": 0
+  },
+  {
+   "text": "Against XGBoost given the same 30 covariates and refitted every day, pooled MAE is 19.97 against 22.45 kWh (ratio 0.89, computed here); pooled RMSE is 30.26 against 31.11 kWh.",
+   "metric": "MAE ratio, TimesFM 3.0 with covariates over XGBoost",
+   "value": 0.89,
+   "dataset": "one university building, hourly electricity, 57 test days",
+   "horizon": "24 hours",
+   "baseline": "XGBoost with the same covariates, tuned on 90 validation days",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 57,
+   "citation_idx": 0
+  },
+  {
+   "text": "The paired difference in daily MAE, TimesFM 3.0 with covariates minus XGBoost, is -2.48 kWh with a 95% bootstrap interval of -5.140 to 0.132 kWh over the 57 days, so the direction is not established. The interval is 95%, not 90%, and is not adjusted for multiple comparisons or for dependence between days.",
+   "metric": "mean daily MAE difference, kWh",
+   "value": -2.48,
+   "dataset": "one university building, hourly electricity, 57 paired test days",
+   "horizon": "24 hours",
+   "baseline": "XGBoost with the same covariates",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 57,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Adding the covariates to TimesFM 3.0 leaves pooled MAE almost unchanged: 19.97 against 20.01 kWh target-only; paired daily difference -0.04 kWh, 95% interval -2.735 to 2.090. Pooled RMSE falls from 32.45 to 30.26 kWh.",
+   "metric": "mean daily MAE difference, kWh",
+   "value": -0.04,
+   "dataset": "one university building, hourly electricity, 57 paired test days",
+   "horizon": "24 hours",
+   "baseline": "TimesFM 3.0 on load history only",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 57,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "On the 11 holidays in the test, the covariates lower TimesFM 3.0's MAE from 34.40 to 24.76 kWh (ratio 0.72, computed here) and RMSE from 53.74 to 39.47 kWh.",
+   "metric": "MAE ratio, with covariates over target-only",
+   "value": 0.72,
+   "dataset": "one university building, hourly electricity, 11 holiday days (264 hours)",
+   "horizon": "24 hours",
+   "baseline": "TimesFM 3.0 on load history only",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 57,
+   "citation_idx": 0
+  },
+  {
+   "text": "On the 34 workdays the covariates make TimesFM 3.0 worse: MAE 18.85 against 16.65 kWh target-only (ratio 1.13, computed here), RMSE 26.00 against 23.00 kWh. Target-only TimesFM 3.0 has the lowest workday error of all 11 configurations; XGBoost is at 22.88 kWh.",
+   "metric": "MAE ratio, with covariates over target-only",
+   "value": 1.13,
+   "dataset": "one university building, hourly electricity, 34 workdays (816 hours)",
+   "horizon": "24 hours",
+   "baseline": "TimesFM 3.0 on load history only",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 57,
+   "citation_idx": 0
+  },
+  {
+   "text": "On the 23 non-workdays XGBoost has the lower RMSE, 29.50 against 35.63 kWh for TimesFM 3.0 with covariates, while the MAEs are 21.81 and 21.63 kWh.",
+   "metric": "RMSE, kWh, TimesFM 3.0 with covariates",
+   "value": 35.63,
+   "dataset": "one university building, hourly electricity, 23 non-workdays (552 hours)",
+   "horizon": "24 hours",
+   "baseline": "XGBoost with the same covariates (29.50 kWh)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 57,
+   "citation_idx": 0
+  },
+  {
+   "text": "Swapping the station observations for archived IFS forecasts (in both context and horizon) raises TimesFM 3.0's MAE by 0.169 kWh, about 0.85%, 95% interval 0.007 to 0.331; swapping for ERA5 changes it by less than 0.001 kWh. The IFS values carry no issue times, so this is not a lead-matched forecast test.",
+   "metric": "mean daily MAE difference, kWh, IFS minus station observations",
+   "value": 0.169,
+   "dataset": "one university building, hourly electricity, 57 paired test days",
+   "horizon": "24 hours",
+   "baseline": "the same model with KNMI station observations",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 57,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Exploratory, with settings chosen on later data: over 566 days TimesFM 3.0 with covariates has MAE 16.60 kWh against 29.16 for weekly seasonal naive (43% lower, computed here), from 9.89 kWh in summer to 20.25 in winter.",
+   "metric": "MAE reduction against the baseline, percent",
+   "value": 43.1,
+   "dataset": "the same building, 566 forecast days, 11 Sep 2022 to 30 Mar 2024, context growing from 168 to 8,760 hours",
+   "horizon": "24 hours",
+   "baseline": "weekly seasonal naive",
+   "baseline_same_inputs": "no",
+   "test_window_days": 566,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load, but of one building (mean 140 kWh an hour, driven by the teaching timetable), not a utility zone of thousands of MW; scored 3 on the spec's scale with that caveat. The horizon is day-ahead, issued at 23:00 UTC for the next 24 hours, not a week. Weather is supplied as a known-future input (seven variables including air temperature), which matches our setup; it is observed weather, so the main result corresponds to our oracle regime only, and the IFS swap is not a lead-matched forecast test. The covariate set is much wider than ours: 21 calendar and schedule columns (opening hours and exam weeks among them) and two load lags besides the weather, so the paper cannot say what temperature alone adds. It bears on us in two ways: a foundation model with covariates against a tuned tree model on the same inputs, with a paired test, is the comparison our timesfm3_temperature and lightgbm_temperature rows make; and its finding that covariates help only on holidays is a second source, after the calendar-encoding preprint, that calendar columns matter mainly on unusual days."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "high",
+  "independent_replication": "unknown",
+  "notes": "Central model: TimesFM 3.0 with covariates, the model of the headline claim; TimesFM 3.0 target-only, TimesFM 2.5, XGBoost, ridge, Prophet and LSTM are the others. pre_registered: no. The paper cites no registry or plan fixed before the results; settings were chosen on a 90-day validation block before the test, which is good practice but not registration, and one appendix (TimesFM 2.5 hybrids) is described as designed after first results were seen. The research answer found no registration either. training_overlap_risk is about our run and follows the date rule: the commit list (fetched) dates the weights upload to 2026-08-24 22:41 UTC, and the later commits are text, licence and tag changes by their titles (no per-file dates in the listing). Ten of the 52 scored weeks start after that (31 Aug to 2 Nov 2026), fewer than half, so high; results/leaderboard.parquet currently has 8 of 48 windows after the weights for timesfm3_temperature. For the paper's own test the question is different: its test days are Feb and Mar 2024, well before the weights, and the building data is institutional and unpublished, so direct leakage is unlikely, but the paper does not discuss it and the pretraining corpus was not checked here. independent_replication: unknown. One research task and two searches (github.com, data.4tu.nl) found no rerun, dispute, repository or data record. The research answer named related studies, none fetched and none cited: an earlier building study that found little gain from covariates in foundation models (before TimesFM 3.0), an October 2026 preprint with XGBoost as baseline on load series including 36 buildings (models not identified in the snippet), and an April 2026 preprint with TimesFM and Chronos-2 ahead of tuned XGBoost (before TimesFM 3.0). None reruns this building or this model. evidence_strength: weak by the spec's rule on two counts: the test window is 57 days, under the 90-day minimum, and neither code nor data is public (both promised through 4TU.ResearchData and GitHub; the first author's 4TU profile, fetched, lists nothing for this study). What is good about it: every model on the same windows, the tree model given the same inputs and tuned with 96 trials, chronological selection, paired intervals reported, and the authors' own conclusion is the cautious one. Weak points beyond the window: one building; 11 holidays carry the covariate finding; TimesFM 3.0's settings were themselves tuned on the building (64 combinations), so 'zero-shot' means no weight training, not no tuning; opening hours and exam weeks are assumed known a day ahead; the two load lags given as covariates duplicate information the model already has in its context. Intervals in the source are 95% percentile bootstrap, unadjusted, so ci90 is left empty and the intervals are in the claim text. Ratios marked 'computed here' are not printed in the paper. Not verified: the figures and the complete day-type figure; the preceding study of the same building (Stienstra et al. 2026, cited, not read); the weights revision the authors used (not stated); whether a later arXiv version exists; the hardware (CPU and GPU runs are mixed, per the authors). Licence: the LICENSE file (fetched) allows research and internal benchmarking and forbids commercial or production use, so a row from these weights is flagged. The research answer said a later commit shows apache-2.0 metadata; the Hub record fetched here shows 'other' with the non-commercial licence name, so that statement is not supported. Budget used: 1 research task (standard), 2 searches, 6 pages fetched."
+ },
+ "evidence_strength": "weak",
+ "license": "TimesFM Non-Commercial License v1.0",
+ "license_ok_for_commercial": false,
+ "runnable_class": "ff_native_exog",
+ "label": "ACCEPT_RUN",
+ "label_reason": "Relevant (hourly electricity, day-ahead, weather as a known-future input) with a full-text primary source, and its headline comparison, TimesFM 3.0 with covariates against a tuned tree model on the same inputs and against a seasonal-naive floor, can be re-measured now: TimesFM 3.0 runs through FoundationForecast with temperature and the row already exists. The evidence is weak by the spec's rule (57 test days, one building, code and data not yet released), and a run must be labelled: non-commercial weights, and only 10 of our 52 scored weeks start after them.",
+ "implementation_hint": "Central model google/timesfm-3.0-pytorch (ff_native_exog, models_ff/run_ff.py, entry timesfm3_temperature, pinned in models/pins.json at 43046b8 with weights dated 2026-08-24 22:41 UTC). The row is already on the leaderboard for both zones and regimes (48 windows, 8 after the weights), next to lightgbm_temperature, seasonal_naive and the temperature-only regression, so the receipt for the headline can be read from existing rows without a new run: TimesFM 3.0 with temperature against the temperature-only regression (the receipt's baseline), with the ratio against lightgbm_temperature reported beside it as the analogue of the paper's XGBoost comparison (LightGBM, not XGBoost; say so). The oracle regime is the like-for-like one, since the paper used observed weather. Differences to state: 168 h against 24 h, a zone against a building, temperature only against 30 covariates, context 2,048 h against 8,760 h, and the library defaults (symmetric averaging on, forecasts made positive) where the paper tuned these on validation and turned the positivity transform off. The paper's second finding, that covariates barely move pooled error and help mainly on holidays, needs a TimesFM 3.0 load-only row from the same checkpoint, which we do not have: a new secondary row under a new protocol version with a DEVIATIONS.md line, gate origins first, on CPU, with holiday weeks reported apart and their count stated. Label every TimesFM 3.0 row: weights inside the scored window and non-commercial licence. Other models in the paper: google/timesfm-2.5-200m-pytorch target-only is our timesfm25 row (ff_univariate); ridge, Prophet and LSTM are not in runnable_models.",
+ "receipt": {
+  "claimed": "The paper reports TimesFM 3.0 with 30 covariates as the lowest pooled MAE of 11 configurations on one university building, day-ahead, about 43% below weekly seasonal naive over 57 test days; against XGBoost given the same covariates the MAE ratio is about 0.89, but the paired 95% interval includes zero, so the authors do not claim a clear advantage over the tree model.",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 0.703,
+    "ci90": [
+     0.647,
+     0.766
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 0.761,
+    "ci90": [
+     0.65,
+     0.878
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 0.59,
+    "ci90": [
+     0.529,
+     0.659
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 0.652,
+    "ci90": [
+     0.558,
+     0.76
+    ]
+   }
+  ],
+  "horizon_mismatch": "The claim is day-ahead (24 h) for one building (about 140 kWh an hour) with 30 covariates (calendar and schedule, observed weather, two load lags), context up to 8,760 h, settings tuned on 90 validation days, against weekly seasonal naive and XGBoost; ours is week-ahead (168 h) for two PJM zones with temperature only, context 2,048 h, library defaults, against the temperature-only regression. The paper used observed weather, so our oracle regime is the like-for-like one; the verdict is read in the forecast regime. The paper's tree baseline is XGBoost; our nearest row is LightGBM, not the receipt's baseline.",
+  "n_windows": 48,
+  "n_windows_after_weights": 8,
+  "verdict": "untestable"
+ }
+}

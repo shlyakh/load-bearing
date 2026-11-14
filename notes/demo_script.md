@@ -26,7 +26,7 @@ the corrected You.com scan of the early afternoon.
 | 0:25 to 1:05 | Terminal: smoke test running, then the scorecard file | "Here is one claim, published this week: in Great Britain, a pretrained model called Chronos-2 roughly ties a plain regression once both get the same weather forecast. The ratio is 0.97. The judge agent uses You.com for this. Research finds the primary sources, Contents reads them, and every statement in the scorecard points to a URL. This call is live." (point at the three You.com tool names in the output) "And this is the finished scorecard: five primary sources, pre-registered yes, same inputs for the baseline yes, and one mismatch, their horizon is a day and mine is a week." |
 | 1:05 to 1:50 | Dashboard, Receipt tab | "Does the claim transfer to a US grid, a week ahead? I ran the same model on PJM load, 48 weeks, all of them after the model's weights were published, so it cannot have trained on them. Against my first baseline, a temperature-only regression, the model's error is 0.73 of the baseline's on the Dominion zone. That looks like a clear win, not a tie. The receipt says: partially transfers." |
 | 1:50 to 2:25 | Dashboard, New zones tab | "Then the agent's search turned up the benchmark this field actually uses. Against that, the lead mostly disappears: 0.95 on Dominion, 1.00 on Jersey Central. So I froze the rules, picked two zones no model had been run on, and scored once. 1.01 and 0.89, both inconclusive. The first baseline made the model look 27 percent better. The right baseline closed most of that gap." |
-| 2:25 to 2:50 | Dashboard, New claims tab, the provider table; click the You.com switch | "How much does this depend on the search engine? I judged the same claims twice, once with Claude's built-in search and once with You.com. Five claims, five identical verdicts. The scan ran both ways too, on the same queries: 53 new claims from You.com, 44 from Claude, 37 in common. You.com returns a date on every result, which is what makes 'what was published this week' workable." |
+| 2:25 to 2:50 | Dashboard, New claims tab, the provider table; click the You.com switch | "How much does this depend on the search engine? I judged the same claims twice, once with Claude's built-in search and once with You.com. Six claims, six identical verdicts. The scan ran both ways too, on the same queries: 53 new claims from You.com, 44 from Claude, 37 in common. You.com returns a date on every result, which is what makes 'what was published this week' workable." |
 | 2:50 to 3:00 | Dashboard, How it works tab | "Find, judge, run, receipt. The protocol was frozen at a git tag before the scored run, and the scored run happened once. Receipts, not hype." |
 
 ## Numbers used, and where they come from
@@ -40,7 +40,7 @@ the corrected You.com scan of the early afternoon.
 | 0.95 DOM and 1.00 JC against the standard benchmark (0.946, 0.997) | `results/README.md`, protocol-v1.1 |
 | 1.01 AEP and 0.89 AE, both inconclusive (45 weeks) | `results/README.md`, protocol-v2 |
 | 27 percent | 1 minus 0.73 |
-| Five of five verdicts agree | `results/provider_comparison.csv` (check) |
+| Six of six verdicts agree | `results/provider_comparison.csv` |
 | 53, 44 and 37 claims | `notes/youcom_usage_and_feedback.md`, scan table |
 | Five primary sources on item-02 | `scorecards/youcom/item-02.json` |
 

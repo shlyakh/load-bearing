@@ -36,10 +36,10 @@ Six claims judged on You.com, all six scorecards valid against the schema.
 
 | Measure | Claude's own search | You.com |
 |---|---|---|
-| Claims judged under both | 5 | 5 |
-| Same verdict | 5 of 5 | |
-| Primary sources cited, those 5 claims | 23 | 24 |
-| Evidence rows logged, those 5 claims | 55 | 72 |
+| Claims judged under both | 6 | 6 |
+| Same verdict | 6 of 6 | |
+| Primary sources cited, those 6 claims | 30 | 30 |
+| Evidence rows logged, those 6 claims | 70 | 110 |
 | Model cost per judge | $1.85 to $2.29 (3 with a record) | $2.81 to $3.04 |
 | Time per judge | 224 to 316 s | 186 to 222 s |
 
