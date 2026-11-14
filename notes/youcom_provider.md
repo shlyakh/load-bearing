@@ -1,5 +1,11 @@
 # The `youcom` search provider: how to turn it on
 
+**Update, Nov 14, late morning:** the key is in `.env` and the provider has run live
+(smoke test, nine judges started, one scan). What the live runs settled, what they
+cost and what was changed is in `notes/youcom_usage_and_feedback.md`; of the open
+points below, 1, 4, 5 and 6 are answered there, 2 partly (the balance check works), 3
+and 7 are still open. The sections below are kept as written before the first call.
+
 Wired on Sat Nov 14, 2026, before a key existed. No You.com call has been made yet.
 
 ## What is in place

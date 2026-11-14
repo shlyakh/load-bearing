@@ -48,8 +48,34 @@ and the You.com runs cost more partly because Research answers and fetched pages
 long and are read by the model. You.com's own charges for the six judges were about
 $0.38 at documented prices (6 research tasks, 50 pages, 5 searches).
 
+### The scan
+
 The first You.com scan stopped at the Claude usage limit after 42 searches and wrote
-nothing; it was restarted. Its result is not in this note yet.
+nothing. The second ran to the end: 42 searches (7 queries over 6 domain groups), 13
+pages fetched, about 10 minutes, $10.33 of model cost, about $0.22 of You.com charges
+at documented prices.
+
+| Measure | Claude scan, Nov 14 | You.com scan, Nov 14 |
+|---|---|---|
+| Candidates kept | 40 | 40 |
+| In both | 30 | 30 |
+| Only in this scan | 10 | 10 |
+| Searches / pages fetched | 16 / 16 | 42 / 13 |
+| Model cost | $4.19 | $10.33 |
+
+- 880 distinct URLs came back from the 42 searches; 819 hits were dropped, the largest
+  groups being off-topic records, 160 GitHub issue threads and 53 vendor blog pages.
+- 25 of the 40 kept candidates were found by a search. The other 15 came only from the
+  direct listings (`tools/feeds.py`), among them the demo item (Zenodo record 24161799)
+  and the PJM cold-spell benchmark: these searches did not surface either Zenodo record.
+- Found only by You.com: an audit of the day-ahead forecasts in EIA-930 (our own data
+  source), a week-ahead load ensemble, a four-grid load-method protocol.
+- `you-contents` returned HTTP 504 three times on batches of URLs; each URL came back
+  when retried alone or in a smaller batch.
+- Caveats: this scan ran before the `site:` fix below, so its multi-domain groups were
+  in effect open-web searches. The two scans also differ in configuration (the Claude
+  scan predates the two added domain groups and three added queries), so the table
+  compares two runs, not two search engines under equal conditions.
 
 ## What the live server does (checked live)
 
@@ -78,7 +104,7 @@ nothing; it was restarted. Its result is not in this note yet.
 8. **Balance.** `you-balance` reported 917 cents on Nov 14, late morning, after the
    runs above and two scan attempts in progress. The starting credit was not recorded.
 
-Not settled: whether Search finds the Zenodo record without its URL; whether Contents
+Not settled: whether Contents
 obeys `robots.txt` on a live fetch (matters for Substack and Medium, where the site
 owners discourage AI crawlers); structured output from Research (`output_schema`), not
 used yet.
@@ -128,6 +154,11 @@ What worked well:
 - **The hosted MCP server.** One URL and one header, no install, and the tool list can
   be narrowed per run. Wiring took minutes once a key existed.
 - **Cost.** Search charges were a rounding error next to the model cost.
+
+What cost us time or would have misled us, in the scan specifically: batches of URLs
+to Contents timing out with 504 where single URLs succeeded (a partial result with the
+failed URLs marked would be easier to handle), and a large share of GitHub issue
+threads among results for release-related queries.
 
 What cost us time or would have misled us:
 
