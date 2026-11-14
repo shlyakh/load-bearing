@@ -5,7 +5,7 @@
  },
  {
   "step": "Why load",
-  "text": "Our test case is electricity load. Demand is growing, partly because of data centers, and foundation models for time series are improving fast. A disclaimer: week-ahead load forecasting is a well-known problem, and we are not trying to beat power providers or energy hedge funds. These forecasts run fast enough for a hackathon, and they show weather doing real work."
+  "text": "Our test case is electricity load. Demand is growing, partly because of data centers, and foundation models for time series are improving fast. A disclaimer: week-ahead load forecasting is a well-known problem. We are not trying to beat power providers or energy hedge funds. These forecasts run fast enough for a hackathon, and they show weather doing real work as an input."
  },
  {
   "step": "The grid",
@@ -13,7 +13,7 @@
  },
  {
   "step": "The zones",
-  "text": "Our test bed is four PJM zones: Jersey Central and Dominion, then AEP and Atlantic City Electric, kept back for a fresh test."
+  "text": "Our test bed is four PJM zones: Jersey Central and Dominion to start, then AEP and Atlantic City Electric, kept back for a fresh test."
  },
  {
   "step": "The task",
@@ -29,11 +29,11 @@
  },
  {
   "step": "Leaderboard",
-  "text": "The leaderboard shows every model against the same baseline, two zones side by side. The grey diamonds, Timestral and TimesFM 3.0, were published after most of our test weeks, so their scores are not out of sample."
+  "text": "The leaderboard shows every model against the same baseline, two zones side by side. Chronos-2 leads the first baseline. The grey diamonds, Timestral and TimesFM 3.0, were published after most of our test weeks, so their scores are not out of sample."
  },
  {
   "step": "Weather",
-  "text": "Weather matters more than the model. With better weather forecasts every method improves, and the regressions catch up with Chronos-2."
+  "text": "Weather matters more than the model. With better weather forecasts every method improves, the regressions catch up, and against the standard benchmark Chronos-2 is level under every weather source."
  },
  {
   "step": "New claims",
