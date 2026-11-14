@@ -55,13 +55,28 @@ nothing. The second ran to the end: 42 searches (7 queries over 6 domain groups)
 pages fetched, about 10 minutes, $10.33 of model cost, about $0.22 of You.com charges
 at documented prices.
 
-| Measure | Claude scan, Nov 14 | You.com scan, Nov 14 |
+| Measure | Claude scan, rerun at noon | You.com scan, late morning |
 |---|---|---|
-| Candidates kept | 40 | 40 |
-| In both | 30 | 30 |
-| Only in this scan | 10 | 10 |
-| Searches / pages fetched | 16 / 16 | 42 / 13 |
-| Model cost | $4.19 | $10.33 |
+| Queries and domain groups | 7 and 6 (same `spec.yaml`) | 7 and 6 |
+| Searches / page-fetch calls | 42 / 14 | 42 / 8 (13 pages) |
+| Candidates kept | 44 | 40 |
+| In both (same primary URL) | 29 | 29 |
+| Only in this scan | 15 | 11 |
+| Time | 931 s | 630 s |
+| Model cost | $8.67 | $10.33 |
+
+Both scans in the table used the same queries and domain groups. Neither restricted
+the two added multi-domain groups properly: the You.com scan used the grouped `site:`
+form that does not restrict (see below), and the Claude scan reported that its domain
+restriction also leaked to arXiv, PMC and patent pages for those groups. Both scans
+found that the two added groups contributed little: one OpenSTEF post and the Timestral
+and TimesFM-3 announcements, which were already candidates.
+
+A third You.com scan, with one `site:` per query (91 searches), stopped at the Claude
+usage limit after $14.51 of model cost and wrote no candidates. A corrected You.com
+scan therefore does not exist yet. The earlier Claude scan of the morning (old
+configuration: 16 searches, 40 candidates, $4.19) shared 30 candidates with the You.com
+scan.
 
 - 880 distinct URLs came back from the 42 searches; 819 hits were dropped, the largest
   groups being off-topic records, 160 GitHub issue threads and 53 vendor blog pages.
@@ -72,11 +87,6 @@ at documented prices.
   source), a week-ahead load ensemble, a four-grid load-method protocol.
 - `you-contents` returned HTTP 504 three times on batches of URLs; each URL came back
   when retried alone or in a smaller batch.
-- Caveats: this scan ran before the `site:` fix below, so its multi-domain groups were
-  in effect open-web searches. The two scans also differ in configuration (the Claude
-  scan predates the two added domain groups and three added queries), so the table
-  compares two runs, not two search engines under equal conditions.
-
 ## What the live server does (checked live)
 
 1. **Tool names** are `you-search`, `you-contents`, `you-research`, as assumed.

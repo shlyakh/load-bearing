@@ -83,12 +83,13 @@ Waiting on Yuri:
   requests an hour (not confirmed); the run kept the earlier rows.
 - **Dashboard:** New claims has a provider comparison table and a switch between the
   Claude and You.com scans.
-- **Spend:** $48.06 of model cost on You.com runs today, cap $75 (Yuri). You.com credit
+- **Spend:** $71.24 of model cost on today's headless runs after the noon scans, cap $75 (Yuri). You.com credit
   left: 917 cents when checked late morning.
-- **To do after 15:30 (Yuri, Nov 14): a fair scan comparison.** Rerun the Claude scan
-  on the current `spec.yaml`. The You.com scan of today ran before the `site:` fix, so
-  it needs a rerun too for both to be on the same configuration; that second rerun is
-  not yet agreed (about $10 of model cost).
+- **Scan comparison (noon):** the Claude scan was rerun on the current `spec.yaml`
+  (44 candidates, 29 shared with the You.com scan; table in
+  `notes/youcom_usage_and_feedback.md`). A You.com rerun with one `site:` per query
+  stopped at the Claude usage limit (resets 16:20) and wrote nothing. Spend is then
+  $71.24 of the $75 cap: no further model runs without Yuri's word.
 - **Not done:** the Kafritsas Substack post was not judged (the Substack robots
   question is open); research tasks are still counted as calls in the comparison (48
   calls were 6 tasks); You.com charges are not in the run records.
