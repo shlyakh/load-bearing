@@ -7,7 +7,7 @@ to report claimed against measured. We call the result a receipt.
 Benchmark: PJM hourly electricity load, a week ahead (168 hours), forecast every Monday
 at midnight. The first zones were JC and DOM; the newest test adds AEP and AE.
 
-Dashboard: https://shlyakh.github.io/receipts/
+Dashboard: https://shlyakh.github.io/load-bearing/
 
 ## The question
 
@@ -184,7 +184,7 @@ LinkedIn is not a source: it is never searched, fetched or cited.
 
 ## Dashboard
 
-https://shlyakh.github.io/receipts/ , deployed from `dashboard/` by GitHub Actions on a
+https://shlyakh.github.io/load-bearing/ , deployed from `dashboard/` by GitHub Actions on a
 push to `main`. It is a static page (`dashboard/index.html`) that reads `dashboard/data.js`,
 built from `results/` by `dashboard/build_data.py`. Tabs: The problem, Methods, Receipt,
 New zones, Leaderboard, Weather, New claims, How it works. `dashboard/story.html` tells

@@ -6,7 +6,7 @@ the corrected You.com scan finishes; see the last section.
 
 ## Before you start
 
-- Browser: https://shlyakh.github.io/receipts/ open on the Receipt tab. Reload once.
+- Browser: https://shlyakh.github.io/load-bearing/ open on the Receipt tab. Reload once.
 - Terminal, in the repo, font large. Have these two ready in the history:
 
   ```

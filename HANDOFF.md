@@ -16,7 +16,7 @@ the repository, the repository wins.
 
 ## Where the dashboard lives
 
-- GitHub Pages: https://shlyakh.github.io/receipts/ . Deployed by the workflow on every
+- GitHub Pages: https://shlyakh.github.io/load-bearing/ . Deployed by the workflow on every
   push to `main` that touches `dashboard/`; the `gh-pages` branch is no longer used.
 - Development artifact: https://claude.ai/artifact/UyjuJT9VXa4bcjnSrFgmjr
 - Tabs: The problem, Methods, Receipt, New zones, Leaderboard, Weather, New claims, How
