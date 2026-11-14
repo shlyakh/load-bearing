@@ -50,43 +50,46 @@ $0.38 at documented prices (6 research tasks, 50 pages, 5 searches).
 
 ### The scan
 
-The first You.com scan stopped at the Claude usage limit after 42 searches and wrote
-nothing. The second ran to the end: 42 searches (7 queries over 6 domain groups), 13
-pages fetched, about 10 minutes, $10.33 of model cost, about $0.22 of You.com charges
-at documented prices.
+Four You.com scans were started on Nov 14. Two stopped at the Claude usage limit and
+wrote nothing (42 and 91 searches, $7.25 and $14.51 of model cost). Two ran to the end:
+one in the late morning with the grouped `site:` form that does not restrict, and a
+corrected one in the early afternoon with one `site:` per query. The table compares the
+corrected scan with a Claude scan on the same `spec.yaml`.
 
-| Measure | Claude scan, rerun at noon | You.com scan, late morning |
+| Measure | Claude's own search | You.com, one `site:` per query |
 |---|---|---|
-| Queries and domain groups | 7 and 6 (same `spec.yaml`) | 7 and 6 |
-| Searches / page-fetch calls | 42 / 14 | 42 / 8 (13 pages) |
-| Candidates kept | 44 | 40 |
-| In both (same primary URL) | 29 | 29 |
-| Only in this scan | 15 | 11 |
-| Time | 931 s | 630 s |
-| Model cost | $8.67 | $10.33 |
+| Queries and domains | 7 queries, 6 groups | 7 queries, 12 sites plus the open web |
+| Searches / page-fetch calls | 42 / 14 | 107 / 2 |
+| Pages logged with a reason | 221 | 1,233 |
+| Candidates kept | 44 | 53 |
+| In both (same primary URL) | 37 | 37 |
+| Only in this scan | 7 | 16 |
+| Time | 931 s | 970 s |
+| Model cost | $8.67 | $14.83 |
+| Search charges | included in the model cost | about $0.54 at documented prices |
 
-Both scans in the table used the same queries and domain groups. Neither restricted
-the two added multi-domain groups properly: the You.com scan used the grouped `site:`
-form that does not restrict (see below), and the Claude scan reported that its domain
-restriction also leaked to arXiv, PMC and patent pages for those groups. Both scans
-found that the two added groups contributed little: one OpenSTEF post and the Timestral
-and TimesFM-3 announcements, which were already candidates.
+- Found only by You.com: sixteen items, six Zenodo records and six arXiv papers,
+  plus journal articles (IET, Electronics, an Elsevier journal) and one vendor
+  blog post. Found only by Claude: seven.
+- 39 of the 53 were found by a search; 14 came only from the direct listings
+  (`tools/feeds.py`). Both completed You.com scans missed the same two Zenodo records
+  by search: the demo item (24161799) and the PJM cold-spell benchmark (24010850).
+- The eight sites added from the seed list (four practice sites, four model-team sites)
+  produced no kept candidate in any scan beyond the Timestral and TimesFM-3
+  announcements, which were already candidates. They did produce noise: 69 vendor
+  pages, 65 PJM news and committee pages, 101 off-topic publisher pages.
+- The earlier, uncorrected You.com scan (42 searches, $10.33) kept 40 candidates, 39 of
+  which are also in the corrected scan. Restricting properly found more, at about 45%
+  more model cost.
+- **Search dates are not always publication dates.** The scan found the TimesFM-3 blog
+  post dated 2026-09-25 in search where the page says August 31, and most amperon.co
+  posts dated 2026-07-22 for content from 2024 and 2025. So a result's date can be the
+  day the page was last seen changed. The scan treats it as provisional for this reason.
+- `you-contents` returned HTTP 504 three times on batches of URLs in the first completed
+  scan; each URL came back when retried alone or in a smaller batch.
+- The Claude scan's own domain restriction also leaked to arXiv, PMC and patent pages
+  for the multi-site groups, so the Claude column is not a clean per-site search either.
 
-A third You.com scan, with one `site:` per query (91 searches), stopped at the Claude
-usage limit after $14.51 of model cost and wrote no candidates. A corrected You.com
-scan therefore does not exist yet. The earlier Claude scan of the morning (old
-configuration: 16 searches, 40 candidates, $4.19) shared 30 candidates with the You.com
-scan.
-
-- 880 distinct URLs came back from the 42 searches; 819 hits were dropped, the largest
-  groups being off-topic records, 160 GitHub issue threads and 53 vendor blog pages.
-- 25 of the 40 kept candidates were found by a search. The other 15 came only from the
-  direct listings (`tools/feeds.py`), among them the demo item (Zenodo record 24161799)
-  and the PJM cold-spell benchmark: these searches did not surface either Zenodo record.
-- Found only by You.com: an audit of the day-ahead forecasts in EIA-930 (our own data
-  source), a week-ahead load ensemble, a four-grid load-method protocol.
-- `you-contents` returned HTTP 504 three times on batches of URLs; each URL came back
-  when retried alone or in a smaller batch.
 ## What the live server does (checked live)
 
 1. **Tool names** are `you-search`, `you-contents`, `you-research`, as assumed.
@@ -96,8 +99,9 @@ scan.
    polls. A log that counts tool calls therefore overstates research use about
    eightfold (48 calls were 6 tasks).
 3. **Dates.** Every result in ten test searches carried `page_age`, and every date fell
-   inside the requested `freshness` range (an exact `YYYY-MM-DDtoYYYY-MM-DD` range).
-   This is the property the scan needs most, and it worked.
+   inside the requested `freshness` range (an exact `YYYY-MM-DDtoYYYY-MM-DD` range). The
+   filter works as documented. What the date means is less certain: in the full scan
+   some dates were later than the page's own publication date (see the scan section).
 4. **One `site:` restricts; several do not.** `site:arxiv.org` returned only arXiv.
    `(site:lfenergy.org OR site:pjm.com)` returned the open web (Wikipedia, vendor
    pages). Two `site:` terms with or without `OR` returned one of the two domains only.
@@ -157,7 +161,7 @@ What worked well:
 
 - **Dated results with a strict range.** Exact-range `freshness` plus `page_age` on
   every result is what makes a "what was published this week" scan possible. Claude's
-  built-in search gives no reliable dates.
+  built-in search returns no date field at all.
 - **Research with sources as a list.** Citations arrive as URLs with titles, separate
   from the prose, so each can be logged and opened. The judge's rule "cite from the
   sources list, never from the answer text" was easy to follow.
@@ -190,7 +194,10 @@ What cost us time or would have misled us:
    said the key was invalid or expired while `you-search` returned a bare 401 with no
    text. (Our mistake: quotes left around the key in a test script.) The same message
    on both would help.
-7. **Usage in the response.** Each reply carries a `you/usage` block with the product
+7. **`page_age` is not always the publication date.** For a dated-claims scan the
+   difference between "published" and "last changed" matters. Two separate fields, or a
+   note saying which one `page_age` is, would let the agent trust it without a fetch.
+8. **Usage in the response.** Each reply carries a `you/usage` block with the product
    and result count. Adding the charge in cents would let an agent keep its own running
    total without calling `you-balance`.
 
