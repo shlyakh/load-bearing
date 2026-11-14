@@ -129,11 +129,18 @@ def _vanilla_design(
 
 
 def _vanilla(
-    hist: pd.Series, temp: pd.Series | None, cutoff: pd.Timestamp, trend: bool
+    hist: pd.Series,
+    temp: pd.Series | None,
+    cutoff: pd.Timestamp,
+    trend: bool,
+    holiday: bool = False,
 ) -> pd.Series:
     if temp is None:
         raise ValueError("the Vanilla benchmark needs a temperature series")
     hz = horizon_index(cutoff)
+    if holiday and temp.reindex(hz).isna().any():
+        # protocol-v2 row: incomplete horizon temperature is not forecast, never filled.
+        return pd.Series(np.nan, index=hz)
     train_idx = pd.date_range(cutoff - pd.Timedelta(days=VANILLA_DAYS) + H, cutoff, freq="h")
     y = hist.reindex(train_idx).to_numpy()
     t_train = temp.reindex(train_idx).to_numpy()
@@ -144,6 +151,12 @@ def _vanilla(
         if trend:  # years since the start of the training window, continuing over the horizon
             years = np.asarray((idx - train_idx[0]) / pd.Timedelta(days=365))
             x = np.column_stack([x, years])
+        if holiday:  # protocol-v2: harness calendar holiday x hour and year-end x hour
+            cal = calendar(idx)
+            h = (cal["hour"].to_numpy()[:, None] == np.arange(24)).astype(float)
+            x = np.column_stack(
+                [x, h * cal["hol"].to_numpy()[:, None], h * cal["yearend"].to_numpy()[:, None]]
+            )
         return x
 
     beta, *_ = np.linalg.lstsq(design(train_idx[ok], t_train[ok]), y[ok], rcond=None)
@@ -162,6 +175,17 @@ def vanilla_benchmark_trend(
 ) -> pd.Series:
     """The same benchmark plus a linear trend, the form reported for GEFCom2012."""
     return _vanilla(hist, temp, cutoff, trend=True)
+
+
+def vanilla_benchmark_trend_holiday(
+    hist: pd.Series, temp: pd.Series | None, cutoff: pd.Timestamp
+) -> pd.Series:
+    """protocol-v2, secondary. Vanilla with trend plus 24 holiday x hour and 24 year-end x
+    hour indicator columns from the harness calendar table (harness.data.calendar: US
+    federal holiday and 24 Dec to 2 Jan, local time at the start of the hour). Same 730-day
+    window and fit; nothing else changed; no recency terms. A window with incomplete horizon
+    temperature is not forecast."""
+    return _vanilla(hist, temp, cutoff, trend=True, holiday=True)
 
 
 # ---------------------------------------------------------------- competition-grade LightGBM
@@ -312,6 +336,15 @@ MODEL_PROTOCOL = {
     "lightgbm_competition": "protocol-v1.3",
     # Runs in models_ff/ (models_ff/tabpfn_ts_v2.py), which writes the same label.
     "tabpfn_ts_v2_temperature": "protocol-v1.3",
+}
+
+# protocol-v2 rows run by harness/v2.py (protocol-v2.yaml). Kept out of MODELS so the
+# default model list of harness.run, and every v1 to v1.3 output, is unchanged.
+V2_MODELS = {
+    "lag_regression_temperature": lag_regression_temperature,
+    "vanilla_benchmark_trend": vanilla_benchmark_trend,
+    "vanilla_benchmark_trend_holiday": vanilla_benchmark_trend_holiday,
+    "lightgbm_competition": lightgbm_competition,
 }
 
 # name -> (function, uses_weather)

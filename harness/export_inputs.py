@@ -10,6 +10,12 @@ Output: data/model_inputs/<set>.parquet with columns
 unique_id, regime, cutoff, ds, y, T, is_horizon. With --v12 the four protocol-v1.2
 weather regimes go to data/model_inputs/<set>_weather_v12.parquet instead (ERA5 history,
 the regime's horizon series); the v1 file is not touched.
+
+    uv run --project core python -m harness.export_inputs gate --v2    # protocol-v2
+
+With --v2 (protocol-v2.yaml): zones AEP, AE, DOM, JC in the four v1.2 regime names, written
+by harness.v2.export to data/model_inputs/<set>_v2.parquet with the harness calendar table
+(hour, dow, hol, yearend from harness.data.calendar) beside y and T. Other files untouched.
 """
 
 from __future__ import annotations
@@ -32,6 +38,11 @@ CONTEXT_HOURS = 4096
 
 def main() -> None:
     which = sys.argv[1] if len(sys.argv) > 1 else ""
+    if sys.argv[2:] == ["--v2"] and which in ("gate", "scored"):
+        from harness.v2 import export  # protocol-v2: <set>_v2.parquet with the calendar
+
+        export(which)
+        return
     v12 = sys.argv[2:] == ["--v12"]
     if which not in ("gate", "ordering_gate", "scored") or (sys.argv[2:] and not v12):
         sys.exit(__doc__)

@@ -145,3 +145,51 @@ class Data:
                 table.to_numpy()[np.arange(len(hz)), lead_day - 1], index=hz, dtype=float
             )
         return pd.concat([past, future]).rename("T")
+
+
+# ---- protocol-v2 (protocol-v2.yaml). Additive: Data and the v1/v1.2 regimes are unchanged.
+# Zones AEP and AE (primary) read their own files (fetch.py process-v2: load_v2 and the
+# weighted-mean weather_v2_* tables). DOM and JC (development) read the v1 load and the
+# v1.2 weather files exactly as protocol-v1.2 does. Only the four v1.2 regime names exist.
+V2_ZONES = ("AEP", "AE", "DOM", "JC")
+V2_PRIMARY_ZONES = ("AEP", "AE")
+V2_DEVELOPMENT_ZONES = ("DOM", "JC")
+V2_REGIMES = V12_REGIMES
+V2_PARQUET = {
+    "load": "load_v2.parquet",
+    "oracle_era5": "weather_v2_oracle_era5.parquet",
+    "forecast_gfs": "weather_v2_forecast_gfs.parquet",
+    "forecast_ifs": "weather_v2_forecast_ifs.parquet",
+    "forecast_aifs": "weather_v2_forecast_aifs.parquet",
+}
+
+
+class DataV2(Data):
+    """What a protocol-v2 model may see. Same rules as the v1.2 regimes: load up to the
+    cutoff; ERA5 up to the cutoff; after it ERA5 (oracle_era5) or the source's
+    lead-matched previous_day{k} value. The v1 regimes are refused."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._load_v12()
+        load = pd.read_parquet(PROCESSED / V2_PARQUET["load"])
+        for z, g in load.groupby("unique_id"):
+            assert z in V2_PRIMARY_ZONES
+            self.y[z] = g.set_index("ds")["y"].sort_index()
+        era5 = pd.read_parquet(PROCESSED / V2_PARQUET["oracle_era5"])
+        for z, g in era5.groupby("unique_id"):
+            self.era5[z] = g.set_index("ds")["temperature_2m"].sort_index()
+        for regime in ("forecast_gfs", "forecast_ifs", "forecast_aifs"):
+            fc = pd.read_parquet(PROCESSED / V2_PARQUET[regime])
+            # forecast_gfs for DOM/JC is the v1 forecast table (self.forecast), as in v1.2.
+            dest = self.forecast if regime == "forecast_gfs" else self.forecast_v12[regime]
+            for z, g in fc.groupby("unique_id"):
+                dest[z] = g.pivot(index="ds", columns="lead_day", values="temperature_2m")
+                dest[z] = dest[z].sort_index()
+
+    def temperature(self, zone: str, cutoff: pd.Timestamp, regime: str) -> pd.Series:
+        if regime not in V2_REGIMES:
+            raise ValueError(f"protocol-v2 has no regime {regime!r}")
+        if zone not in V2_ZONES:
+            raise ValueError(f"protocol-v2 has no zone {zone!r}")
+        return self._temperature_v12(zone, cutoff, regime)
