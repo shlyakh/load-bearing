@@ -657,8 +657,8 @@ a { color: var(--model); }
     { tab: "newzones", at: "#v2-primary", ms: 8000, text: "The fresh test: two zones no model had been run on, with the rules fixed in advance. Chronos-2 against the standard benchmark: " + tourNum.v2("AEP") + " on AEP and " + tourNum.v2("AE") + " on AE. No clear lead." },
     { tab: "leaderboard", at: "#board", ms: 6500, text: "Every model against the same baseline, DOM and JC side by side. The grey diamonds, Timestral and TimesFM 3.0, were published after most test weeks, so they may have seen them." },
     { tab: "weather", at: "#wx-ratio", ms: 7500, text: "With better weather forecasts the regressions catch up. Against the field's standard benchmark the model is level under every source (" + tourNum.min + " to " + tourNum.max + "); on DOM it goes from " + tourNum.gfs + " with GFS weather to " + tourNum.era5 + " with perfect weather." },
-    { tab: "candidates", at: "#cands", ms: 6000, text: "The scan agent reads arXiv, Hugging Face and Zenodo, and keeps new claims that cite a primary source.", act: () => type("#cand-q", "PJM", 2600) },
-    { tab: "agents", at: "#flow-weekly", ms: 5000, text: "Find, judge, run, receipt: from a new claim to a measured answer, with every source cited." }
+    { tab: "candidates", at: "#cands", ms: 6000, text: "Two scans, one with Claude's search and one with You.com, find new claims that cite a primary source. Here they are combined.", act: () => type("#cand-q", "PJM", 2600) },
+    { tab: "agents", at: "#flow-weekly", ms: 5000, text: "Every week: read the listings, scan, judge, run, receipt. From a new claim to a measured answer, with every source cited." }
   ];
   // ?tourms=5000,6000,... sets each step's length (used to fit the tour to a narration)
   (new URLSearchParams(location.search).get("tourms") || "").split(",").map(Number).forEach((v, i) => { if (v > 0 && TOUR[i]) TOUR[i].ms = v; });
