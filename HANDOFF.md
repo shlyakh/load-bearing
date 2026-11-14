@@ -49,18 +49,23 @@ the repository, the repository wins.
    holiday terms left Vanilla within 3%. Section "protocol-v2" of `results/README.md`.
    The dashboard shows them on the "New zones" tab.
 
-## Next step (agreed Nov 14, after a break)
+## State on Nov 14, late morning
 
-Bring everything up to date with protocol-v2 and the new maps:
+Done today: protocol-v2 frozen, tagged and scored; dashboard "New zones" tab, county zone
+maps, US map with operator names; tour with a New zones step, re-recorded; Receipt tab
+points to the fresh test; `README.md` and `dashboard/story.html` brought up to date.
 
-1. Tour: add a "New zones" step, check every caption against the current page, re-record
-   `dashboard/tour.webm` (`tools/record_tour.mjs`).
-2. Receipt tab: decide how it tells the story now that the v2 result exists.
-3. Narrated video: talking points per tour step, then voice and mux
-   (`notes/hackathon_tools.md`, section 4).
-4. `README.md` status section and `dashboard/story.html` are out of date.
-5. Check the New zones tab at phone width (not confirmed).
-6. Saturday's hackathon work: the You.com provider (`HACKATHON.md`).
+Waiting on Yuri:
+
+1. **You.com key.** The provider is wired and tested offline only. Add `YDC_API_KEY` to
+   `.env`, then follow `notes/youcom_provider.md` (smoke test, judge, pipeline, compare).
+2. **Voice for the video.** `tools/make_video.py` builds `video/out/receipts_demo.mp4` from
+   `video/narration.json` with the macOS system voice (a draft: Apple's licence limits it
+   to personal, non-commercial use). A Treg or other hosted voice needs a key and one
+   new function in that script.
+3. **README prior-work line.** It says everything up to today predates the hackathon;
+   this morning's v2 and dashboard work is dated Nov 14. Correct it once the event's
+   start time is known.
 
 ## Open decisions (Yuri)
 
