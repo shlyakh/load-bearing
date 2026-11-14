@@ -55,14 +55,14 @@ OPENAI_STYLE = (
 
 
 def openai_key() -> str:
-    """OPENAI_API_KEY from the environment, else from .env. The value is never printed."""
-    key = os.environ.get("OPENAI_API_KEY", "").strip()
-    if not key:
-        from dotenv import dotenv_values
+    """OPENAI_API_KEY from .env, else from the environment (the project file wins, so a
+    stale key exported by a shell profile does not shadow it). The value is never printed."""
+    from dotenv import dotenv_values
 
-        key = (dotenv_values(ROOT / ".env").get("OPENAI_API_KEY") or "").strip()
+    key = (dotenv_values(ROOT / ".env").get("OPENAI_API_KEY") or "").strip()
+    key = key or os.environ.get("OPENAI_API_KEY", "").strip()
     if not key:
-        sys.exit("the openai voice needs OPENAI_API_KEY in the environment or in .env")
+        sys.exit("the openai voice needs OPENAI_API_KEY in .env or in the environment")
     return key
 
 
