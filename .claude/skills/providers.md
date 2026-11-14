@@ -35,21 +35,34 @@ sets it up; `notes/youcom_provider.md` turns it on).
 - `freshness`: an exact range `YYYY-MM-DDtoYYYY-MM-DD`, from the window start to today
   (for example `2026-07-17to2026-11-14`). The words `day`, `week`, `month`, `year` are
   also accepted, but the scan uses the exact range.
-- Domains: `include_domains` cannot be set through MCP. Restrict with `site:` in the
-  query, one call per domain group of `scan.domains`; a group of two domains is
-  `(site:huggingface.co OR site:github.com)`. The open-web group has no `site:`.
-- Always `exclude_domains: ["linkedin.com"]`.
-- `count`: 50 for a `site:` query, 20 for the open web. First page only (`offset` 0).
-- Each result has `title`, `url`, `description` and, often, `page_age`. Treat
-  `page_age` as a provisional date: a result without it is `unknown` until fetched.
+- Domains: `include_domains` cannot be set through MCP. Restrict with exactly one
+  `site:` per query, so a group of `scan.domains` with several domains takes one call
+  per domain. Checked live on Nov 14: `(site:a OR site:b)` does not restrict at all
+  (results came from the open web), and two `site:` terms returned one domain only.
+  The open-web group has no `site:`.
+- Always `exclude_domains: ["linkedin.com"]` (accepted together with `site:` on the
+  live server, although the tool text says the two cannot be combined).
+- `extraction: "none"` in the scan: results then carry `snippets`, which is enough to
+  shortlist. The server's default is `highlights`, which returned about 70% more text
+  for the same ten results. Use `highlights` only when a snippet cannot settle
+  whether a page is on topic, instead of a separate fetch.
+- `count`: 50 for a `site:` query, 20 for the open web (the server's default is 30).
+  First page only (`offset` 0).
+- Each result has `title`, `url`, `description` and `page_age` (present on every result
+  in the Nov 14 checks, and inside the `freshness` range). Still treat `page_age` as a
+  provisional date: a result without it is `unknown` until fetched.
 
 `you-contents` (fetch)
-- `urls`: up to 10 per call; ask for markdown. A URL that comes back empty is a failed
+- `urls`: up to 10 per call (the live tool accepts 100; 10 keeps one reply readable);
+  ask for markdown. A URL that comes back empty is a failed
   fetch: record it as such, do not guess the page.
 - Never pass a `linkedin.com` URL.
 
 `you-research` (research)
-- `research_effort: "standard"` (about $0.05 a call, 10 to 30 s). Not `lite`, which
+- The live tool is asynchronous: the first call returns a `task_id`, and the same tool
+  is called again with that `task_id` until the answer is ready. Those polls are not
+  new research tasks: the budget counts tasks, not calls.
+- `research_effort: "standard"` (about $0.05 a task, 10 to 30 s). Not `lite`, which
   cannot take an output schema; not `deep` or higher without a reason in the report.
 - `source_control`: `exclude_domains: ["linkedin.com"]`. Set `freshness` only when the
   question is about recent work; `/judge` reads older primary sources too.

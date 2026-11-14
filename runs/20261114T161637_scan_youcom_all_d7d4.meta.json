@@ -1,0 +1,90 @@
+{
+ "run_id": "20261114T161637_scan_youcom_all_d7d4",
+ "skill": "scan",
+ "provider": "youcom",
+ "args": [],
+ "note": "",
+ "model_requested": null,
+ "provider_tools_allowed": [
+  "mcp__you-com__you-search",
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research"
+ ],
+ "provider_tools_denied": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "mcp_server": {
+  "name": "you-com",
+  "url": "https://api.you.com/mcp?tools=you-search,you-contents,you-research"
+ },
+ "mcp_servers": [
+  {
+   "name": "you-com",
+   "status": "connected"
+  }
+ ],
+ "search_tools_present": [
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research",
+  "mcp__you-com__you-search"
+ ],
+ "git_commit": "9b6b3d5",
+ "started_at": "2026-11-14T16:16:37+00:00",
+ "wall_seconds": 336.4,
+ "exit_code": 1,
+ "timed_out": false,
+ "session_id": "936459f3-e671-44ad-afbe-ab6477efbf0a",
+ "is_error": false,
+ "num_turns": 0,
+ "total_cost_usd": 7.2523558,
+ "usage": {
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "input_tokens": 0,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 0,
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "",
+  "iterations": [],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 54,
+   "outputTokens": 45727,
+   "cacheReadInputTokens": 3273199,
+   "cacheCreationInputTokens": 345904,
+   "webSearchRequests": 0,
+   "costUSD": 7.2523558,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 9944,
+   "cacheCreationEphemeral5mInputTokens": 127710,
+   "cacheCreationEphemeral1hInputTokens": 218194,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Read": 3,
+  "Bash": 21,
+  "ToolSearch": 2,
+  "mcp__you-com__you-search": 42,
+  "Write": 4,
+  "Agent": 1,
+  "mcp__you-com__you-contents": 1
+ }
+}
