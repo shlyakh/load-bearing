@@ -1,0 +1,138 @@
+{
+ "provider": "youcom",
+ "started_at": "2026-11-14T17:43:52+00:00",
+ "candidates_file": "candidates/merged/scan_2026-11-14.jsonl",
+ "candidates": [
+  {
+   "candidate_id": "timesfm-3",
+   "judge": {
+    "run_id": "20261114T174352_judge_youcom_timesfm-3_0c48",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 36,
+    "total_cost_usd": 2.725681,
+    "wall_seconds": 260.2
+   },
+   "run_candidate": {
+    "run_id": "20261114T175241_run-candidate_youcom_timesfm-3_9c31",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 4,
+    "total_cost_usd": 0.3947234,
+    "wall_seconds": 21.4
+   },
+   "run_candidate_report": "**Stopped: no receipt written.** The model row that `scorecards/youcom/timesfm-3.json` needs is not in `results/leaderboard.csv`, so nothing was downloaded, changed or run.\n\n## What is missing\n\n- **Missing row:** TimesFM-3 with temperature as a known-future covariate (`google/timesfm-3.0-pytorch`, class `ff_native_exog`), for both zones and both regimes. I would name it `timesfm3_temperature`.\n- **Closest existing rows:** the leaderboard has `timesfm25` and `timesfm25_temperature`, which are TimesFM 2.5, a different checkpoint, so they cannot stand in for it.\n- **No groundwork yet:** `models_ff/run_ff.py` has no TimesFM-3 entry in `SPECS`, `models/pins.json` has no pin for the repository, and `results/forecasts/` has no file for it.\n\n## Steps a person has to run\n\n1. **Step 1, add the `SPECS` entry** in `models_ff/run_ff.py`: the library's TimesFM wrapper with temperature on and a 2,048-hour context. The scorecard notes the wrapper picks its version-3 class only when the repo id contains \"3.0\", so check that the local snapshot path still does.\n2. **Step 2, pin the weights:**\n   - The repository appears gated, so accept the non-commercial licence on Hugging Face and set a token in `.env` first.\n   - Look up the current head (the scorecard read `43046b8`; the weights upload was `6455822` on 2026-08-24 22:41 UTC).\n   - Run `uv run --project models python models/download.py google/timesfm-3.0-pytorch <full sha>` and note the weights date it prints.\n3. **Step 3, gate:**\n   - `uv run --project models_ff python models_ff/run_ff.py timesfm3_temperature gate`\n   - `uv run --project core python -m harness.score gate`\n   - Check the row is complete and plausible, on CPU. The scorecard flags two things to watch: 168 hours spans three 64-step output patches, and CPU runtime against the 60-minute limit is untested.\n4. **Step 4, commit the code, then score once:**\n   - `uv run --project models_ff python models_ff/run_ff.py timesfm3_temperature scored`\n   - `uv run --project core python -m harness.score scored`\n   - `uv run --project core python -m harness.stats scored`\n5. **Steps 5 and 6, write and report the receipt:** rerun `/run-candidate timesfm-3 youcom`, which will then find the row.\n\n## Things to carry into the row and receipt\n\n- **Licence:** the weights are non-commercial only, so the row needs that flag.\n- **Weeks after the weights:** the scorecard expects 10 of 52, but the leaderboard currently holds 48 windows, of which the scorecard counts 8 after the weights date. The receipt tool will fill the real count.\n- **Claim mismatch:** the publisher's claim is average rank on mixed-domain benchmarks (GIFT-Eval, fev-bench, TIME) with no load case and no stated horizon, so the receipt's `--mismatch` text should say that.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "timesfm3-leakage-aware-evaluation",
+   "judge": {
+    "run_id": "20261114T174352_judge_youcom_timesfm3-leakage-aware-evaluation_7f51",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 41,
+    "total_cost_usd": 4.0847778,
+    "wall_seconds": 315.1
+   },
+   "run_candidate": {
+    "run_id": "20261114T175302_run-candidate_youcom_timesfm3-leakage-aware-evaluation_d9dc",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 3,
+    "total_cost_usd": 0.40157940000000003,
+    "wall_seconds": 17.6
+   },
+   "run_candidate_report": "**Stopped: no receipt written.** The scorecard `timesfm3-leakage-aware-evaluation` (youcom, `ACCEPT_RUN`, `ff_native_exog`) needs a TimesFM 3 row, and `results/leaderboard.csv` has none. As instructed, I downloaded no weights, changed no code and ran no model.\n\n**What is missing**\n- A TimesFM 3 row with temperature (`google/timesfm-3.0-pytorch`), in both regimes and both zones; this is what the receipt compares against the temperature-only regression.\n- Optionally a univariate TimesFM 3 row, which would mirror the study's own configuration.\n- The TimesFM models on the leaderboard are `timesfm25` and `timesfm25_temperature` only, and `results/forecasts/` has no TimesFM 3 file, so nothing has been run on the scored weeks yet.\n\n**Steps a person has to run**\n1. **Step 1:** add a TimesFM 3 entry to `SPECS` in `models_ff/run_ff.py` (context 2,048 hours, settings fixed, never tuned). First check that FoundationForecast at our pinned commit wraps TimesFM 3 and passes covariates; the scorecard marks this as not verified. If it does not, this becomes a `direct_adapter` case and the skill says to stop.\n2. **Step 2:** look up the current commit of `google/timesfm-3.0-pytorch` and pin it with `uv run --project models python models/download.py google/timesfm-3.0-pytorch <full sha>`. Note the weights date it prints, because the judge could not read it and fell back to the 31 Aug 2026 release date.\n3. **Step 3:** run the gate with `uv run --project models_ff python models_ff/run_ff.py <name> gate`, then `uv run --project core python -m harness.score gate`. Check the row is complete and plausible.\n4. **Step 4:** commit, then score once with `run_ff.py <name> scored`, `harness.score scored` and `harness.stats scored`.\n5. **Step 5:** re-run `/run-candidate timesfm3-leakage-aware-evaluation youcom` to write the receipt.\n\n**Labels the row will need**\n- **Licence:** the weights are under the TimesFM Non-Commercial License v1.0.\n- **Weights inside the scored window:** the scorecard counts only 9 of 52 scored weeks starting after the weights release.\n- **CPU runtime:** the scorecard has not verified that the 0.3B model runs within 60 minutes on CPU.\n\nThe `timesfm-3` youcom scorecard is about the same model, and there is a run-candidate record for it from 17:52 today, so one TimesFM 3 run would probably serve both receipts; I did not open that scorecard to confirm.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "calendar-encoding-covariate-tsfm",
+   "judge": {
+    "run_id": "20261114T174352_judge_youcom_calendar-encoding-covariate-tsfm_2107",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 35,
+    "total_cost_usd": 2.7518453999999997,
+    "wall_seconds": 200.5
+   },
+   "run_candidate": {
+    "run_id": "20261114T175320_run-candidate_youcom_calendar-encoding-covariate-tsfm_32cc",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 6,
+    "total_cost_usd": 0.44797260000000005,
+    "wall_seconds": 30.0
+   },
+   "run_candidate_report": "Stopped at step 1: the model rows this scorecard needs are not in `results/leaderboard.csv`, so no receipt was written and nothing was downloaded, changed or run.\n\n## What is missing\n\nThe scorecard (`ACCEPT_RUN`, `direct_adapter`, central model `amazon/chronos-2`) asks to re-measure \"the same model given the same calendar in different encodings\". That needs these rows, per zone and regime:\n\n| Row needed | State |\n|---|---|\n| `chronos2_temperature` (comparison base) | on the leaderboard |\n| `chronos2_temperature_calendar` (strings for hour and weekday, 0/1 holiday flag) | not in `results/leaderboard.csv`; it exists only in the protocol-v2 results (`results/v2/`) |\n| Chronos-2 + temperature + ordinal calendar | does not exist |\n| Chronos-2 + temperature + sin/cos calendar | does not exist |\n| Chronos-2 + temperature + one target-encoding column | does not exist |\n| Chronos-2 + temperature + two target-encoding columns | does not exist |\n\nNo encoding arm exists in `harness/`, `models/` or `models_ff/`. The names for the four new arms are mine; the scorecard does not fix them.\n\n## What a person has to run\n\n1. **Step 1 (`direct_adapter`):** the skill says to stop here and not improvise an adapter. Someone has to add the four encoding arms to `models/chronos2.py`, changing only the encoding of the harness calendar values. The target encodings must be computed from the 2,048-hour context up to the cutoff only (rule 2).\n2. **Protocol:** the new rows are secondary and need a new protocol version plus a dated line in `DEVIATIONS.md` (rule 5).\n3. **Step 2:** the scorecard names revision `29ec376` for the weights. Confirm it matches `models/pins.json`; no new download should be needed if so.\n4. **Step 3:** run the gate origins for the new arms and score the gate; check the rows are complete and plausible.\n5. **Step 4:** commit the code, then run the scored set once, followed by score and stats.\n6. **Step 5:** run `tools/receipt.py` on `scorecards/youcom/calendar-encoding-covariate-tsfm.json`. Holiday weeks should be reported apart from ordinary weeks, with the count of holiday weeks stated.\n\n## Decision for you\n\nThe existing v2 pair `chronos2_temperature_calendar` vs `chronos2_temperature` only answers \"does adding a calendar help\", not \"does the encoding matter\", which is the paper's claim. I did not write a receipt from it, because it sits outside `results/leaderboard.csv` and tests a different comparison. If you want a partial receipt from that pair, say so.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "foretec-energybench",
+   "judge": {
+    "run_id": "20261114T174713_judge_youcom_foretec-energybench_1b03",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 28,
+    "total_cost_usd": 3.4063929999999996,
+    "wall_seconds": 225.9
+   },
+   "run_candidate": {
+    "run_id": "20261114T175350_run-candidate_youcom_foretec-energybench_8a7a",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 6,
+    "total_cost_usd": 0.658499,
+    "wall_seconds": 31.2
+   },
+   "run_candidate_report": "The model row this scorecard needs, `chronos2_temperature`, was already on the leaderboard, so I wrote the receipt into `scorecards/youcom/foretec-energybench.json`. No weights were downloaded, no code was changed and no model was run.\n\n**Verdict: partially transfers.** In the forecast regime the claim transfers in DOM and is inconclusive in JC.\n\n**Claimed (paraphrased):** zero-shot Chronos-2, given forecast weather as a known-future covariate, matches or beats a trained boosted model on the same weather.\n- Over all series its relative error is 0.295, against 0.330 to 0.337 for a LightGBM trained on 28 days.\n- On load it is 0.637, against 1.018 to 1.026 for the 28-day LightGBM and 0.685 for a two-year LightGBM.\n- Weather lowers Chronos-2's error by 48% over all targets but only 4% on load.\n\n**Measured:** error ratio of `chronos2_temperature` against the temperature-only regression (below 1 means Chronos-2 has less error).\n\n| Zone | Regime | Error ratio | 90% range | Per-zone result |\n|---|---|---|---|---|\n| DOM | forecast | 0.730 | 0.665 to 0.805 | worth switching |\n| JC | forecast | 0.817 | 0.686 to 0.960 | inconclusive |\n| DOM | oracle | 0.663 | 0.579 to 0.759 | not used for the verdict |\n| JC | oracle | 0.698 | 0.589 to 0.824 | not used for the verdict |\n\n**Weeks after the weights:** 48 of 48 scored weeks start after the Chronos-2 weights date (2025-10-30).\n\n**Setup mismatch:**\n- **Horizon:** the paper is day-ahead on a 15-minute grid; ours is 168 hours ahead, hourly, so the paper says nothing about days 2 to 7.\n- **Covariates:** the paper uses three weather models' means and spreads; ours is temperature only.\n- **Baseline:** the paper compares against a LightGBM (28-day or two-year) and reports errors relative to a weekly naive; our ratio is against the temperature-only regression.\n- **Record:** the paper has 19 to 28 live days of load in four European zones in October 2026; ours is 48 scored weeks over a year in PJM zones JC and DOM.\n- **Regime:** the paper has no oracle regime, so the forecast regime is the like-for-like one.\n\n**Secondary, not in the receipt or verdict:** the paper's with-against-without-weather comparison on load (claimed \u22124%) is much larger here. In the forecast regime, `chronos2_temperature` against `chronos2` has an error ratio of 0.751 in JC (90% range 0.662 to 0.852) and 0.544 in DOM (0.487 to 0.612).\n\nI used claim kind `model_better`, since the paper's claim is that the foundation model beats a trained baseline. The scorecard change is uncommitted.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": "partially"
+  },
+  {
+   "candidate_id": "choosing-load-methods-horizon-four-grids",
+   "judge": {
+    "run_id": "20261114T174812_judge_youcom_choosing-load-methods-horizon-four-grids_daf6",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 33,
+    "total_cost_usd": 2.5363931999999996,
+    "wall_seconds": 179.4
+   },
+   "label": "PARTIAL",
+   "runnable_class": "not_runnable",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "ltcc-weekly-ahead-load-ensemble",
+   "judge": {
+    "run_id": "20261114T174907_judge_youcom_ltcc-weekly-ahead-load-ensemble_f6ab",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 34,
+    "total_cost_usd": 2.1556662000000006,
+    "wall_seconds": 213.3
+   },
+   "label": "PARTIAL",
+   "runnable_class": "not_runnable",
+   "receipt_verdict": null
+  }
+ ],
+ "total_cost_usd": 19.56
+}

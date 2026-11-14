@@ -1,0 +1,213 @@
+{
+ "candidate_id": "timesfm3-leakage-aware-evaluation",
+ "title": "How Far Does Zero-Shot Go? A Leakage-Aware Evaluation of TimesFM 3 on Post-Release, Multivariate and Controlled Data",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://zenodo.org/records/24194671",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T17:44:26Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://zenodo.org/records/24194671",
+   "kind": "zenodo",
+   "paraphrase": "Preprint (13 Nov 2026, one independent author, not peer reviewed). TimesFM 3 zero-shot under a protocol frozen before post-release data were downloaded: 16% lower MASE and 29% lower scaled quantile loss than a classical ensemble on four post-release domains; in two sealed prospective weeks the point-forecast edge on load, prices and river flow is not confirmed; 80% intervals cover about 70%.",
+   "evidence_id": "7b12aedf3cac"
+  },
+  {
+   "url": "https://github.com/alepom/timesfm-zeroshot-study",
+   "kind": "github",
+   "paraphrase": "Study repository (code MIT). README table, TimesFM 3 univariate with 95% intervals: vs classical ensemble MASE 0.836 and SQL 0.707 on post-release data (1 Sep to 20 Oct 2026); vs Chronos-2 MASE 0.953; prospective load, price and river vs ensemble MASE 1.073 (not resolved) and SQL 0.750. Stated limits: seven weeks of data, few time clusters, two overlapping prospective weeks.",
+   "evidence_id": "361dc7005358"
+  },
+  {
+   "url": "https://github.com/alepom/timesfm-zeroshot-study/blob/main/protocol.md",
+   "kind": "github",
+   "paraphrase": "Protocol v1 of 28 Oct 2026, frozen by tag before any post-release data. Load: 12 European countries, hourly, horizons 24 and 168 h. Primary contrasts give no model covariates; oracle temperature goes only to multivariate configurations. Hourly baseline: three MSTL variants averaged, on 2,016 points against about 14,500 for the foundation models. Three dated deviations are listed.",
+   "evidence_id": "98b444e1b885"
+  },
+  {
+   "url": "https://github.com/alepom/timesfm-zeroshot-study/blob/main/reports/confirmatory_main.json",
+   "kind": "github",
+   "paraphrase": "Confirmatory output file. Load only (12 series, 684 windows, 8 weeks), TimesFM 3 univariate MASE ratios: 0.892 vs the classical ensemble (resolved), 0.960 vs Chronos-2 (not resolved), 0.925 vs TimesFM 2.5 (resolved). Oracle covariates on load and river change TimesFM 3's MASE by a ratio of 0.973, not resolved.",
+   "evidence_id": "b8c95efc4a62"
+  },
+  {
+   "url": "https://github.com/alepom/timesfm-zeroshot-study/blob/main/paper/generated/table_family_s6.tex",
+   "kind": "github",
+   "paraphrase": "Prospective results table, load, price and river pooled: TimesFM 3 univariate vs ensemble MASE 1.073 (not resolved) and SQL 0.750 (resolved); vs Chronos-2 MASE 1.001 and vs TimesFM 2.5 0.988 (neither resolved); vs naive MASE 0.757 (resolved). It has no load-only row.",
+   "evidence_id": "b65655aaf5e9"
+  },
+  {
+   "url": "https://zenodo.org/records/24194745",
+   "kind": "zenodo",
+   "paraphrase": "Data record: the software release, per-series quantile forecasts of every model, processed series and the raw post-release downloads (load from Energy-Charts, weather from Open-Meteo ERA5), with checksums. The code bundles hashed in the prospective seals are withheld because they contain a private address; the other sealed files are included.",
+   "evidence_id": "5565fbded1f6"
+  },
+  {
+   "url": "https://huggingface.co/google/timesfm-3.0-pytorch",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the central model: official TimesFM 3.0 PyTorch weights, about 0.3B parameters, under the TimesFM Non-Commercial License v1.0. Training data include Wikipedia pageviews to Nov 2023 and Google Trends to end of 2022. The fetched card and file listing give no absolute date for the weights file.",
+   "evidence_id": "3d72f61333f5"
+  }
+ ],
+ "claims": [
+  {
+   "text": "On the four structured post-release domains (load, prices, weather, river flow), TimesFM 3 univariate had a MASE 0.836 times the pre-specified classical ensemble's (95% interval 0.786 to 0.882; confirmatory, resolved).",
+   "metric": "MASE ratio, TimesFM 3 / classical ensemble",
+   "value": 0.836,
+   "dataset": "post-release data 1 Sep to 20 Oct 2026: load and prices (12 European countries), weather (20 cities), river flow (20 gauges)",
+   "horizon": "24 and 168 h (hourly); 7 and 28 days (river)",
+   "baseline": "classical ensemble (MSTL variants on hourly data; ETS, ARIMA, Theta otherwise)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 50,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On the same tasks its scaled quantile loss was 0.707 times the classical ensemble's (95% interval 0.649 to 0.764; confirmatory, resolved).",
+   "metric": "scaled quantile loss ratio, TimesFM 3 / classical ensemble",
+   "value": 0.707,
+   "dataset": "post-release data 1 Sep to 20 Oct 2026: load, prices, weather, river flow",
+   "horizon": "24 and 168 h (hourly); 7 and 28 days (river)",
+   "baseline": "classical ensemble",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 50,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On the same tasks its MASE was 0.953 times Chronos-2's, both univariate (95% interval 0.924 to 0.981; confirmatory, resolved).",
+   "metric": "MASE ratio, TimesFM 3 / Chronos-2",
+   "value": 0.953,
+   "dataset": "post-release data 1 Sep to 20 Oct 2026: load, prices, weather, river flow",
+   "horizon": "24 and 168 h (hourly); 7 and 28 days (river)",
+   "baseline": "Chronos-2, univariate",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 50,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On electricity load alone, TimesFM 3 univariate had a MASE 0.892 times the classical ensemble's (95% interval 0.824 to 0.950; secondary family, resolved).",
+   "metric": "MASE ratio, TimesFM 3 / classical ensemble",
+   "value": 0.892,
+   "dataset": "national hourly load, 12 European countries (Energy-Charts), 684 windows",
+   "horizon": "24 and 168 h, pooled with equal weight",
+   "baseline": "classical ensemble (three MSTL variants averaged)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 50,
+   "citation_idx": 3,
+   "ci90": null
+  },
+  {
+   "text": "On electricity load alone, its MASE was 0.960 times Chronos-2's, both univariate (95% interval 0.909 to 1.005; secondary family, not resolved).",
+   "metric": "MASE ratio, TimesFM 3 / Chronos-2",
+   "value": 0.96,
+   "dataset": "national hourly load, 12 European countries (Energy-Charts), 684 windows",
+   "horizon": "24 and 168 h, pooled with equal weight",
+   "baseline": "Chronos-2, univariate",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 50,
+   "citation_idx": 3,
+   "ci90": null
+  },
+  {
+   "text": "On electricity load alone, its MASE was 0.925 times TimesFM 2.5's (95% interval 0.882 to 0.965; secondary family, resolved).",
+   "metric": "MASE ratio, TimesFM 3 / TimesFM 2.5",
+   "value": 0.925,
+   "dataset": "national hourly load, 12 European countries (Energy-Charts), 684 windows",
+   "horizon": "24 and 168 h, pooled with equal weight",
+   "baseline": "TimesFM 2.5, univariate",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 50,
+   "citation_idx": 3,
+   "ci90": null
+  },
+  {
+   "text": "Giving TimesFM 3 oracle covariates (observed temperature for load, precipitation for river flow) changed its MASE by a ratio of 0.973 against the univariate run (95% interval 0.904 to 1.060; secondary, not resolved).",
+   "metric": "MASE ratio, with covariates / without",
+   "value": 0.973,
+   "dataset": "post-release load (12 countries) and river flow (20 gauges)",
+   "horizon": "24 and 168 h (load); 7 and 28 days (river)",
+   "baseline": "TimesFM 3 without covariates",
+   "test_window_days": 50,
+   "citation_idx": 3,
+   "ci90": null
+  },
+  {
+   "text": "In two sealed prospective weeks, on load, prices and river flow pooled, TimesFM 3's MASE was 1.073 times the classical ensemble's (95% interval 0.977 to 1.175; not resolved): the point-forecast advantage is not confirmed.",
+   "metric": "MASE ratio, TimesFM 3 / classical ensemble",
+   "value": 1.073,
+   "dataset": "prospective issues of 30 Oct and 2 Nov 2026: load, prices, river flow",
+   "horizon": "240 h issued, scored on days 2 to 9",
+   "baseline": "classical ensemble",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 10,
+   "citation_idx": 4,
+   "ci90": null
+  },
+  {
+   "text": "In the same prospective weeks its scaled quantile loss was 0.750 times the ensemble's (95% interval 0.648 to 0.861; resolved): the quantile-loss advantage is confirmed.",
+   "metric": "scaled quantile loss ratio, TimesFM 3 / classical ensemble",
+   "value": 0.75,
+   "dataset": "prospective issues of 30 Oct and 2 Nov 2026: load, prices, river flow",
+   "horizon": "240 h issued, scored on days 2 to 9",
+   "baseline": "classical ensemble",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 10,
+   "citation_idx": 4,
+   "ci90": null
+  },
+  {
+   "text": "In the prospective weeks TimesFM 3's nominal 80% intervals covered about 70% of the outcomes.",
+   "metric": "coverage of the 80% interval",
+   "value": 0.7,
+   "dataset": "prospective issues of 30 Oct and 2 Nov 2026",
+   "horizon": "240 h issued, scored on days 2 to 9",
+   "baseline": null,
+   "test_window_days": 10,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "On exchange rates, Treasury yields and oil prices TimesFM 3's MASE was 1.110 times the random walk's (95% interval 1.049 to 1.178): worse than the random walk.",
+   "metric": "MASE ratio, TimesFM 3 / naive",
+   "value": 1.11,
+   "dataset": "post-release business-daily series: 10 ECB exchange rates, 8 Treasury yields, WTI, Brent",
+   "horizon": "5 and 20 business days",
+   "baseline": "random walk (naive)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 50,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The protocol was frozen by a git tag on 28 Oct 2026 before any post-release test data were downloaded, and the two prospective issues were sealed by hash with public timestamps before their outcomes existed.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 2
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 3,
+  "covariates_match": 1,
+  "rationale": "Hourly electric load is one of the four domains and has its own result (national load for 12 European countries; ours is PJM zonal load). The load task is scored at 24 and 168 h pooled with equal weight, and the prospective check at 240 h, so week-ahead is covered but not reported alone. The headline contrasts are univariate by design: no model gets covariates. Temperature enters only in a secondary contrast, as an oracle, which corresponds to our oracle regime; nothing corresponds to our forecast regime."
+ },
+ "checks": {
+  "pre_registered": "yes",
+  "training_overlap_risk": "high",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: protocol.md states it was frozen by tag protocol-frozen-v1 on 28 Oct 2026 before post-release data were downloaded; the tags page shows that tag at commit ce1c1e5 dated 28 Oct and v1.0.0 dated 13 Nov. The repository history was rewritten before release (a private address removed), so hashes changed and commit dates come from the author's machine; the protocol says the freeze was publicly timestamped on 30 Oct. The seal files and timestamp receipts were not opened or verified. Three deviations are listed, one of them that the data were downloaded on 28 Oct, after the freeze commit but a day earlier than planned. training_overlap_risk is about our run. The weights file's commit date could not be read: the fetched Hugging Face commit list carried no dates and the file listing only a relative age. Fallback, as the spec allows: the release date of 31 Aug 2026 given by Google's announcement (from the research call's source list) and by the study's protocol. On that date 9 of our 52 scored weeks start after the weights (7 Sep to 2 Nov 2026), fewer than half, hence high; a run carries that label. evidence_strength is weak by the spec's rule on the window: the post-release test covers 50 days (1 Sep to 20 Oct 2026) and the prospective check about 10, under the 90-day minimum; the short window is the price of testing only after the release. Otherwise the study is pre-specified and public, with code, forecasts and data. baseline_same_inputs is partly against the classical ensemble: no model gets covariates, but on hourly data the ensemble sees 2,016 points and the foundation models about 14,500; the study's own check puts TimesFM 3 with the short context 4% worse (1.040). Intervals in the sources are 95%, not 90%, so ci90 is null and the interval is in each claim's text. The load-only figures are from a secondary family; the prospective result is pooled over load, prices and river flow with no load-only row in the table read, and the README attributes the unconfirmed point advantage mainly to electricity prices. The 70% coverage figure is from the record's description only; the calibration table was not read. Central model: TimesFM 3 (univariate configuration); Chronos-2, TimesFM 2.5, TiRex-2 and the classical models are comparators. Licence: non-commercial (model card, official repository), flagged under license_policy. independent_replication: one research call found no replication or criticism of this study, published the day before this run; the two other TimesFM 3 evaluations it named (a university-building load study and a simulation study) are separate work, known here only from source snippets. Not verified: whether FoundationForecast at our pinned commit wraps TimesFM 3 with covariates, and whether the 0.3B model runs within 60 minutes on CPU; the PDF, the Zenodo archives and tierB_series.csv were not opened. The repository states the code, runs and draft were produced by an AI coding agent under the author's direction."
+ },
+ "evidence_strength": "weak",
+ "license": "TimesFM Non-Commercial License v1.0",
+ "license_ok_for_commercial": false,
+ "runnable_class": "ff_native_exog",
+ "label": "ACCEPT_RUN",
+ "label_reason": "On target (hourly electric load at 24 and 168 h is one of its domains, with its own result against a classical baseline) and fully sourced: record, frozen protocol, results files, forecasts and data are public, and the headline comparison can be re-measured with TimesFM 3, which spec.yaml lists as runnable through FoundationForecast. Evidence is weak only because the post-release window is 50 days, and a run must be labelled: the weights are non-commercial and only 9 of our 52 scored weeks start after their release.",
+ "implementation_hint": "TimesFM 3 through models_ff/run_ff.py (weights google/timesfm-3.0-pytorch at a recorded revision, ff_native_exog). run_ff.py has entries for TimesFM 2.5 and Timestral only, so a TimesFM 3 entry is needed, and the wrapper's covariate path must be checked against the pinned FoundationForecast commit first. Run it with temperature in each regime against the temperature-only regression; a univariate row would mirror the study's own configuration. Label the rows: weights inside the scored window (9 of 52 weeks after 31 Aug 2026) and non-commercial licence. Comparators from the study that we already run: amazon/chronos-2 (models/chronos2.py) and google/timesfm-2.5-200m-pytorch univariate (models_ff/run_ff.py). The study's baseline is an MSTL ensemble, not a regression, and it ran on a T4 GPU.",
+ "receipt": null
+}

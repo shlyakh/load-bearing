@@ -1,0 +1,161 @@
+{
+  "candidate_id": "timesfm-3",
+  "title": "TimesFM-3: a zero-shot foundation model for multivariate forecasting",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://huggingface.co/google/timesfm-3.0-pytorch",
+    "provider": "youcom",
+    "retrieved_at": "2026-11-14T17:47:01Z"
+  },
+  "candidate_type": "model_release",
+  "primary_sources": [
+    {
+      "url": "https://research.google/blog/timesfm-3-a-zero-shot-foundation-model-for-multivariate-forecasting/",
+      "kind": "blog",
+      "paraphrase": "Google Research post of 31 Aug 2026 by two of the authors. A 330M-parameter model that takes several targets, past-only covariates and covariates known into the future (weather forecasts are named) without fine-tuning, and fills the whole horizon in one pass with 9 quantiles. Claims the best average rank on GIFT-Eval, fev-bench and TIME, shown as rank plots with no score table and no load case.",
+      "evidence_id": "e61516fc5f0a"
+    },
+    {
+      "url": "https://github.com/google-research/timesfm",
+      "kind": "github",
+      "paraphrase": "Official repository. README states rank 1 on fev-bench (100 tasks), TIME (50 datasets, 98 tasks) and, among foundation models, GIFT-Eval. Shows the timesfm3 interface with past-only and past-and-future covariates, a 15,360-point context cap and an MLX backend. Code is Apache-2.0; self-hosted 3.0 weights are non-commercial and non-production.",
+      "evidence_id": "52a49b8215a2"
+    },
+    {
+      "url": "https://huggingface.co/google/timesfm-3.0-pytorch",
+      "kind": "hf_card",
+      "paraphrase": "Model card of the weights: TimesFM Non-Commercial License v1.0; about 0.3B parameters, 20 layers, context patch 32, forecast patch 64. Declared pretraining data: GiftEvalPretrain without the sets that overlap fev-bench, Wikipedia page views to Nov 2023, Google Trends to end of 2022, synthetic data. The direct fetch returned only the licence line; the rest came through the research sources.",
+      "evidence_id": "3d72f61333f5"
+    },
+    {
+      "url": "https://huggingface.co/api/models/google/timesfm-3.0-pytorch/commits/main",
+      "kind": "hf_card",
+      "paraphrase": "Commit list of the weights repository: weights and config uploaded on 2026-08-24 at 22:41 UTC (6455822); the ten later commits, to 2026-09-02, are titled as README, LICENSE and metadata changes. Head is 43046b8. No per-file dates.",
+      "evidence_id": "8e7ad53c9602"
+    },
+    {
+      "url": "https://github.com/google-research/timesfm/releases/tag/v3.0.0",
+      "kind": "github",
+      "paraphrase": "Release v3.0.0 of 28 Aug 2026 at commit 331c6d3: new model weights and the code that goes with them.",
+      "evidence_id": "76267dd2096a"
+    }
+  ],
+  "claims": [
+    {
+      "text": "TimesFM-3 forecasts several target series together and takes past-only covariates and covariates known into the future, zero-shot, producing the whole horizon in a single forward pass.",
+      "metric": null,
+      "value": null,
+      "dataset": null,
+      "horizon": null,
+      "baseline": "earlier TimesFM versions, which were univariate and decoded patch by patch",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "The model has 330 million parameters.",
+      "metric": "parameters (millions)",
+      "value": 330,
+      "dataset": null,
+      "horizon": null,
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "On GIFT-Eval, fev-bench and TIME, TimesFM-3 has the best average rank among pretrained foundation models, for point and probabilistic metrics alike (rank plots only, no scores).",
+      "metric": "average rank across tasks",
+      "value": null,
+      "dataset": "GIFT-Eval, fev-bench, TIME",
+      "horizon": null,
+      "baseline": "Chronos-2, the Toto 2.0 family, TimesFM-2.5",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Run without any covariate or cross-series information, TimesFM-3 already matches or beats the models it is compared with.",
+      "metric": "average rank across tasks",
+      "value": null,
+      "dataset": "GIFT-Eval, fev-bench, TIME",
+      "horizon": null,
+      "baseline": "Chronos-2, the Toto 2.0 family, TimesFM-2.5",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "fev-bench: rank 1 overall across 100 tasks.",
+      "metric": "leaderboard rank",
+      "value": 1,
+      "dataset": "fev-bench, 100 tasks",
+      "horizon": null,
+      "baseline": "the other models on the leaderboard at release",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "TIME: rank 1 overall across 50 datasets and 98 tasks.",
+      "metric": "leaderboard rank",
+      "value": 1,
+      "dataset": "TIME, 50 datasets, 98 tasks",
+      "horizon": null,
+      "baseline": "the other models on the leaderboard at release",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "GIFT-Eval: rank 1 among foundation models.",
+      "metric": "leaderboard rank",
+      "value": 1,
+      "dataset": "GIFT-Eval",
+      "horizon": null,
+      "baseline": "the other foundation models on the leaderboard at release",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "The model reads up to 15,360 points of history; longer contexts are cut to the most recent points.",
+      "metric": "maximum context (time steps)",
+      "value": 15360,
+      "dataset": null,
+      "horizon": null,
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 1,
+      "ci90": null
+    }
+  ],
+  "relevance": {
+    "target_match": 1,
+    "horizon_match": 1,
+    "covariates_match": 3,
+    "rationale": "A general-purpose model release. Its own sources report only mixed-domain benchmark ranks, with no electric load or other energy case, so the target is scored 1; hourly load evidence exists only in an outside study of one building (see checks.notes). No forecast horizon is stated for the benchmark claims, and the usage notes say horizons of 128 steps and more are stitched from 64-step output patches, so our 168 hours is reachable but untested by the publisher; horizon is scored 1. Covariates known into the future are a native input and the release names weather forecasts as an example, which is exactly what our spec requires, so covariates are scored 3."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "high",
+    "independent_replication": "unknown",
+    "notes": "pre_registered: no; a model release, and none of its sources describe a plan fixed before the results. training_overlap_risk is about our run and follows the date rule: the commit list dates the weights upload to 2026-08-24 22:41 UTC and the later commits are titled as text and licence changes (no per-file dates, so this rests on the titles). The scored cutoff of Mon 2026-08-24 (04:00 UTC) falls a few hours before the upload, so by the harness's rule (cutoff later than the weights date) 10 of the 52 scored weeks follow the weights, fewer than half, so high. DECISIONS.md says 11, which counts the week of Aug 24 itself; and results/windows.parquet currently holds 48 cutoffs, 8 of them after the weights. Against the date rule, the card's declared real data ends in 2022 and 2023, which would put our 2025-26 window outside it; that is the publisher's statement, the corpus is not itemised, and whether GiftEvalPretrain contains PJM or other US load series was not checked. independent_replication: unknown. No source was found that reruns the three benchmarks and reproduces the rank claim, and Google publishes no scores to compare against. What was found qualifies the claim: the Timestral-209M card (fetched, ledger 966584a0f435), published after the release, lists TimesFM-3 at GIFT-Eval MASE 0.667 and CRPS 0.456, TIME MASE 0.640 and CRPS 0.536, fev-bench SQL skill 48.99, behind Timestral-209M and t0-gamma on every metric and ahead of Chronos-2 and Toto 2.0; so the top rank held for the models compared at release and no longer holds. That card does not say whether the TimesFM-3 figures were rerun. Two outside studies ran the model: a university building in The Hague, hourly, 24 h ahead, 57 test days, observed weather (fetched, ledger 1afe7c9be5ad): TimesFM 3.0 with covariates MAE 19.97 kWh, target-only 20.01, XGBoost with the same covariates 22.45, weekly seasonal naive 35.27; covariates helped on holidays, slightly hurt otherwise, and a paired bootstrap did not separate TimesFM from XGBoost. A pre-registered simulation (fetched, ledger f539f98e616c), univariate, 12 steps: never worse than 1.31 times the best method per scenario, but automatic ARIMA 21 to 24% more accurate on strongly seasonal data. Neither is a replication of the publisher's claims; both are separate candidates in our list. evidence_strength: moderate. Public weights and code, so the capability claim can be checked by running it, but the headline accuracy claim is descriptive (ranks in plots, no scores, no intervals, no stated test windows), from the publisher, not pre-registered, and has no technical report: the card cites the 2023 TimesFM paper only. The claims carry no intervals, so ci90 is empty. Not verified: the leaderboards themselves (not opened); the full model card (the direct fetch returned only the licence line, and the raw README fetch was refused as restricted, which suggests the repository is gated and needs an accepted licence and a token; the architecture and training-data lines come from the research tool's source snippets); the text of the non-commercial licence and whether an unpaid benchmark like ours counts as non-production; CPU runtime of the 330M model on our laptop against the 60-minute limit (the only timings are for MLX on an M4 Max); that the TimesFM 3.0 wrapper in our pinned FoundationForecast passes temperature correctly (the installed wrapper has a TimesFM 3 class with a native known-future path and the timesfm3 package is installed, but nothing was run). The research answer misquoted the building study's weekly naive MAE (32.29 against 35.27 on the page); the fetched page is used here. One research task at the standard tier, no searches, 10 pages fetched (1 refused)."
+  },
+  "evidence_strength": "moderate",
+  "license": "TimesFM Non-Commercial License v1.0 (weights); Apache-2.0 (code)",
+  "license_ok_for_commercial": false,
+  "runnable_class": "ff_native_exog",
+  "label": "ACCEPT_RUN",
+  "label_reason": "A runnable model release with public weights, code and a model card, whose headline feature is the one our spec asks for: temperature as a covariate known into the future, which our spec already lists as running through FoundationForecast. Its accuracy claim is publisher-reported benchmark ranks with no load evidence, the weights are non-commercial, and only 10 of 52 scored weeks start after the weights date, so the run must carry those labels.",
+  "implementation_hint": "Run models_ff/run_ff.py with google/timesfm-3.0-pytorch (ff_native_exog, temperature as a known-future covariate). Needed first: a SPECS entry built with the library's TimesFM wrapper and temperature true (the wrapper picks its version-3 class when the repo id contains '3.0', so check that the local snapshot path passed to it still does), and a pin in models/pins.json at a recorded revision (head read here: 43046b8; weights upload 6455822 on 2026-08-24 22:41 UTC) with the weights file's own date. The repository looks gated: accept the licence on Hugging Face and set a token in .env. Expect n_windows_after_weights = 10 of 52 (the Aug 24 cutoff precedes the upload). 168 hours spans three 64-step output patches, a path the README says is worth checking on its own; context cap is 15,360 points, above our 2,048 hours. Record in the row whether symmetric averaging and the library's clipping defaults are on. The licence allows non-commercial use only, so flag the row. A univariate row from the same checkpoint would show what temperature adds. Gate origins first, on CPU.",
+  "receipt": null
+}

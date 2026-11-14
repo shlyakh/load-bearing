@@ -1,0 +1,136 @@
+{
+ "candidate_id": "calendar-encoding-covariate-tsfm",
+ "title": "On the Encoding of Calendar Features in Covariate-Informed Time Series Foundation Models",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2610.13676",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T17:52:00Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2610.13676v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text of version 1. Seven calendar encodings (ordinal, one-hot, cyclic, four target encodings) on Chronos-2, TabPFN-TS-3, TiRex-2 and TimesFM-3; nine hourly series with one test year each, four of them electric load; context 8192 h, horizon and stride 24 h. Table 2 gives mean MASE and SQL by day type, Table 7 the TransnetBW load. Code promised on publication; no intervals.",
+   "evidence_id": "e370591671c6"
+  },
+  {
+   "url": "https://arxiv.org/abs/2610.13676",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page: version 1 submitted 9 Oct 2026, cs.LG, CC BY 4.0. Carries the sentence the candidate's claim is built on: encoding choice changes MASE by up to 9.9% on non-holidays and 83% on holidays within one model. No code link.",
+   "evidence_id": "8ccedbfe2f5a"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the central model's weights repository: weights and config added on 30 Oct 2025 (commit 95a9710); later commits up to 29ec376 (5 Jun 2026) are README, tag and deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the central model: licence apache-2.0, created 30 Oct 2025, head 29ec376, about 119.5M parameters, library chronos-forecasting.",
+   "evidence_id": "d33d62d68de3"
+  }
+ ],
+ "claims": [
+  {
+   "text": "On non-holidays, the gap in mean MASE between the best and the worst calendar encoding within one model is at most 9.9% (TabPFN-TS-3: 0.6785 against 0.7457); the smallest gap is 4.8% (TiRex-2).",
+   "metric": "MASE gap, worst encoding over best, percent",
+   "value": 9.9,
+   "dataset": "mean over nine hourly series (traffic, transit, load, water, bike rentals), non-holiday windows",
+   "horizon": "24 hours",
+   "baseline": "the same model with its best calendar encoding",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "On holidays, the same gap is at most 83% (TiRex-2: 1.2318 against 2.2586); the smallest is 44% (TabPFN-TS-3).",
+   "metric": "MASE gap, worst encoding over best, percent",
+   "value": 83,
+   "dataset": "mean over nine hourly series, holiday windows",
+   "horizon": "24 hours",
+   "baseline": "the same model with its best calendar encoding",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Chronos-2, non-holidays: mean MASE runs from 0.6218 (two separate target encodings) to 0.6626 (one-hot), a gap of 6.6%. The percentage is computed here from Table 2; the paper does not print it.",
+   "metric": "MASE gap, worst encoding over best, percent",
+   "value": 6.6,
+   "dataset": "mean over nine hourly series, non-holiday windows",
+   "horizon": "24 hours",
+   "baseline": "Chronos-2 with its best calendar encoding",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Chronos-2, holidays: mean MASE runs from 1.2285 (two separate target encodings) to 2.0244 (one-hot), a gap of 65%. The percentage is computed here from Table 2.",
+   "metric": "MASE gap, worst encoding over best, percent",
+   "value": 65,
+   "dataset": "mean over nine hourly series, holiday windows",
+   "horizon": "24 hours",
+   "baseline": "Chronos-2 with its best calendar encoding",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Chronos-2 with ordinal, one-hot or cyclic calendar columns is worse on non-holidays than Chronos-2 with no covariates (MASE 0.6440, 0.6626 and 0.6523 against 0.6353; one-hot is 4.3% worse, computed here); only the target encodings improve on it (0.6218 to 0.6237).",
+   "metric": "MASE ratio, one-hot calendar over no covariates",
+   "value": 1.043,
+   "dataset": "mean over nine hourly series, non-holiday windows",
+   "horizon": "24 hours",
+   "baseline": "Chronos-2 without covariates",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "TransnetBW control-area load, Chronos-2, holidays: MASE falls from 2.3853 with no covariates to 0.5654 with the target encoding that treats a holiday as a Sunday (ratio 0.24, computed here); one-hot reaches only 1.6213. On non-holidays the same series moves from 0.4205 to between 0.4104 and 0.4376.",
+   "metric": "MASE ratio, best calendar encoding over no covariates",
+   "value": 0.24,
+   "dataset": "TransnetBW total load (ENTSO-E), hourly, 2025, holiday windows",
+   "horizon": "24 hours",
+   "baseline": "Chronos-2 without covariates",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "On holiday windows, calendar covariates lower mean MASE against the same model without covariates in 26 of the 28 model and encoding combinations; the two exceptions are TiRex-2 with one-hot and with cyclic columns.",
+   "metric": "combinations improved on holidays, of 28",
+   "value": 26,
+   "dataset": "mean over nine hourly series, holiday windows",
+   "horizon": "24 hours",
+   "baseline": "the same model without covariates",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 2,
+  "rationale": "Four of the nine series are hourly electric load (the TransnetBW control area, which is the closest to a PJM zone, and three low-voltage feeders); the other five are traffic, transit, water and bike rentals, and the headline figures are means over all nine. The horizon is day-ahead (24 hours, issued at 00:00), not a week. The covariates are calendar only (hour, weekday, public holiday), known in the future; there is no weather, and the authors say they expect no comparable benefit where temperature drives the target. It bears on us through the secondary row chronos2_temperature_calendar, which passes hour and day of week as categorical strings and the holiday as a 0/1 flag: the paper finds that this kind of target-agnostic encoding makes Chronos-2 worse on ordinary days, and that target-scale profiles do not."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: Chronos-2. The headline names no single model (the 9.9% is TabPFN-TS-3 and the 83% is TiRex-2), so the central model is the first one the paper lists, which is also the model of our primary comparison and the only one of the four in runnable_models with a script; this choice is the judge's. The Chronos-2 gaps (6.6% and 65%) are computed here from Table 2. pre_registered: the paper lists three expectations in its setup section but gives no registry, plan file or date, so 'no'. training_overlap_risk is about our run: the Chronos-2 weights file was committed on 2025-10-30 (Hub commit list, fetched), before our first scored week (2025-11-10). The authors also state that none of their datasets is in the models' pretraining data; not checked. independent_replication: one research call and two searches (open web and github.com) found no replication, dispute or repository. evidence_strength is weak by the spec's rule, in line with how the copy-count preprint was judged: data and weights are public, the test window is a full year per series and each comparison is the same model on the same windows, but the code is not released (promised on publication), no results files are attached, there are no intervals or tests, and the number of holiday windows behind the 83% is not given (one year of public holidays per series, so probably about ten to fifteen days each; this count is an estimate, not from the source). The paper notes that TabPFN-TS-3 and TiRex-2 treat binary columns specially, so for those two the one-hot and flag results mix encoding with internal preprocessing; Chronos-2 is not affected. Target encodings are context means of the target per calendar cell, so they change what the model is given, not only its representation; the paper says they add no future information. Not verified: the per-dataset tables other than TransnetBW (the three feeder tables were not read); figures; the weights revisions the paper used (none seen in the passages read); licences and weights dates of TabPFN-TS-3, TiRex-2 and TimesFM-3; whether a later arXiv version exists. Research sources 3 to 5 (Chronos-2 paper, TiRex-2 paper, an MDPI substation study) were not fetched and are not cited."
+ },
+ "evidence_strength": "weak",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_RUN",
+ "label_reason": "Relevant (hourly electric load is four of its nine series, day-ahead, calendar covariates on the model of our primary comparison) with a full-text primary source, and its comparison, the same model given the same calendar in different encodings, can be re-measured now with Chronos-2 on our frozen windows. The evidence is weak by the spec's rule (preprint, code not yet released, no intervals, few holiday windows) and the setup differs from ours in horizon and in having no temperature, so the run tests whether 'the encoding matters, mostly on holidays' transfers to week-ahead load with temperature already supplied.",
+ "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, pinned revision 29ec376). The existing secondary row chronos2_temperature_calendar already passes hour and day of week as strings, holiday and year-end as 0/1. Add arms that keep the temperature and the same harness calendar values and change only the encoding: ordinal numbers; sin/cos; one target-encoding column (mean load per hour and day type over the 2,048-hour context, holiday treated as Sunday); and two columns (hour-weekday profile plus hour-holiday profile). Compute target encodings from the context up to the cutoff only (rule 2). Compare per zone and regime against chronos2_temperature and chronos2_temperature_calendar, with holiday weeks reported apart from ordinary weeks; with 52 weekly windows the holiday subset is small, so say how many. All new rows are secondary and need a protocol version and a DEVIATIONS.md line. The paper's context is 8192 h and horizon 24 h; ours are 2,048 h and 168 h (its context-2048 rerun shows the same pattern, with weaker holiday gains for the richer target encodings). Other models: TiRex-2 and TimesFM 3.0 have FoundationForecast wrappers with native covariates (ff_native_exog, models_ff/run_ff.py) but are not run here yet; TabPFN-TS is wrapped as ff_univariate only; mistralai/Timestral-209M (ff_native_exog) is not in the paper and would be a further secondary row.",
+ "receipt": null
+}

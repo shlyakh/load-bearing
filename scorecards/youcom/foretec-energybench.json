@@ -1,0 +1,292 @@
+{
+ "candidate_id": "foretec-energybench",
+ "title": "EnergyBench: a live, gate-aligned benchmark of day-ahead forecasts for European power markets",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2611.07784",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T17:49:34Z"
+ },
+ "candidate_type": "benchmark",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2611.07784v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text. A live daily benchmark: at 11:30 CET, before the 12:00 day-ahead gate, the benchmark itself runs every model on one frozen, published input set (28 days of 15-minute history, three weather models as available then) for price, wind, solar and load in six European zones. Results cover issue days 2 Oct to 2 Nov 2026; load has 19 to 28 scored days in four zones.",
+   "evidence_id": "276aff5294f6"
+  },
+  {
+   "url": "https://arxiv.org/abs/2611.07784",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page, v1 submitted 5 Nov 2026. Headline: over the first 32 live days weather covariates cut the error of each of ten foundation models by 37 to 51% on matched races; zero-shot they match or beat a LightGBM trained on the same covariates; the operators stay ahead on wind and solar, and on load the gap is 4 to 6%, within the intervals.",
+   "evidence_id": "a25446aa4109"
+  },
+  {
+   "url": "https://github.com/ujohn33/foretec-energy-bench",
+   "kind": "github",
+   "paraphrase": "Authors' repository, Apache-2.0 code and CC BY 4.0 data and scores: the cut-off and no-look-ahead rules, the weather built from runs published before each day's cut-off (training rows included), one folder per model, and links to every forecast, actual and score on the site and on Hugging Face.",
+   "evidence_id": "f3afb3f3b46e"
+  },
+  {
+   "url": "https://zenodo.org/records/23455813",
+   "kind": "zenodo",
+   "paraphrase": "Software record v1.0.0 of 18 Oct 2026: a snapshot of the repository with the configuration file, the model folders (Chronos-2 without and with covariates among them), the preprint source and the scripts behind its tables. It archives code, not results, and predates most of the 32-day record.",
+   "evidence_id": "d68a8af3014a"
+  },
+  {
+   "url": "https://energybench.foretec.co/llms.txt",
+   "kind": "docs",
+   "paraphrase": "The live site's own overview, updated 14 Nov 2026: 44 issue days and all 24 series. Chronos-2 with covariates is third by Elo (1186) behind TimeH2O and t0-gamma with covariates; on load the three lowest errors are t0-gamma with covariates, TimeH2O with covariates and history-only Timestral, within 0.003 of each other.",
+   "evidence_id": "6b262ed816b4"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the central model's weights: licence tag apache-2.0, repository created 30 Oct 2025, 119.5M parameters, head 29ec376 last modified 5 Jun 2026.",
+   "evidence_id": "d33d62d68de3"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the Chronos-2 weights repository: weights and config added on 30 Oct 2025 (commit 95a9710); the later commits, up to 5 Jun 2026, are README, tag and deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Each of the ten foundation models run both without and with the frozen weather covariates has 37 to 51% lower pooled error with them, on the races both versions forecast (the headline; all four targets pooled).",
+   "metric": "change in Rel. MAE with covariates (%)",
+   "value": null,
+   "dataset": "EnergyBench live record, 22 series (price, wind, solar, load) in six European zones, 15-minute",
+   "horizon": "day-ahead: the 96 quarter-hours of the next day, issued at 11:30",
+   "baseline": "the same model on the series' own history",
+   "test_window_days": 32,
+   "citation_idx": 1
+  },
+  {
+   "text": "Chronos-2 with covariates has 48% lower pooled error than Chronos-2 without (Rel. MAE 0.295 against 0.569) over 31 days and 525 races; by target: price -34%, wind -67%, solar -57%.",
+   "metric": "change in Rel. MAE with covariates (%)",
+   "value": -48,
+   "dataset": "EnergyBench live record, 22 series, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "Chronos-2 on history only, Rel. MAE 0.569",
+   "test_window_days": 31,
+   "citation_idx": 0
+  },
+  {
+   "text": "On load, covariates lower Chronos-2's error by 4% pooled, and by at most 10% in any zone.",
+   "metric": "change in load Rel. MAE with covariates (%)",
+   "value": -4,
+   "dataset": "EnergyBench live record, total load in BE, NL, FR, DE-LU, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "Chronos-2 on history only",
+   "test_window_days": 28,
+   "citation_idx": 0
+  },
+  {
+   "text": "On load the change with covariates is small for every model that takes them natively: from -13% (t0-gamma) to +4% (TiRex-2); the paper's explanation is that history already carries the daily and weekly cycles.",
+   "metric": "change in load Rel. MAE with covariates (%)",
+   "value": null,
+   "dataset": "EnergyBench live record, total load in BE, NL, FR, DE-LU, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "the same model on history only",
+   "test_window_days": 28,
+   "citation_idx": 0
+  },
+  {
+   "text": "TimesFM 2.5, which receives the covariates through an in-context ridge regression, has 31% higher load error with them.",
+   "metric": "change in load Rel. MAE with covariates (%)",
+   "value": 31,
+   "dataset": "EnergyBench live record, total load in BE, NL, FR, DE-LU, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "TimesFM 2.5 on history only",
+   "test_window_days": 28,
+   "citation_idx": 0
+  },
+  {
+   "text": "Chronos-2 with covariates has load Rel. MAE 0.637, that is 36% below the same-quarter-hour-last-week naive (standings table; history-only Chronos-2 0.667).",
+   "metric": "load Rel. MAE vs weekly seasonal naive",
+   "value": 0.637,
+   "dataset": "EnergyBench live record, total load in BE, NL, FR, DE-LU, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "naive_weekly (same quarter-hour one week earlier)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 28,
+   "citation_idx": 0
+  },
+  {
+   "text": "Over all 22 series Chronos-2 with covariates has Rel. MAE 0.295 and Elo 1186 (95% day-bootstrap interval 1163 to 1221), in the leading group of four single models whose intervals overlap.",
+   "metric": "Rel. MAE vs weekly seasonal naive, all series",
+   "value": 0.295,
+   "dataset": "EnergyBench live record, 22 series, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "naive_weekly",
+   "baseline_same_inputs": "no",
+   "test_window_days": 31,
+   "citation_idx": 0
+  },
+  {
+   "text": "Four of the five native-covariate foundation models with an almost full record beat a LightGBM trained on the same covariate table over the 28-day context (Rel. MAE 0.282 to 0.320 against 0.330 to 0.337 on shared races); Chronos-2 with covariates has 0.295.",
+   "metric": "Rel. MAE vs weekly seasonal naive, all series",
+   "value": 0.295,
+   "dataset": "EnergyBench live record, 22 series, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "lgbm_cov: LightGBM on the full covariate table, 28-day context, Rel. MAE 0.330 to 0.337",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 31,
+   "citation_idx": 0
+  },
+  {
+   "text": "On load the 28-day LightGBM is worse than the weekly naive (Rel. MAE 1.018 to 1.026), which the paper puts down to 28 days being too few to learn the weather response.",
+   "metric": "load Rel. MAE vs weekly seasonal naive",
+   "value": 1.026,
+   "dataset": "EnergyBench live record, total load in BE, NL, FR, DE-LU, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "naive_weekly",
+   "baseline_same_inputs": "no",
+   "test_window_days": 28,
+   "citation_idx": 0
+  },
+  {
+   "text": "A LightGBM trained on two years (lgbm_prod) reaches Rel. MAE 0.293 over all series on 16 Oct to 2 Nov, inside the range of the native-covariate foundation models (0.270 to 0.323); on load it has 0.685 against 0.637 for Chronos-2 with covariates.",
+   "metric": "Rel. MAE vs weekly seasonal naive, all series",
+   "value": 0.293,
+   "dataset": "EnergyBench live record, 22 series, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "native-covariate foundation models, Rel. MAE 0.270 to 0.323",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 18,
+   "citation_idx": 0
+  },
+  {
+   "text": "Against the grid operators' pre-gate forecast on load, the closest foundation models have slightly more error: t0-gamma +4% and Timestral +6%, with intervals that include zero (the abstract's 4 to 6%).",
+   "metric": "extra load error vs the operators' pre-gate forecast (%)",
+   "value": 4,
+   "dataset": "EnergyBench live record, total load in BE, NL, FR, DE-LU, 141 shared races over eight series",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "tso_cutoff: the operators' load forecast as published before the gate",
+   "baseline_same_inputs": "no",
+   "test_window_days": 18,
+   "citation_idx": 0
+  },
+  {
+   "text": "Chronos-2 with covariates has 8% more load error than the operators' pre-gate forecast.",
+   "metric": "extra load error vs the operators' pre-gate forecast (%)",
+   "value": 8,
+   "dataset": "EnergyBench live record, total load in BE, NL, FR, DE-LU, 141 shared races over eight series",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "tso_cutoff",
+   "baseline_same_inputs": "no",
+   "test_window_days": 18,
+   "citation_idx": 0
+  },
+  {
+   "text": "Over the eight series the operators forecast before the gate (wind, solar and load), Chronos-2 with covariates has 20% more error than they do (95% day-bootstrap interval +6 to +35).",
+   "metric": "extra error vs the operators' pre-gate forecast (%)",
+   "value": 20,
+   "dataset": "EnergyBench live record, BE and NL wind and solar, load in BE, NL, FR, DE-LU, 141 shared races",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "tso_cutoff",
+   "baseline_same_inputs": "no",
+   "test_window_days": 18,
+   "citation_idx": 0
+  },
+  {
+   "text": "The load result differs by zone: the closest models have 1 to 11% less error than the operators in BE, NL and DE-LU and 41 to 59% more in FR.",
+   "metric": "extra load error vs the operators' pre-gate forecast (%)",
+   "value": null,
+   "dataset": "EnergyBench live record, total load per zone",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "tso_cutoff",
+   "baseline_same_inputs": "no",
+   "test_window_days": 18,
+   "citation_idx": 0
+  },
+  {
+   "text": "A median ensemble of five covariate foundation models and the two-year LightGBM has the lowest error in the field (Rel. MAE 0.240 over all series, load 0.546) and the same load error as the operators over its fourteen days.",
+   "metric": "Rel. MAE vs weekly seasonal naive, all series",
+   "value": 0.24,
+   "dataset": "EnergyBench live record, 22 series, 15-minute",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "naive_weekly",
+   "baseline_same_inputs": "no",
+   "test_window_days": 14,
+   "citation_idx": 0
+  },
+  {
+   "text": "After 44 live days (to 14 Nov 2026) Chronos-2 with covariates is third by Elo (1186) and the lowest load errors belong to t0-gamma with covariates (0.597), TimeH2O with covariates (0.599) and history-only Timestral (0.600).",
+   "metric": "load Rel. MAE vs weekly seasonal naive (mean over zones)",
+   "value": 0.597,
+   "dataset": "EnergyBench live site, 24 series, 2 Oct to 14 Nov 2026",
+   "horizon": "day-ahead (96 quarter-hours)",
+   "baseline": "naive_weekly",
+   "baseline_same_inputs": "no",
+   "test_window_days": 44,
+   "citation_idx": 4
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Total electric load of a bidding zone is one of the four targets and is the same kind of series as our PJM zones, so target_match is 3; two reservations: it is on a 15-minute grid, not hourly, and the headline number pools load with price, wind and solar, where the weather effect is far larger. The horizon is day-ahead (the next day's 96 quarter-hours, issued at 11:30), so horizon_match is 2: no result here speaks to days 2 to 7 of our week. Weather enters as a known-future covariate from forecast runs that were published before the cut-off, given identically to every model: this is our forecast regime and our rule of same inputs for every model, applied live. The inputs are wider than ours: three weather models' ensemble means and spreads at population-weighted points, against our temperature only, and there is no oracle (reanalysis) regime."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: Chronos-2 with covariates. The headline is about ten foundation models with and without weather, not one model; Chronos-2 is the one the paper uses for its per-zone figure, its worked examples and its concluding sentence, it has the longest record of the covariate models (31 days, 525 races), and it is the model of our primary comparison. The others (TimesFM 3.0 and 2.5, Timestral, t0, TiRex-2, Tabby) are in implementation_hint. pre_registered is 'no' in the spec's sense, with a qualification: every forecast is locked before its outcome exists and the configuration file is versioned, which rules out lookahead and tuning on scored days, but the paper says itself that the analyses and comparison windows were not registered in advance and were chosen with the record in view, and that entry configurations were set by authors who had seen earlier weeks. training_overlap_risk is about our run: the Chronos-2 weights file was committed on 2025-10-30 (Hugging Face commit list, fetched), before our first scored week (2025-11-10), so 'low'. For a Timestral run of ours it would be 'high': its weights were committed on 2026-10-15 and 3 of our 52 scored weeks start later. independent_replication: one research call and one search found no rerun, critique or contradicting study; the paper is nine days old. evidence_strength is 'weak' by the spec's rule only because the window is under 90 days (32 days overall, 19 to 28 for load, 18 for the operator comparison); in every other respect it is better than a backtest: public code, inputs, forecasts and scores, no lookahead by construction, day-bootstrap intervals. The record grows daily (44 days on 14 Nov) and passes 90 days at the end of December 2026. Where the abstract is stronger than the tables, for our purpose: the 37 to 51% gain is pooled over four targets and comes from wind, solar and price; on load the change is -13% to +4% for native-covariate models and -4% for Chronos-2, and on the live site's 44 days a history-only model is within 0.003 of the best covariate model on load. 'Match or outperform LightGBM on the same covariates' is against a LightGBM trained on 28 days, which on load is worse than the weekly naive; the two-year LightGBM is inside the foundation models' range overall and behind the best of them on load. baseline_same_inputs is 'partly' for the LightGBM rows: same frozen weather, but LightGBM gets every weather model's columns and the calendar while the foundation models get a compact subset, and the training lengths differ. The paper's intervals are 95%, so no ci90 is filled; the 4 to 6% load gap is reported with 'intervals that include zero' but the load-only intervals are not printed. The operator comparison on load is not clean before 16 Oct: until then the load models received the operators' forecast as an input (the 141-race comparison starts on 16 Oct, so it is unaffected). Not verified: the figures' values (per-zone numbers, the heat map); the per-zone load numbers behind '1 to 11% less, 41 to 59% more'; the configuration file, model folders and score files themselves (only the README, the Zenodo file list and the site's overview were read); which Chronos-2 revision and context settings the benchmark loads; whether the Zenodo snapshot's analysis scripts reproduce the paper's tables. The site's overview uses the mean across series and the paper the geometric mean, so their Rel. MAE values are not comparable; the Elo values are. Timestral's licence (modified MIT with a revenue condition) rests on a research-source snippet and the Hub tag 'other', not on a fetched licence file. Licence is that of the model we would run (Chronos-2 weights, apache-2.0 by the Hub record); the benchmark's code is Apache-2.0 and its data CC BY 4.0."
+ },
+ "evidence_strength": "weak",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_RUN",
+ "label_reason": "A sourced, public, lookahead-free comparison of foundation models with and without the same forecast weather on zonal load, and its headline comparison (Chronos-2 with against without weather covariates, and against a boosted model on the same weather) can be re-measured today with rows our benchmark already has. The evidence is thin by our rule (32 live days, analyses not registered in advance), and the paper's own load numbers are the part that matters for us: the large covariate gain comes from wind, solar and price, while on load it is about 4% for Chronos-2.",
+ "implementation_hint": "Central model: amazon/chronos-2 (direct_adapter, models/chronos2.py, temperature: true, pinned revision; weights of 2025-10-30). No new code is needed: the transfer test reads existing leaderboard rows per zone and regime: chronos2_temperature against chronos2 (the paper's with-against-without comparison; claimed -48% over all targets, -4% on load), and chronos2_temperature against lightgbm_temperature and the temperature-only regression (the paper's foundation-model-against-trained-model comparison). The forecast regime is the like-for-like one; the paper has no oracle regime. Differences to keep in view: day-ahead on a 15-minute grid against 168 hours hourly, so the paper says nothing about days 2 to 7 (chronos2_temperature_gap48 and a split of our errors by lead day would show whether the first day behaves like theirs); three weather models' means and spreads against temperature only; a 28-day context; errors relative to a weekly seasonal naive (our seasonal_naive row gives the same denominator) and pooled over days before normalising; six European zones in October against PJM over a year. Secondary models of the study that we can also run: mistralai/Timestral-209M (ff_native_exog, models_ff/run_ff.py; weights of 2026-10-15, so 3 of 52 scored weeks after the weights) and google/timesfm-2.5-200m-pytorch (ff_univariate here; the paper's TimesFM 2.5 with covariates went through a ridge regression and got worse on load, which our timesfm25_temperature row can be read against). TimesFM 3.0, t0, TiRex-2 and TimeH2O are FoundationForecast wrappers with native covariates but are not set up here.",
+ "receipt": {
+  "claimed": "Zero-shot Chronos-2 given forecast weather as a known-future covariate matches or beats a trained boosted model on the same weather (all series: Rel. MAE 0.295 against 0.330 to 0.337 for a 28-day LightGBM; on load 0.637 against 1.018 to 1.026, and 0.685 for a two-year LightGBM). Weather lowers Chronos-2's error by 48% over all targets but by only 4% on load.",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 0.73,
+    "ci90": [
+     0.665,
+     0.805
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 0.817,
+    "ci90": [
+     0.686,
+     0.96
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 0.663,
+    "ci90": [
+     0.579,
+     0.759
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 0.698,
+    "ci90": [
+     0.589,
+     0.824
+    ]
+   }
+  ],
+  "horizon_mismatch": "The paper is day-ahead (the next day's 96 quarter-hours, issued 11:30) on a 15-minute grid; ours is 168 hours ahead, hourly, so it says nothing about days 2 to 7. Its covariates are three weather models' means and spreads; ours is temperature only. Its context is 28 days, its errors are relative to a weekly naive, and its baseline is a LightGBM (28-day or two-year), where our ratio is against the temperature-only regression. Its record is 19 to 28 live days of load in four European zones in October 2026; ours is 48 scored weeks over a year in PJM zones JC and DOM. The paper has no oracle regime; the forecast regime is the like-for-like one.",
+  "n_windows": 48,
+  "n_windows_after_weights": 48,
+  "verdict": "partially"
+ }
+}

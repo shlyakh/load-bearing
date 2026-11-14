@@ -1,0 +1,77 @@
+{
+  "candidate_id": "choosing-load-methods-horizon-four-grids",
+  "title": "Companion Data, Protocols and Code for Choosing Load Forecasting Methods by Horizon, History and Hour: Reserve and Imbalance Evidence from Four Grids",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://zenodo.org/records/23481889",
+    "provider": "youcom",
+    "retrieved_at": "2026-11-14T17:50:22Z"
+  },
+  "candidate_type": "practitioner_backtest",
+  "primary_sources": [
+    {
+      "url": "https://zenodo.org/records/23481889",
+      "kind": "zenodo",
+      "paraphrase": "Dataset record v1.0 (19 Oct 2026), one author. Companion package for a paper of the same name: four load series (Jordan 2015, Tetouan 2017, Panama and Spain 2015-2020), rolling-origin forecasts at 1 to 180 days plus hourly day-ahead, online combination and selection by horizon and hour, conformal intervals, reserve and imbalance measures, MCS, DM and aSPA tests. States no result.",
+      "evidence_id": "548d386c9d52"
+    },
+    {
+      "url": "https://zenodo.org/records/23481889/preview/Forcasting_reproduction_pack.zip?include_deleted=0",
+      "kind": "zenodo",
+      "paraphrase": "File listing of the only file, a 76.6 MB zip (contents not readable through the preview): a protocol file, README, licence, about 18 scripts, raw and processed daily and hourly series, one notebook, stored forecasts per grid and history length, and evaluation tables named for metrics, tests, selector picks, reserve, cost and cold start. No file name points to weather inputs or a pretrained model.",
+      "evidence_id": "63c1c461d9c7"
+    },
+    {
+      "url": "https://zenodo.org/api/records/23481889/versions",
+      "kind": "zenodo",
+      "paraphrase": "Version history: a single version, 1.0, of 19 Oct 2026. The protocol first became public in the same archive as the stored forecasts and results. The record carries no related identifier, so the paper it accompanies is not linked.",
+      "evidence_id": "2c09cb59a259"
+    }
+  ],
+  "claims": [
+    {
+      "text": "Which load forecasting method to use, alone or in combination, depends on the horizon (1 to 180 days ahead), on the length of history available and on the hour of the day; the study selects and combines methods online by horizon and by hour on four grids and measures the effect on reserves and imbalance. Taken from the title and the description of the package; the record gives no ranking and no number.",
+      "metric": null,
+      "value": null,
+      "dataset": "Daily and hourly load: Jordan (2015), Tetouan (2017), Panama (2015-2020), Spain (2015-2020)",
+      "horizon": "1 to 180 days (daily series); day-ahead (hourly series)",
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "The evaluation followed a protocol written beforehand, with every later deviation and addition logged, and the package is said to reproduce every table and figure of the paper from stored forecasts and one notebook.",
+      "metric": null,
+      "value": null,
+      "dataset": "Daily and hourly load: Jordan (2015), Tetouan (2017), Panama (2015-2020), Spain (2015-2020)",
+      "horizon": null,
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    }
+  ],
+  "relevance": {
+    "target_match": 3,
+    "horizon_match": 3,
+    "covariates_match": 0,
+    "rationale": "Electric load at hourly and daily resolution, but for four systems outside the US (Jordan, a Moroccan city, Panama, Spain) and for years up to 2020, not PJM zones JC and DOM. The horizons of 1 to 180 days span the week ahead, which gives the 3; that range is on daily series, and the hourly forecasts are day-ahead only, so nothing in it is an hourly 168-step forecast like ours. Inputs are not stated: the record names only load series and no weather data, and the method list could not be read."
+  },
+  "checks": {
+    "pre_registered": "unknown",
+    "training_overlap_risk": "unknown",
+    "independent_replication": "unknown",
+    "notes": "pre_registered: the record calls the protocol pre-specified and says deviations are logged, but there is one version only (19 Oct 2026) and it holds the protocol together with the results, so no public timestamp puts the protocol before the results; a notebook named Revision_Experiments suggests at least part of the work was added during a revision. The protocol text was not read. training_overlap_risk: no pretrained weights are evident and no weights date exists to compare with the scored window; 'unknown' is used for that reason (the test data end in 2020, far before our window, which matters only if a pretrained model is involved). independent_replication: two searches and one research task found nothing but the record itself: no replication, critique or citation. evidence_strength: weak. Code, data and stored results are deposited, which would normally make a moderate case, but the headline result is not stated on any page that could be read, and the paper was not found (no preprint, journal page or DOI; the record links none; the author's three other Zenodo records are on unrelated subjects). What is cited is therefore a description of a design, not a result. Central model: none identified. Not verified: everything inside the 76.6 MB zip, because README.md and PROTOCOL.md have no URL of their own (page not found, container path 403) and the provider's fetch cannot open the archive. That covers the list of methods, whether any uses temperature or is a foundation model, the horizons actually scored (whether 7 days is one of them), the test window lengths, the result tables and the LICENSE file. The MIT licence for the code is the description's statement; the record's own licence is CC-BY-4.0. The research answer added nothing beyond the two Zenodo pages; its remark that the record shows no citations is from the page's citation panel."
+  },
+  "evidence_strength": "weak",
+  "license": "MIT (code, as stated in the record description; record metadata says CC-BY-4.0)",
+  "license_ok_for_commercial": true,
+  "runnable_class": "not_runnable",
+  "label": "PARTIAL",
+  "label_reason": "On target in subject (electric load, horizons that span the week ahead, a protocol-first rolling-origin design) and sourced to its own Zenodo record, but the evidence that could be read is thin: the record describes the design and states no result, the paper it accompanies was not found anywhere, and the protocol and result tables sit inside an archive the provider's tools could not open. No model in runnable_models is named, so there is nothing to re-measure on PJM zones JC and DOM as it stands.",
+  "implementation_hint": "Nothing to run through models/chronos2.py or models_ff/run_ff.py: no pretrained model or weights repository is named. To take this further, download Forcasting_reproduction_pack.zip by hand and read PROTOCOL.md, README.md and results/eval/metrics_main.csv for the method list, the scored horizons and the 7-day results, then re-judge. If the idea carries over, it would be as a design check on our side (does the best model change with horizon inside the 168 hours, or with the hour of day), written as our own code.",
+  "receipt": null
+}

@@ -1,0 +1,161 @@
+{
+ "candidate_id": "ltcc-weekly-ahead-load-ensemble",
+ "title": "Lead-Time-Conditioned Convex Stacked Ensemble for Medium-Term Electricity Load Forecasting",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/gtd2.70435",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T17:51:33Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/gtd2.70435",
+   "kind": "docs",
+   "paraphrase": "Journal article (IET GTD, open access, 25 Sep 2026). Nine base learners blended with per-horizon convex weights fitted out of fold and re-normalised online from past losses. Tested on 2025 daily national load for ES, FR, GR and PT, 7 days ahead from weekly origins: competitive with the strongest comparator, never significantly different. Code on request only.",
+   "evidence_id": "2f46e96d95b5"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Averaged over the four countries, the LTCC ensemble's MAE is 12.68% lower than the mean MAE of its nine base learners (RMSE 11.87%, SMAPE 12.92%; positive in every country and metric).",
+   "metric": "relative MAE improvement over the base-learner mean, percent",
+   "value": 12.68,
+   "dataset": "ENTSO-E actual total load, daily mean, ES, FR, GR, PT; test year 2025",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "mean of the nine base learners (SARIMA, XGBoost, LightGBM, LSTM, GRU, CNN-LSTM, TCN, DLinear, Transformer)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Against the strongest non-LTCC method in each of 12 country-metric cells, LTCC's worst shortfall is 2.24% (France, RMSE: GRU 3155.40 MW against LTCC 3226.21 MW; 95% interval of the difference includes zero).",
+   "metric": "relative RMSE difference to the best comparator, percent (negative = LTCC worse)",
+   "value": -2.24,
+   "dataset": "ENTSO-E daily mean load, France, 2025",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "GRU (best comparator in that cell)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "LTCC's largest gain over the strongest non-LTCC method is 1.37% (Portugal, SMAPE: unconstrained stack 3.322% against LTCC 3.277%; 95% interval of the difference includes zero).",
+   "metric": "relative SMAPE difference to the best comparator, percent (positive = LTCC better)",
+   "value": 1.37,
+   "dataset": "ENTSO-E daily mean load, Portugal, 2025",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "unconstrained stack (best comparator in that cell)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "LTCC is first in 3 of the 12 country-metric cells, second in 4 and outside the top two in 5; it beats every individual base learner in 9 of 12.",
+   "metric": "cells in which LTCC ranks first, of 12",
+   "value": 3,
+   "dataset": "ENTSO-E daily mean load, ES, FR, GR, PT, 2025; MAE, RMSE, SMAPE",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "17 other methods (seasonal naive, nine base learners, seven ensemble comparators)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Over the same 12 cells LTCC has the lowest mean rank of the 18 methods, 2.67, and never ranks below fifth.",
+   "metric": "mean rank among 18 methods",
+   "value": 2.67,
+   "dataset": "ENTSO-E daily mean load, ES, FR, GR, PT, 2025; MAE, RMSE, SMAPE",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "17 other methods",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Spain: LTCC MAE 785.12 MW against 1281.74 MW for the seasonal naive forecast (SMAPE 2.891%).",
+   "metric": "MAE, MW",
+   "value": 785.12,
+   "dataset": "ENTSO-E daily mean load, Spain, 2025",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "seasonal naive",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "France: LTCC MAE 2214.15 MW against 3329.48 MW for the seasonal naive forecast (SMAPE 4.177%).",
+   "metric": "MAE, MW",
+   "value": 2214.15,
+   "dataset": "ENTSO-E daily mean load, France, 2025",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "seasonal naive",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Greece: LTCC MAE 260.71 MW against 413.16 MW for the seasonal naive forecast (SMAPE 4.430%); XGBoost alone is lower at 258.72 MW.",
+   "metric": "MAE, MW",
+   "value": 260.71,
+   "dataset": "ENTSO-E daily mean load, Greece, 2025",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "seasonal naive",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Portugal: LTCC MAE 195.54 MW against 283.22 MW for the seasonal naive forecast (SMAPE 3.277%).",
+   "metric": "MAE, MW",
+   "value": 195.54,
+   "dataset": "ENTSO-E daily mean load, Portugal, 2025",
+   "horizon": "7 days ahead at daily resolution, weekly origins",
+   "baseline": "seasonal naive",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "None of the 12 differences between LTCC and the strongest comparator is statistically significant on paired tests over 365 daily losses, and all twelve paired 95% intervals include zero.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 0
+  },
+  {
+   "text": "Weather (temperature, precipitation, wind, degree days) enters only as 28 days of history; the seven forecast days get calendar and holiday fields only, no observed or forecast weather.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 2,
+  "horizon_match": 3,
+  "covariates_match": 2,
+  "rationale": "Electric load forecast a week ahead from weekly origins over a full year, which is our schedule. But the target is the daily mean of national load (hourly ENTSO-E data resampled to 365 daily values a year), not an hourly profile, so target_match is 2 rather than 3: 7 values per forecast against our 168. Temperature is used, but only as history; the known-future inputs are calendar and holiday fields, so nothing corresponds to either of our weather regimes (covariates_match 2: other covariates)."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: no registration or frozen protocol is mentioned. The article lists eleven run-time leakage controls and says the ensemble prior was fitted on pre-2025 out-of-fold forecasts only; but it also reports that its frozen online setting is not the best of a 324-point grid in any market, and its discussion states that the online layer was added because the static prior was seen to under-adapt on the 2025 test year, so that year is not an untouched hold-out for the design. training_overlap_risk: unknown, because there is no weights file: the method is trained from scratch and nothing is released. In the paper's own design the models are fitted on 2015 to 2024 and tested on 2025. evidence_strength is weak by the spec's rule: numbers without public code or processed data (available from the corresponding author on request only). The test window is long enough (365 days) and the comparators share the ensemble's inputs; the headline claim is also a null result (no significant difference from the best comparator). Intervals in the source are 95% intervals of paired differences, not 90%, so ci90 is null. baseline_same_inputs is no against seasonal naive (load only) and yes against the base learners and ensemble comparators, which share one feature set. Central model: the LTCC ensemble; it contains no foundation model and none of runnable_models. Licence: null, nothing runnable is released; the article text is open access under a Creative Commons licence whose variant was not read. independent_replication: one research call found no preprint on arXiv or SSRN, no repository, no data record and no replication or criticism. Not verified: an earlier record with the same title and authors (DOI 10.22541/au.177431975.56166018/v1, 24 Mar 2026) is listed on the senior author's profile page with a stronger summary (softmax weights, always better than standalone models, about 10% lower error); fetching it failed with HTTP 504, so it was not read and is not cited. The first-published date comes from the research call's source entry; the directly fetched text carried no date. Figures, the per-horizon tables and the equations were not checked (several formulas were dropped from the fetched text)."
+ },
+ "evidence_strength": "weak",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "Relevant in schedule (week-ahead electric load from weekly origins over a full year) and backed by a peer-reviewed primary source, but the evidence is thin for our purpose: no code or processed data are public, the target is daily mean load without future weather, and the paper's own result is that the ensemble is not significantly different from the best comparator in any of 12 cells. There is nothing to run now and no headline number that a run on our benchmark could confirm or fail to confirm.",
+ "implementation_hint": "No model from runnable_models is involved and no weights or code exist to point at; nothing goes through models/chronos2.py or models_ff/run_ff.py. If the idea is taken up later it is a stage-3 addition to the harness, not a candidate run: blend the per-window forecasts we already store (temperature-only regression, LightGBM, Chronos-2) with one convex weight vector per lead time, fitted on windows before the scored ones and updated only from losses of earlier origins. That would be secondary work under a new protocol version, and the paper itself reports no significant gain over a fixed convex blend.",
+ "receipt": null
+}
