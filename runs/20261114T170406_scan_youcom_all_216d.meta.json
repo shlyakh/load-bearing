@@ -1,0 +1,89 @@
+{
+ "run_id": "20261114T170406_scan_youcom_all_216d",
+ "skill": "scan",
+ "provider": "youcom",
+ "args": [],
+ "note": "",
+ "model_requested": null,
+ "provider_tools_allowed": [
+  "mcp__you-com__you-search",
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research"
+ ],
+ "provider_tools_denied": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "mcp_server": {
+  "name": "you-com",
+  "url": "https://api.you.com/mcp?tools=you-search,you-contents,you-research"
+ },
+ "mcp_servers": [
+  {
+   "name": "you-com",
+   "status": "connected"
+  }
+ ],
+ "search_tools_present": [
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research",
+  "mcp__you-com__you-search"
+ ],
+ "git_commit": "4a52766-dirty",
+ "started_at": "2026-11-14T17:04:06+00:00",
+ "wall_seconds": 402.3,
+ "exit_code": 1,
+ "timed_out": false,
+ "session_id": "eb9313f2-bc00-4580-8f65-86804c9dca95",
+ "is_error": true,
+ "num_turns": 1,
+ "total_cost_usd": 14.512360999999997,
+ "usage": {
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "input_tokens": 0,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 0,
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "",
+  "iterations": [],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 122,
+   "outputTokens": 136644,
+   "cacheReadInputTokens": 5884475,
+   "cacheCreationInputTokens": 729075,
+   "webSearchRequests": 0,
+   "costUSD": 14.512360999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 29172,
+   "cacheCreationEphemeral5mInputTokens": 632745,
+   "cacheCreationEphemeral1hInputTokens": 96330,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Read": 9,
+  "Bash": 25,
+  "ToolSearch": 1,
+  "Agent": 5,
+  "mcp__you-com__you-search": 91,
+  "Write": 7
+ }
+}
