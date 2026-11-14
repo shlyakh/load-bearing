@@ -567,4 +567,6 @@ What this does and does not say about the paper: the ordering of encodings carri
 calendars are worse than none. Its finding that target encodings improve on no calendar
 does not carry over to our setting. The settings differ: our rows also have temperature,
 a week-ahead horizon and a 2,048-hour context in which most windows contain no holiday,
-where the paper used no weather, a 24-hour horizon and 8,192 hours.
+where the paper compares calendar columns against no covariates at all, at a 24-hour
+horizon with 8,192 hours of context. With temperature already in the model, the calendar
+may have less left to add.
