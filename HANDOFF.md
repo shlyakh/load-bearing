@@ -93,6 +93,13 @@ Waiting on Yuri:
   latest scan of each provider into `candidates/merged/scan_<date>.jsonl` (60 claims
   today: 37 found by both, 16 only by You.com, 7 only by Claude). Judge from it with
   `tools/pipeline.py <provider> --candidates-from merged`. Run the merge after scans.
+- **Judged from the combined list (afternoon):** 19 claims judged with You.com, 8 with
+  receipts: 5 "partially", 3 "untestable" (the first GB study on Timestral, and the two
+  TimesFM 3.0 claims: most scored weeks precede the weights).
+- **TimesFM 3.0 with temperature added** (Yuri, Nov 14) as a flagged secondary row,
+  `timesfm3_temperature`: gate first, scored once, 8 of 48 weeks after the weights,
+  non-commercial weights (`DEVIATIONS.md`). Forecast weather against the temperature-only
+  regression: DOM 0.70 (0.65 to 0.77), JC 0.76 (0.65 to 0.88). Spend $123.75; cap $250.
 - **Repository renamed** to `load-bearing` (Yuri, Nov 14). Dashboard:
   https://shlyakh.github.io/load-bearing/ ; the old Pages address returns 404. The
   local folder is still `receipts`.

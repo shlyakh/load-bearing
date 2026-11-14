@@ -1,0 +1,40 @@
+{
+ "provider": "youcom",
+ "started_at": "2026-11-14T18:09:47+00:00",
+ "candidates_file": "candidates/merged/scan_2026-11-14.jsonl",
+ "candidates": [
+  {
+   "candidate_id": "timesfm-3",
+   "run_candidate": {
+    "run_id": "20261114T180947_run-candidate_youcom_timesfm-3_0a39",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 4,
+    "total_cost_usd": 0.5420978000000001,
+    "wall_seconds": 25.5
+   },
+   "run_candidate_report": "The `timesfm3_temperature` row was already on the leaderboard, so I only wrote the receipt (step 5). The verdict is **untestable**: nothing was downloaded, changed or run.\n\n**Claimed (paraphrased):** the publisher reports the best average rank among pretrained foundation models (ahead of Chronos-2, Toto 2.0 and TimesFM-2.5) on GIFT-Eval, fev-bench and TIME. It is zero-shot, takes covariates known into the future natively, and the ranks are shown in plots only, with no scores and no load case.\n\n**Measured:** MAE ratio against the temperature-only regression, 48 scored weeks, 90% range in brackets.\n\n| Zone | Regime | Ratio | 90% range | Per-zone result |\n|---|---|---|---|---|\n| DOM | forecast | 0.703 | 0.647 to 0.766 | worth switching |\n| JC | forecast | 0.761 | 0.650 to 0.878 | worth switching |\n| DOM | oracle | 0.590 | 0.529 to 0.659 | |\n| JC | oracle | 0.652 | 0.558 to 0.760 | |\n\n**Verdict:** untestable, so the receipt says neither \"transfers\" nor \"does not transfer\". Only 8 of the 48 scored weeks start after the weights date (2026-08-24), which is presumably why the tool returns untestable even though both zones come out as worth switching; I did not read the tool's rule to confirm.\n\n**Setup mismatch:**\n- **Claim:** average rank over mixed-domain benchmarks, against other foundation models, with no electric load task, no stated horizon and no intervals.\n- **Ours:** PJM hourly load in two zones, week-ahead (168 h, which spans three 64-step output patches), with temperature as the known-future covariate.\n- **Licence:** the weights are non-commercial.\n\nThe scorecard's notes expected 10 of 52 weeks after the weights; the receipt carries the leaderboard's actual counts, 8 of 48.\n\nThe receipt is in `scorecards/youcom/timesfm-3.json` and is not committed. `dashboard/data.js` also shows as modified after the receipt run, which it was not at the start of the session.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog",
+   "receipt_verdict": "untestable"
+  },
+  {
+   "candidate_id": "timesfm3-leakage-aware-evaluation",
+   "run_candidate": {
+    "run_id": "20261114T181012_run-candidate_youcom_timesfm3-leakage-aware-evaluation_14ca",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 6,
+    "total_cost_usd": 0.6460598000000001,
+    "wall_seconds": 34.8
+   },
+   "run_candidate_report": "The model row this scorecard needs, `timesfm3_temperature`, was already on the leaderboard, so I wrote the receipt (step 5) without running anything. The verdict is **untestable**: only 8 of the 48 scored weeks start after the weights date (24 Aug 2026), so the transfer cannot be judged either way.\n\n**Claimed (paraphrased):** on hourly national load alone (12 European countries, 24 and 168 h pooled), TimesFM 3 univariate had a MASE 0.892 times that of a classical MSTL ensemble (95% interval 0.824 to 0.950, secondary family). Over all four post-release domains the ratio was 0.836. In two sealed prospective weeks the point-forecast advantage was not confirmed (1.073, pooled over load, prices and river flow).\n\n**Measured:** TimesFM 3 with temperature, MAE ratio against the temperature-only regression, 48 scored weeks.\n\n| Zone | Regime | Error ratio | 90% range |\n|---|---|---|---|\n| DOM | forecast | 0.703 | 0.647 to 0.766 |\n| JC | forecast | 0.761 | 0.650 to 0.878 |\n| DOM | oracle | 0.590 | 0.529 to 0.659 |\n| JC | oracle | 0.652 | 0.558 to 0.760 |\n\n- **Verdict:** in the forecast regime both zones come out as \"worth switching\" on the measured ratios, but the tool overrides this to untestable when fewer than half the scored weeks follow the weights date.\n- **Setup mismatch:**\n  - The study runs TimesFM 3 without covariates against an MSTL ensemble that sees a shorter history. It uses national load for 12 European countries, 24 and 168 h pooled, scored by MASE over 50 days after the release.\n  - Ours is PJM zonal load (JC, DOM), week-ahead only, with temperature as the known-future covariate, scored by MAE against a regression that gets the same temperature.\n  - The weights are non-commercial.\n- **Univariate row:** there is no univariate TimesFM 3 row on the leaderboard, so the study's own configuration is not reproduced. Adding one would mean a person running steps 1 to 4 of the skill; I did not do that, as instructed.\n- **Weights date:** the scorecard's notes assumed 31 Aug 2026 (9 weeks after) as a fallback; the receipt uses the pinned revision's date from the leaderboard, 24 Aug 2026 (8 weeks after).\n\nThe scorecard `scorecards/youcom/timesfm3-leakage-aware-evaluation.json` passes `tools/validate_scorecard.py`. Nothing is committed.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog",
+   "receipt_verdict": "untestable"
+  }
+ ],
+ "total_cost_usd": 1.19
+}

@@ -209,5 +209,49 @@
  "label": "ACCEPT_RUN",
  "label_reason": "On target (hourly electric load at 24 and 168 h is one of its domains, with its own result against a classical baseline) and fully sourced: record, frozen protocol, results files, forecasts and data are public, and the headline comparison can be re-measured with TimesFM 3, which spec.yaml lists as runnable through FoundationForecast. Evidence is weak only because the post-release window is 50 days, and a run must be labelled: the weights are non-commercial and only 9 of our 52 scored weeks start after their release.",
  "implementation_hint": "TimesFM 3 through models_ff/run_ff.py (weights google/timesfm-3.0-pytorch at a recorded revision, ff_native_exog). run_ff.py has entries for TimesFM 2.5 and Timestral only, so a TimesFM 3 entry is needed, and the wrapper's covariate path must be checked against the pinned FoundationForecast commit first. Run it with temperature in each regime against the temperature-only regression; a univariate row would mirror the study's own configuration. Label the rows: weights inside the scored window (9 of 52 weeks after 31 Aug 2026) and non-commercial licence. Comparators from the study that we already run: amazon/chronos-2 (models/chronos2.py) and google/timesfm-2.5-200m-pytorch univariate (models_ff/run_ff.py). The study's baseline is an MSTL ensemble, not a regression, and it ran on a T4 GPU.",
- "receipt": null
+ "receipt": {
+  "claimed": "On hourly national load alone (12 European countries, 24 and 168 h pooled), TimesFM 3 univariate had a MASE 0.892 times that of a classical MSTL ensemble (95% interval 0.824 to 0.950, secondary family); over all four post-release domains the ratio was 0.836. In two sealed prospective weeks the point-forecast advantage was not confirmed (1.073, pooled over load, prices and river flow).",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 0.703,
+    "ci90": [
+     0.647,
+     0.766
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 0.761,
+    "ci90": [
+     0.65,
+     0.878
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 0.59,
+    "ci90": [
+     0.529,
+     0.659
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 0.652,
+    "ci90": [
+     0.558,
+     0.76
+    ]
+   }
+  ],
+  "horizon_mismatch": "The study runs TimesFM 3 without covariates against an MSTL ensemble that sees a shorter history, on national load for 12 European countries, 24 and 168 h pooled, MASE, 50 days after the release. Ours is PJM zonal load (JC, DOM), week-ahead only (168 h), TimesFM 3 with temperature as the known-future covariate, measured as MAE against the temperature-only regression, which gets the same temperature. We have no univariate TimesFM 3 row, so the study's own configuration is not reproduced. Weights are non-commercial, and most scored weeks start before the weights date.",
+  "n_windows": 48,
+  "n_windows_after_weights": 8,
+  "verdict": "untestable"
+ }
 }
