@@ -138,6 +138,7 @@ svg .hit:focus { outline: none; } svg .hit:focus-visible { stroke: var(--model);
 #pu-overlap text { font-size: 13px; fill: var(--ink-2); } #pu-overlap text.big { font-size: 20px; font-weight: 600; fill: var(--ink); font-family: var(--display); }
 #pu-only-youcom, #pu-only-claude { margin-top: 10px; }
 #pu-only-youcom .cand, #pu-only-claude .cand { grid-template-columns: minmax(0, 1fr); background: var(--bg); }
+section[data-tab="opencrawl"] code { white-space: nowrap; }
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
 .steps .panel { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .steps p { font-size: 14px; }
@@ -195,6 +196,7 @@ a { color: var(--model); }
   <a href="#weather" data-tab="weather">Weather</a>
   <a href="#candidates" data-tab="candidates">New claims <span class="count" id="tab-count"></span></a>
   <a href="#providers" data-tab="providers">You.com</a>
+  <a href="#opencrawl" data-tab="opencrawl">Open Crawl</a>
   <a href="#agents" data-tab="agents">How it works</a>
 </nav>
 
@@ -476,6 +478,39 @@ a { color: var(--model); }
     </div>
   </div>
   <p class="note">Details and feedback for You.com: notes/youcom_usage_and_feedback.md. Files: results/provider_comparison.csv, comparisons/, runs/.</p>
+</section>
+
+<section data-tab="opencrawl">
+  <span class="eyebrow">Open Crawl</span>
+  <h2>A code review with and without the project's history</h2>
+  <p>I installed Open Crawl, imported my Claude history and did a code review using Codex. I specifically asked what the agent deployment method is for live and periodic deployment, and compared the results of the review with and without Open Crawl.</p>
+  <div class="panel stack">
+    <h3>Code review: command-line agents and periodic runs</h3>
+    <p class="note"><strong>Repository:</strong> <a href="https://github.com/shlyakh/receipts">shlyakh/receipts</a> &#183; <strong>Reviewed:</strong> November 14, 2026 &#183; <strong>Scope:</strong> How agent runs are launched and how periodic runs are planned.</p>
+  </div>
+  <div class="two">
+    <div class="panel stack">
+      <h3>Review without OpenCrawl</h3>
+      <p>The repository runs Claude Code headlessly through <code>claude -p</code>. <a href="https://github.com/shlyakh/receipts/blob/dbfd1666d862450d66e17b0935c2b9c2a5c648b3/tools/run_skill.py"><code>tools/run_skill.py</code></a> builds the command, restricts available tools by provider, and records a JSONL transcript plus run metadata. <a href="https://github.com/shlyakh/receipts/blob/dbfd1666d862450d66e17b0935c2b9c2a5c648b3/tools/pipeline.py"><code>tools/pipeline.py</code></a> combines scans, parallel candidate judging, and accepted-candidate processing. Headless runs do not execute model evaluations.</p>
+      <p><strong>Finding:</strong> A failed or timed-out Claude subprocess is recorded in metadata, but the CLI does not return a nonzero exit status, and the pipeline does not stop after a failed scan. A scheduler could therefore report success while acting on an old scan or incomplete results. Propagate failures to the pipeline and scheduler.</p>
+      <p><strong>Periodic status:</strong> No scheduled agent workflow or LaunchAgent is implemented in the repository. The current pipeline is run manually; the checked-in GitHub workflow deploys the static site.</p>
+    </div>
+    <div class="panel stack">
+      <h3>What OpenCrawl adds</h3>
+      <p>OpenCrawl search found a Claude session with a runtime and scheduling proposal. It recommends keeping the working <code>claude -p</code> skills and Python pipeline, with an SDK migration only if typed results or branching become necessary. For periodic runs, it suggests weekly GitHub Actions with manual dispatch, splitting agent work, model evaluation, and pull-request creation into separate jobs. A local Mac alternative is a <code>launchd</code> job.</p>
+      <p>The proposal's rationale reflects stated constraints: no servers, a weekly cadence, limited monthly spend, some short GPU runs, and human review before changes merge. It favors preserving working Markdown skills and infrastructure, keeping the outer pipeline portable, and using a pull request as the review boundary.</p>
+    </div>
+  </div>
+  <div class="panel scroll stack">
+    <h3>Comparison</h3>
+    <table>
+      <tr><th>Without OpenCrawl</th><th>With OpenCrawl</th></tr>
+      <tr><td>Establishes what the code does and the failure-reporting issue.</td><td>Adds why the CLI and skills were preferred, and what periodic architecture was considered.</td></tr>
+      <tr><td>Shows periodic scheduling is not present in the repo.</td><td>Finds a weekly GitHub Actions proposal and a local <code>launchd</code> option.</td></tr>
+      <tr><td>Cannot infer author intent from implementation alone.</td><td>Recovers stated constraints and tradeoffs behind the proposal.</td></tr>
+    </table>
+    <p><strong>Evidence limit:</strong> The retrieved Claude note explicitly says it is a suggestion, not an adopted decision; it also says nothing was installed or changed. Treat the scheduling design as proposed, not implemented or approved.</p>
+  </div>
 </section>
 
 <section data-tab="agents">
