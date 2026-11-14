@@ -218,21 +218,25 @@ protocol file names its commands; `harness/v2.py` lists the v2 ones.
 
 ## Prior work disclosure
 
-This project is entered in the Ground Truth hackathon (New York, Nov 14, 2026).
-Everything in the repository up to today is prior work, built before the hackathon and
-not hackathon work:
+This project is entered in the Ground Truth hackathon (New York, Nov 14, 2026). The
+build time starts at 10:00 Eastern on Nov 14. Everything committed before then is prior
+work and not hackathon work. The git tag `pre-hackathon` marks that state:
 
 - data and weather pulls, the frozen protocols v1 to v2, the evaluation harness
-- baselines, foundation-model rows and every scored result above
+- baselines, foundation-model rows and every scored result above (protocol-v2 was frozen
+  and scored on the morning of Nov 14, before the start)
 - zone selection and weather points for AEP and AE
 - problem spec, scorecard schema, 11-item evaluation set
 - the three agent skills and `tools/pipeline.py`, running on Claude's own web search and
   public listings
-- the dashboard and story pages
+- the dashboard and story pages, the tour and the narration text
+- the wiring for the You.com search provider (`tools/run_skill.py`,
+  `notes/youcom_provider.md`), written that morning and tested only against a local mock:
+  no You.com call had been made and no API key existed
 
-Hackathon-day work: the You.com search provider for the same skills, being built on
-Nov 14, the comparison of the two providers on the same inputs, and whatever the day's
-scan finds and runs. Commit timestamps and the protocol tags show the boundary.
+Hackathon-day work, after the tag: every live You.com run of the skills, whatever has to
+change to make them work on the real service, the comparison of the two providers on the
+same inputs, and whatever the day's scan finds and runs.
 
 ## Not done yet
 
