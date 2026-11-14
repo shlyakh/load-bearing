@@ -89,6 +89,10 @@ Waiting on Yuri:
   `spec.yaml`; the You.com scan used one `site:` per query. Claude 44 candidates,
   You.com 53, 37 in common (table in `notes/youcom_usage_and_feedback.md`; snapshots
   in `comparisons/`). Spend after it: $86.34 of model cost; cap raised to $150 (Yuri).
+- **Combined candidate list** (Yuri, Nov 14): `tools/merge_candidates.py` merges the
+  latest scan of each provider into `candidates/merged/scan_<date>.jsonl` (60 claims
+  today: 37 found by both, 16 only by You.com, 7 only by Claude). Judge from it with
+  `tools/pipeline.py <provider> --candidates-from merged`. Run the merge after scans.
 - **Repository renamed** to `load-bearing` (Yuri, Nov 14). Dashboard:
   https://shlyakh.github.io/load-bearing/ ; the old Pages address returns 404. The
   local folder is still `receipts`.

@@ -4,11 +4,14 @@
     uv run --project core python tools/pipeline.py claude --scan --judge 5
     uv run --project core python tools/pipeline.py claude --only timestral timesfm-3
     uv run --project core python tools/pipeline.py youcom --candidates-from claude --judge 5
+    uv run --project core python tools/pipeline.py youcom --candidates-from merged --judge 5
 
 Steps (each is `claude -p "/<skill> ..."` through tools/run_skill.py):
   1. scan            only with --scan; otherwise the latest candidates/<provider>/scan_*.jsonl
                      (--candidates-from <other provider> judges another provider's scan, so
                      both providers are compared on the same candidates)
+                     (--candidates-from merged judges the combined list of all scans,
+                     best first: run tools/merge_candidates.py after the scans)
   2. judge           the first --judge candidates that have no scorecard yet (the file is
                      ordered by fit to the spec), or exactly the ids given with --only
   3. run-candidate   every scorecard of this run's candidates labelled ACCEPT_RUN with no
@@ -59,9 +62,10 @@ def main() -> None:
     ap.add_argument("--model", default="", help="model for every step; default is the CLI's own")
     ap.add_argument(
         "--candidates-from",
-        choices=["claude", "youcom"],
+        choices=["claude", "youcom", "merged"],
         default=None,
-        help="read the latest scan of this provider instead of the run's own",
+        help="read the latest scan of this provider instead of the run's own; 'merged' is "
+        "the combined list written by tools/merge_candidates.py",
     )
     a = ap.parse_args()
     if a.provider == "youcom":

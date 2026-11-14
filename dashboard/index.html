@@ -449,6 +449,7 @@ a { color: var(--model); }
           </div>
           <p class="snip" id="flow-scan"></p>
           <p class="io"><span>Writes</span> <code>candidates/&lt;provider&gt;/</code> and a ledger with the reason every page was kept or dropped.</p>
+          <p class="io"><span>Then</span> a plain script (<code>tools/merge_candidates.py</code>) combines the scans into one list, folds duplicates, and marks who found each claim. The judge works from that list, best first.</p>
         </div>
       </li>
       <li class="stage agent">
@@ -543,7 +544,7 @@ a { color: var(--model); }
     <span class="note" id="cand-count"></span>
   </div>
   <div class="cands" id="cands"></div>
-  <details class="panel">
+  <details class="panel" id="hits-panel">
     <summary>Every page the scan looked at, with the reason it was kept or dropped</summary>
     <div class="scroll"><table id="hits"></table></div>
   </details>
@@ -634,7 +635,7 @@ a { color: var(--model); }
   }
   window.addEventListener("hashchange", () => { showTab(); window.scrollTo(0, 0); });
   showTab();
-  if (D.scan && D.scan.claude) document.getElementById("tab-count").textContent = D.scan.claude.candidates.length;
+  if (D.scan && D.scan.claude) document.getElementById("tab-count").textContent = (D.scan.merged || D.scan.claude).candidates.length;
 
   // ---------- tour: walks the tabs with captions. body.dataset.demo is "running" then "done" (read by the recorder).
   // Tour captions read their numbers from data.js.
@@ -933,14 +934,26 @@ a { color: var(--model); }
   // ---------- scan results
   (function scanResults() {
     if (!D.scan || !D.scan.claude) return;
-    let S = D.scan.claude;
-    const provs = ["claude", "youcom"].filter(k => D.scan[k]), provName = { claude: "Claude's own search", youcom: "You.com" };
+    const provs = ["merged", "claude", "youcom"].filter(k => D.scan[k]), provName = { merged: "Both combined", claude: "Claude's own search", youcom: "You.com" };
+    let S = D.scan[provs[0]];
+    const who = c => !c.found_by ? "" : c.found_by.length > 1 ? "both scans" : c.found_by[0] === "youcom" ? "You.com only" : "Claude's search only";
     const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     const fromFeed = c => /feed:/.test(c.query || ""), fromSearch = c => !/^feed:[a-z]+$/.test((c.query || "").trim());
     const listed = Object.values(D.feed_counts).reduce((a, b) => a + b, 0);
     d3.select("#scan-days").text(D.scan_window_days);
     let src = "all", q = "";
     function funnel() {
+    d3.select("#hits-panel").style("display", S.hits.length ? null : "none");
+    if (S.candidates.some(c => c.found_by)) {
+      const n = f => S.candidates.filter(f).length;
+      d3.select("#scan-file").text(S.file);
+      d3.select("#scan-funnel").selectAll("div").data([
+        [S.candidates.length, "claims after combining the two scans and folding duplicates"],
+        [n(c => c.found_by.length > 1), "found by both"],
+        [n(c => c.found_by.length === 1 && c.found_by[0] === "youcom"), "found only by You.com"],
+        [n(c => c.found_by.length === 1 && c.found_by[0] === "claude"), "found only by Claude's search"]]).join("div").attr("class", "fact").html(d => "<b>" + d[0] + "</b><span>" + d[1] + "</span>");
+      return;
+    }
     const short = S.hits.filter(h => /feed:/.test(h.note)).length;
     d3.select("#scan-file").text(S.file);
     d3.select("#scan-funnel").selectAll("div").data([
@@ -957,7 +970,7 @@ a { color: var(--model); }
       d3.select("#cand-count").text(rows.length + " of " + S.candidates.length + " shown");
       d3.select("#cands").selectAll("div.cand").data(rows, c => c.candidate_id).join("div").attr("class", "cand").html(c =>
         "<span class='rank'>" + c.rank + "</span>" +
-        "<div class='meta'><span>" + esc(c.published_at) + "</span><span class='pill flag'>" + esc(typeLabel[c.candidate_type] || c.candidate_type) + "</span><span>" + esc(new URL(c.primary_url).hostname.replace("www.", "")) + "</span><span>found by " + (fromFeed(c) ? (fromSearch(c) ? "listing and search" : "listing") : "search") + "</span></div>" +
+        "<div class='meta'><span>" + esc(c.published_at) + "</span><span class='pill flag'>" + esc(typeLabel[c.candidate_type] || c.candidate_type) + "</span><span>" + esc(new URL(c.primary_url).hostname.replace("www.", "")) + "</span><span>found by " + (fromFeed(c) ? (fromSearch(c) ? "listing and search" : "listing") : "search") + "</span>" + (who(c) ? "<span class='pill " + (c.found_by.length > 1 ? "good" : "flag") + "'>" + who(c) + "</span>" : "") + "</div>" +
         "<a class='t' href='" + esc(c.primary_url) + "'>" + esc(c.title) + "</a>" +
         "<p>" + esc(c.claim) + "</p><p class='why'>" + esc(c.why_relevant) + "</p>");
     }
@@ -976,7 +989,7 @@ a { color: var(--model); }
     });
     }
     function all() { funnel(); draw(); hitsTable(); }
-    if (provs.length > 1) seg("cand-prov", provs.map(k => ({ label: provName[k], value: k })), "claude", v => { S = D.scan[v]; all(); });
+    if (provs.length > 1) seg("cand-prov", provs.map(k => ({ label: provName[k], value: k })), provs[0], v => { S = D.scan[v]; all(); });
     all();
   })();
 
