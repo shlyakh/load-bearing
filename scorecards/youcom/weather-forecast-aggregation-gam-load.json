@@ -1,0 +1,197 @@
+{
+ "candidate_id": "weather-forecast-aggregation-gam-load",
+ "title": "Combining Weather Forecast Aggregation and State-Space Models for Adaptive Probabilistic Electricity Load Forecasting",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2609.17000",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T17:56:37Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/abs/2609.17000",
+   "kind": "arxiv",
+   "paraphrase": "arXiv record (stat.AP, v1, 15 Sep 2026; de Vilmarest, Dumas, Thorey). Abstract: an adaptive GAM in state-space form with a GAMLSS variance layer and a short-term correction; aggregating several weather forecast providers improves point and probabilistic forecasts of French national load, most in the extreme quantiles. The page links no code or data.",
+   "evidence_id": "f38a6c16dfc8"
+  },
+  {
+   "url": "https://arxiv.org/pdf/2609.17000",
+   "kind": "arxiv",
+   "paraphrase": "Full text. French national load (RTE), hourly steps, 24-hour horizon with a correction for other horizons up to about 70 h. One GAM-Viking model per weather provider (Arpege, HRES, EPS), then a weighted average. Table I gives RMSE for 2023 and 2024; the text gives quantile-loss gains at the 1% and 99% levels. No code, data statement, significance test or non-GAM baseline.",
+   "evidence_id": "e8042d37039f"
+  }
+ ],
+ "claims": [
+  {
+   "text": "2023, 24-hour horizon: the aggregate with time-invariant weights has RMSE 1085 MW against 1112 MW for the best single provider (ECMWF HRES); Meteo-France Arpege 1117 MW, ECMWF EPS 1251 MW.",
+   "metric": "RMSE, MW",
+   "value": 1085,
+   "dataset": "French national load (RTE), 2023",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "the same GAM-Viking model on one weather provider (best: ECMWF HRES, 1112 MW)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "2024, 24-hour horizon: the aggregate with time-invariant weights has RMSE 961 MW against 1000 MW for the best single provider (ECMWF HRES); Meteo-France Arpege 1004 MW, ECMWF EPS 1072 MW.",
+   "metric": "RMSE, MW",
+   "value": 961,
+   "dataset": "French national load (RTE), 2024",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "the same GAM-Viking model on one weather provider (best: ECMWF HRES, 1000 MW)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 366,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "2024, 24-hour horizon: a plain uniform average of the three per-provider forecasts has RMSE 957 MW, lower than the fitted time-invariant weights (961 MW), sequential aggregation (958 MW) and additive stacking (960 MW).",
+   "metric": "RMSE, MW",
+   "value": 957,
+   "dataset": "French national load (RTE), 2024",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "the three fitted aggregation rules",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 366,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "2023, 24-hour horizon: additive stacking (weights that depend on forecast temperature) is the best rule at 1082 MW; uniform 1097 MW, sequential aggregation 1090 MW.",
+   "metric": "RMSE, MW",
+   "value": 1082,
+   "dataset": "French national load (RTE), 2023",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "the other three aggregation rules",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "At the 1% quantile, the dispersion-aware probabilistic aggregate (Gaulss aggregation 2) has 21% lower quantile loss than the single-provider Viking model on Meteo-France input.",
+   "metric": "quantile loss reduction at the 1% level, percent",
+   "value": 21,
+   "dataset": "French national load (RTE), test period (2023 to 2024)",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "GAM-Viking on Meteo-France Arpege only, without the GAMLSS layer",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 731,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "At the 99% quantile, the dispersion-aware probabilistic aggregate (Gaulss aggregation 2) has 17% lower quantile loss than the single-provider Viking model on Meteo-France input.",
+   "metric": "quantile loss reduction at the 99% level, percent",
+   "value": 17,
+   "dataset": "French national load (RTE), test period (2023 to 2024)",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "GAM-Viking on Meteo-France Arpege only, without the GAMLSS layer",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 731,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Aggregation alone, without the GAMLSS layer (Viking aggregation), lowers the 1% quantile loss by 13% against the single-provider Viking model on Meteo-France input.",
+   "metric": "quantile loss reduction at the 1% level, percent",
+   "value": 13,
+   "dataset": "French national load (RTE), test period (2023 to 2024)",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "GAM-Viking on Meteo-France Arpege only",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 731,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Aggregation alone, without the GAMLSS layer (Viking aggregation), lowers the 99% quantile loss by 9% against the single-provider Viking model on Meteo-France input.",
+   "metric": "quantile loss reduction at the 99% level, percent",
+   "value": 9,
+   "dataset": "French national load (RTE), test period (2023 to 2024)",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "GAM-Viking on Meteo-France Arpege only",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 731,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The aggregate with the GAMLSS layer but without the dispersion covariate (Gaulss aggregation 1) lowers the 1% quantile loss by 18% against the single-provider Viking model on Meteo-France input.",
+   "metric": "quantile loss reduction at the 1% level, percent",
+   "value": 18,
+   "dataset": "French national load (RTE), test period (2023 to 2024)",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "GAM-Viking on Meteo-France Arpege only, without the GAMLSS layer",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 731,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The aggregate with the GAMLSS layer but without the dispersion covariate (Gaulss aggregation 1) lowers the 99% quantile loss by 11% against the single-provider Viking model on Meteo-France input.",
+   "metric": "quantile loss reduction at the 99% level, percent",
+   "value": 11,
+   "dataset": "French national load (RTE), test period (2023 to 2024)",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "GAM-Viking on Meteo-France Arpege only, without the GAMLSS layer",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 731,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "With one weather provider, the GAMLSS variance layer lowers CRPS from 285 MW to 281 MW (1.2%); the authors note that CRPS gives little weight to the extreme quantiles, where the same layer gains 14% (1% level) and 11% (99% level).",
+   "metric": "CRPS, MW",
+   "value": 281,
+   "dataset": "French national load (RTE), test period (2023 to 2024)",
+   "horizon": "24 hours ahead, hourly",
+   "baseline": "GAM-Viking without the GAMLSS layer, same provider (285 MW)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 731,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "At the 24-hour horizon the four aggregation rules give very similar results and a uniform average already accounts for most of the gain; CRPS differences between the probabilistic variants are small.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "The three providers' temperature forecasts differ materially: the standard deviation of pairwise differences is 0.57 to 0.74 degrees C, and the spread of the per-provider load forecasts is the covariate that improves the tails.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "Aggregating forecasts from several weather providers improves point and probabilistic forecasts of French national load over any single provider, most at the extreme quantiles (headline claim of the abstract).",
+   "metric": null,
+   "value": null,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load (French national, from the system operator), so target_match is 3; it is one national series, not zonal. The models are built and scored at 24 hours ahead with a correction that extends to roughly 70 hours, so horizon_match is 2 (day-ahead); nothing is reported at a week. Weather enters as archived forecasts of temperature and cloud cover for the target hours, which is exactly known-future weather in our forecast regime, so covariates_match is 3. The paper's question (how much load error comes from the weather forecast, and whether mixing weather sources reduces it) is the question behind our forecast regime, on the regression side of our primary comparison."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: the text mentions no registration or frozen protocol; aggregation weights were fitted on 2021 to 2022 and the tables report 2023 and 2024, but the choice among four aggregation rules and four GAMLSS variants is discussed on the test years. training_overlap_risk: unknown, because there is no weights file; the method is a GAM fitted from scratch and nothing is released. evidence_strength is weak by the spec's rule: numbers without code or data. The test window is long enough (two years) but there is no significance test or interval on any difference (ci90 null throughout), and every comparator is the same GAM-Viking model on one provider: no naive, persistence, operator or non-GAM baseline. baseline_same_inputs is 'partly' for aggregate against single provider (same model, calendar and load history; the weather inputs differ, which is the treatment) and 'yes' among the aggregation rules and for the GAMLSS layer on one provider. My arithmetic from Table I, not stated in the paper: the kept rule is 2.4% (2023) and 3.9% (2024) below the best single provider in RMSE. Central model: the aggregated GAM-Viking-Gaulss pipeline; no foundation model and none of runnable_models is involved. Licence: null, nothing runnable is released; the preprint is under arXiv's non-exclusive distribution licence. independent_replication: one research call found no repository for this paper, no data bundle, no replication and no criticism. It did name earlier work by the same group (arXiv 2110.00334, said to link a public GitLab implementation of the base GAM plus state-space method; arXiv 2301.10090, said to name the R package viking on CRAN); those pages were not fetched, so the existence and licence of that code are unverified, and it would not cover the weather aggregation step. Also not verified: the exact train and test dates (shown only in a figure; 731 days assumes the test period is calendar 2023 plus 2024, as the tables suggest); whether the quantile and CRPS numbers cover both years; issue times and lead times of the archived weather forecasts; the HAL record the arXiv entry was deposited through; and all figures (the fetched figure tables are reconstructions of plots and were not used). The archived Meteo-France and ECMWF forecast vintages are not identified as public, so the paper's own experiment could probably not be repeated from open data."
+ },
+ "evidence_strength": "weak",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "Closely on target (hourly load driven by archived weather forecasts, scored over two years) and backed by its own preprint, but the evidence is thin: no code or data, no intervals or significance tests, comparators that are all the same model, and a 24-hour horizon rather than a week. There are no weights or code to run, and our benchmark holds one weather forecast source per zone, so the headline comparison (several providers against one) cannot be re-measured now.",
+ "implementation_hint": "No model from runnable_models is involved; nothing goes through models/chronos2.py or models_ff/run_ff.py. If the idea is taken up it is a stage-3 addition, not a candidate run: fetch a second and third archived temperature forecast for JC and DOM (lead-matched, as weather_forecast is now), fit the temperature-only regression once per source, and compare the uniform average of the three forecasts with the single-source rows in the forecast regime. The paper itself finds a uniform average gets most of the gain. That needs new raw data and a new protocol version with a line in DEVIATIONS.md, and would be a secondary result.",
+ "receipt": null
+}

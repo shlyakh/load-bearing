@@ -1,0 +1,196 @@
+{
+ "candidate_id": "pl-forecast-bench",
+ "title": "pl-forecast-bench: a leakage-checked forecasting benchmark for the Polish power system",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://zenodo.org/records/23819140",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-14T17:56:51Z"
+ },
+ "candidate_type": "benchmark",
+ "primary_sources": [
+  {
+   "url": "https://github.com/kwwaleszczynski-del/pl-forecast-bench",
+   "kind": "github",
+   "paraphrase": "Author's repository README (MIT code): tasks, as-of rules, splits, reference models and the test-year results table. Day-ahead demand MAE: PSE plan 414 MW (published after the origin, not ranked), gradient boosting 536, Chronos-2 with NWP covariates 551, Chronos-2 alone 615, ridge 713. Intraday demand: ridge 331, boosting 353, Chronos-2 with NWP 373.",
+   "evidence_id": "b1ad31ac9123"
+  },
+  {
+   "url": "https://zenodo.org/records/23819140",
+   "kind": "zenodo",
+   "paraphrase": "Software record v1.1.0 of 30 Oct 2026: day-ahead and intraday 15-minute forecasts of Polish wind, solar, demand and price with fixed data scripts and checksums, publication-time rules, a test year from Oct 2025 to Sep 2026, reference models up to zero-shot foundation models and leakage tests. The archive holds code and scores, not data.",
+   "evidence_id": "20698042a42d"
+  },
+  {
+   "url": "https://kwwaleszczynski-del.github.io/pl-forecast-bench/",
+   "kind": "docs",
+   "paraphrase": "Leaderboard site: agrees with the README. Best as-of model for day-ahead demand is gradient boosting (536 MW, 29.4% worse than the PSE plan); for intraday demand ridge (331 MW, 20.1% better than the plan). The plan is a reference marked not as-of. The monthly hindcast has no scored months.",
+   "evidence_id": "1c1a2ca38043"
+  },
+  {
+   "url": "https://raw.githubusercontent.com/kwwaleszczynski-del/pl-forecast-bench/main/docs/pairwise.json",
+   "kind": "github",
+   "paraphrase": "Pairwise tests with 95% block-bootstrap intervals: on day-ahead demand boosting against Chronos-2 with NWP is 2.8% (-13.2 to +14.4), no winner; on day-ahead wind Chronos-2 with NWP is 62.6% (59.5 to 65.3) better than without; on price it is 8.8% (3.1 to 14.6) better than boosting.",
+   "evidence_id": "3c7779c08a84"
+  },
+  {
+   "url": "https://raw.githubusercontent.com/kwwaleszczynski-del/pl-forecast-bench/main/submissions/chronos2_nwp/scores_test.json",
+   "kind": "github",
+   "paraphrase": "Score file of Chronos-2 with NWP, scored 12 Nov 2026: day-ahead demand MAE 551.3 MW on 35,040 quarter-hours, bias -69 MW, 33.2% worse than the PSE plan (95% -50.9 to -17.0), 10-90% coverage 71.5%, monthly MAE 383 to 771 MW; intraday demand 372.6 MW, 10.0% better than the plan (2.5 to 17.6).",
+   "evidence_id": "6a83cf12dd75"
+  },
+  {
+   "url": "https://raw.githubusercontent.com/kwwaleszczynski-del/pl-forecast-bench/main/submissions/chronos2_nwp/meta.json",
+   "kind": "github",
+   "paraphrase": "Entry description: amazon/chronos-2 zero-shot with ECMWF IFS covariates as of the origin (a wind or PV index and temperature are named), past values from each day's previous-day run and future values from the newest public run. No weights revision recorded.",
+   "evidence_id": "d3abea66a053"
+  },
+  {
+   "url": "https://raw.githubusercontent.com/kwwaleszczynski-del/pl-forecast-bench/main/benchmark/spec.toml",
+   "kind": "github",
+   "paraphrase": "The benchmark's frozen definition, version 1.0: splits, the 10:00 D-1 day-ahead issue time, hourly intraday origins with leads of 60 to 345 minutes, a 60-minute observation lag and a 7-hour delay for weather runs. A file in the repository, not an external registration.",
+   "evidence_id": "e3bb5da42e8c"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the Chronos-2 weights repository: weights and config added on 30 Oct 2025 (commit 95a9710); later commits, up to 5 Jun 2026, are README, tag and deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the central model's weights: licence tag apache-2.0, repository created 30 Oct 2025, 119.5M parameters, head 29ec376 last modified 5 Jun 2026.",
+   "evidence_id": "d33d62d68de3"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Day-ahead demand: gradient boosting on ECMWF features and zero-shot Chronos-2 with weather covariates are tied (536 against 551 MW; pairwise skill 2.8% with an interval that includes zero).",
+   "metric": "skill of boosting over Chronos-2 with NWP, 1 - MAE ratio (%)",
+   "value": 2.8,
+   "dataset": "Polish national demand (PSE his-wlk-cal), 15-minute, test year 1 Oct 2025 to 30 Sep 2026",
+   "horizon": "day-ahead: every quarter-hour of day D, issued D-1 10:00 (leads of about 14 to 38 hours)",
+   "baseline": "Chronos-2 with NWP covariates, MAE 551 MW",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 3
+  },
+  {
+   "text": "Day-ahead demand: Chronos-2 with weather covariates has MAE 551 MW against 713 MW for ridge regression on NWP, lags and calendar (about 23% lower; our arithmetic from the table, no pairwise test is published for this pair).",
+   "metric": "MAE (MW)",
+   "value": 551,
+   "dataset": "Polish national demand, 15-minute, test year Oct 2025 to Sep 2026",
+   "horizon": "day-ahead (issued D-1 10:00)",
+   "baseline": "ridge regression on NWP at 8 points, lags and calendar dummies, MAE 713 MW",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Day-ahead demand: weather covariates lower Chronos-2's MAE from 615 to 551 MW (about 10%; our arithmetic, no interval published), against a threefold reduction on wind.",
+   "metric": "MAE (MW)",
+   "value": 551,
+   "dataset": "Polish national demand, 15-minute, test year Oct 2025 to Sep 2026",
+   "horizon": "day-ahead (issued D-1 10:00)",
+   "baseline": "Chronos-2 on the target's own history, MAE 615 MW",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Day-ahead wind: Chronos-2 with NWP covariates has 62.6% lower MAE than Chronos-2 alone (468 against 1,251 MW; 95% interval 59.5 to 65.3): the basis of 'foundation models need the weather'.",
+   "metric": "skill of Chronos-2 with NWP over Chronos-2 alone, 1 - MAE ratio (%)",
+   "value": 62.6,
+   "dataset": "Polish national wind generation, 15-minute, test year Oct 2025 to Sep 2026",
+   "horizon": "day-ahead (issued D-1 10:00)",
+   "baseline": "Chronos-2 on the target's own history, MAE 1,251 MW",
+   "test_window_days": 365,
+   "citation_idx": 3
+  },
+  {
+   "text": "Day-ahead demand: no model that respects the 10:00 issue time beats the operator's plan; the best, gradient boosting, has 29% more error (95% interval -49 to -13), and the README calls this an unfair race because the plan is published after the gate with fresher weather.",
+   "metric": "skill against the PSE plan, 1 - MAE ratio (%)",
+   "value": -29,
+   "dataset": "Polish national demand, 15-minute, test year Oct 2025 to Sep 2026",
+   "horizon": "day-ahead (issued D-1 10:00)",
+   "baseline": "PSE day-ahead plan (PKD), MAE 414 MW, published D-1 15:15 to 17:45",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Day-ahead demand: Chronos-2 with weather covariates has 33.2% more error than the operator's plan (95% interval -50.9 to -17.0).",
+   "metric": "skill against the PSE plan, 1 - MAE ratio (%)",
+   "value": -33.2,
+   "dataset": "Polish national demand, 15-minute, test year Oct 2025 to Sep 2026",
+   "horizon": "day-ahead (issued D-1 10:00)",
+   "baseline": "PSE day-ahead plan (PKD), MAE 414 MW",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 4
+  },
+  {
+   "text": "Intraday demand (1 to 6 hours ahead): ridge is the best model at 331 MW, 20.1% better than the day-ahead plan; boosting has 353 MW and Chronos-2 with weather covariates 373 MW (ridge against boosting: interval includes zero).",
+   "metric": "skill against the PSE plan, 1 - MAE ratio (%)",
+   "value": 20.1,
+   "dataset": "Polish national demand, 15-minute, hourly origins, test year Oct 2025 to Sep 2026",
+   "horizon": "intraday: quarter-hours starting 60 to 345 minutes after the origin",
+   "baseline": "PSE day-ahead plan (PKD), MAE 414 MW, which the ridge and boosting models also take as an input",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "Calibration on day-ahead demand: the 10-90% interval of gradient boosting holds 59% of outcomes, that of Chronos-2 with weather covariates 72%.",
+   "metric": "coverage of the 10-90% interval (%)",
+   "value": 72,
+   "dataset": "Polish national demand, 15-minute, test year Oct 2025 to Sep 2026",
+   "horizon": "day-ahead (issued D-1 10:00)",
+   "baseline": "gradient boosting decile models, coverage 59%",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "The day-ahead price is the one task where a zero-shot foundation model wins: Chronos-2 with weather covariates is 8.8% better than gradient boosting (88.5 against 97.1 PLN/MWh; 95% interval 3.1 to 14.6).",
+   "metric": "skill of Chronos-2 with NWP over boosting, 1 - MAE ratio (%)",
+   "value": 8.8,
+   "dataset": "SDAC day-ahead price of the Polish bidding zone, 15-minute, test year Oct 2025 to Sep 2026",
+   "horizon": "day-ahead (issued D-1 10:00)",
+   "baseline": "gradient boosting on ECMWF features, MAE 97.1 PLN/MWh",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 3
+  },
+  {
+   "text": "Every input is taken as of its publication time and weather is an archived forecast run, never a reanalysis; tests replace everything not yet public at an origin with noise and require unchanged features, contexts and refitted models.",
+   "metric": null,
+   "value": null,
+   "dataset": "PSE reports and archived ECMWF IFS runs through Open-Meteo",
+   "horizon": null,
+   "baseline": null,
+   "test_window_days": null,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Power demand is one of four targets and is electric load, so target_match is 3, with two reservations: it is one national aggregate on a 15-minute grid (ours: two PJM zones, hourly), and the headline findings are mostly about wind, solar and price. The horizons are day-ahead (issued 10:00 on D-1, leads of about 14 to 38 hours) and intraday 1 to 6 hours, so horizon_match is 2: nothing here speaks to days 2 to 7 of our week. Weather enters as a known-future covariate from archived forecast runs with a stated availability delay, which is our forecast regime; reanalysis is excluded on purpose, so there is no counterpart to our oracle regime. The weather inputs are wider than ours (ECMWF at eight weighted points; for Chronos-2 an index plus temperature) against our temperature only."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: Chronos-2 with weather covariates. The study is a benchmark with several headline findings; the ones about a model we can run are 'foundation models need the weather' and 'boosting and Chronos-2 with weather covariates are tied', both about Chronos-2 with covariates, which is also the model of our primary comparison. Chronos-Bolt, TimesFM 2.5 and Toto (all univariate here) are in implementation_hint. pre_registered is 'no': the definition is frozen in a repository file and the release is archived, but nothing was registered before the test year was scored, one model variant was chosen on the validation split, and the score files on the main branch are dated 12 Nov 2026, after the 30 Oct archive. training_overlap_risk is about our run: the Chronos-2 weights file was committed on 2025-10-30 (Hub commit list, fetched), before our first scored week (2025-11-10), so 'low'. For the benchmark's own test year the first month (Oct 2025) precedes the weights' upload; the benchmark records no weights revision. independent_replication: one research task and one search found only the author's repository and release page (0 stars, 0 forks). The research answer pointed to a Hugging Face LoRA adapter as possible reuse; fetched, it is an unrelated price model with its own 'benchmark v1'. Two other statements of the research answer were wrong against fetched pages (that the Zenodo record does not exist; that Toto was not run) and are not used. evidence_strength is 'moderate': public code, checksummed data scripts, per-model score files, a 365-day test window and bootstrap intervals, but no pre-registration or replication, and the baselines got partly different inputs. baseline_same_inputs is 'partly' for ridge and boosting against Chronos-2: all use the same archived ECMWF runs under the same as-of rule, but ridge and boosting get features at eight points plus lags and calendar and are refitted quarterly on about a year of data, while Chronos-2 gets one index plus temperature and 1,024 hourly means of context. It is 'no' against the PSE plan, which is published after the origin. The source's intervals are 95%, so no ci90 is filled. Not verified: which covariates Chronos-2 receives for demand (the README says the variable's NWP index and temperature; the entry description names only wind or PV indices and temperature); the code itself (foundation.py, asof.py, test_leakage.py were not read); whether the Zenodo archive's score files equal those on the main branch; the demand tab of the leaderboard (only the wind table came through); the with-against-without and Chronos-against-ridge differences on demand, which are our arithmetic from the table and have no published interval; the README's licence statements for Chronos-Bolt, TimesFM 2.5 and Toto. Real-data leakage tests are not run in the repository's CI by its own account. Licence is that of the model we would run (Chronos-2 weights, apache-2.0 by the Hub record); the benchmark's code is MIT."
+ },
+ "evidence_strength": "moderate",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_RUN",
+ "label_reason": "A sourced, public benchmark with as-of rules like our forecast regime and a full test year, whose demand comparison (zero-shot Chronos-2 with forecast weather against a regression and a boosted model on the same weather runs, and against Chronos-2 without weather) can be re-measured today with rows our benchmark already has. On demand its own numbers are modest: Chronos-2 with weather is tied with boosting, ahead of ridge day-ahead but behind it intraday, and gains about 10% from weather; it is day-ahead on one national series, not pre-registered and not replicated.",
+ "implementation_hint": "Central model: amazon/chronos-2 (direct_adapter, models/chronos2.py, temperature: true, pinned revision; weights of 2025-10-30). No new code is needed: the transfer test reads existing leaderboard rows per zone and regime: chronos2_temperature against lag_regression_temperature (the temperature-only regression; the study's Chronos-2 with weather against ridge, 551 against 713 MW day-ahead), against lightgbm_temperature (the study's tie with boosting, 2.8% with an interval including zero) and against chronos2 without temperature (the study's about 10% gain on demand). The forecast regime is the like-for-like one; the study excludes reanalysis, so it has no oracle regime. Differences to keep in view: day-ahead (leads of about 14 to 38 hours) and intraday on a 15-minute grid against 168 hours hourly, so a split of our errors by lead day would show whether day 1 behaves like theirs; ECMWF at eight weighted points (for Chronos-2 an index plus temperature) against temperature only; a 1,024-hour context; quarterly refits of the trained models on about a year of data; skill against the operator's plan, which we do not have; one national series in Poland against PJM zones JC and DOM. Other models of the study: google/timesfm-2.5-200m-pytorch (ff_univariate, models_ff/run_ff.py; univariate there too, 749 MW day-ahead demand), Chronos-Bolt small and Toto (FoundationForecast wrappers, ff_univariate, not set up here).",
+ "receipt": null
+}

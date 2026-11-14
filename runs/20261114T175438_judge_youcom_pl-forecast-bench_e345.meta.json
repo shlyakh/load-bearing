@@ -1,0 +1,105 @@
+{
+ "run_id": "20261114T175438_judge_youcom_pl-forecast-bench_e345",
+ "skill": "judge",
+ "provider": "youcom",
+ "args": [
+  "pl-forecast-bench"
+ ],
+ "note": "",
+ "model_requested": null,
+ "provider_tools_allowed": [
+  "mcp__you-com__you-search",
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research"
+ ],
+ "provider_tools_denied": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "mcp_server": {
+  "name": "you-com",
+  "url": "https://api.you.com/mcp?tools=you-search,you-contents,you-research"
+ },
+ "mcp_servers": [
+  {
+   "name": "you-com",
+   "status": "connected"
+  }
+ ],
+ "search_tools_present": [
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research",
+  "mcp__you-com__you-search"
+ ],
+ "git_commit": "ac5decc",
+ "started_at": "2026-11-14T17:54:38+00:00",
+ "wall_seconds": 217.2,
+ "exit_code": 1,
+ "timed_out": false,
+ "session_id": "e6a43d4e-9adc-44a4-a1d2-9092c297614d",
+ "is_error": true,
+ "num_turns": 24,
+ "total_cost_usd": 2.8999172,
+ "usage": {
+  "input_tokens": 26,
+  "cache_creation_input_tokens": 111456,
+  "cache_read_input_tokens": 1111466,
+  "output_tokens": 22353,
+  "output_tokens_details": {
+   "thinking_tokens": 2260
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 111456,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 7322,
+    "cache_read_input_tokens": 123490,
+    "cache_creation_input_tokens": 4054,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4054
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 26,
+   "outputTokens": 22353,
+   "cacheReadInputTokens": 1111466,
+   "cacheCreationInputTokens": 111456,
+   "webSearchRequests": 0,
+   "costUSD": 2.8999172,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2260,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 111456,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Read": 3,
+  "Grep": 1,
+  "ToolSearch": 1,
+  "mcp__you-com__you-contents": 5,
+  "Bash": 7,
+  "mcp__you-com__you-research": 4,
+  "mcp__you-com__you-search": 1,
+  "Write": 1
+ }
+}
