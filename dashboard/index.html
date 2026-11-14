@@ -97,6 +97,43 @@ svg .hit:focus { outline: none; } svg .hit:focus-visible { stroke: var(--model);
 .big { font-family: var(--display); font-size: 40px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
 .kv { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); }
 .kv b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.lane { display: grid; gap: 12px; margin-top: 26px; }
+.lane-h { display: flex; align-items: center; gap: 10px; }
+.lane-h h3 { margin: 0; }
+.flow { list-style: none; margin: 0; padding: 0; }
+.flow code, .lane code { font-size: 12px; color: var(--ink-2); background: var(--flag-bg); border-radius: 4px; padding: 1px 6px; overflow-wrap: anywhere; }
+.kick { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+.flow-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 26px 26px; }
+.node { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.node b, .stage-h b { color: var(--ink); font-weight: 600; }
+.node p, .stage p { font-size: 14px; }
+.node code { margin-top: auto; }
+.node + .node::before { content: "\2192"; position: absolute; left: -21px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-size: 18px; }
+.flow-col { display: grid; gap: 30px; }
+.stage { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; grid-template-columns: 210px 1fr; gap: 8px 22px; }
+.stage.agent { border-left: 4px solid var(--model); }
+.stage + .stage::before { content: "\2193"; position: absolute; top: -27px; left: 28px; color: var(--ink-3); font-size: 18px; }
+.stage-h { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.stage-b { display: grid; gap: 10px; min-width: 0; }
+.impl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.impl.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.impl > div { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); }
+.impl-h { font-size: 13px; font-weight: 600; color: var(--ink); }
+.impl ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); }
+.snip { font-size: 13px !important; color: var(--ink) !important; border-left: 3px solid var(--line); padding-left: 10px; max-width: 80ch; }
+.snip:empty { display: none; }
+.io { font-size: 13px !important; color: var(--ink-3) !important; max-width: 80ch; }
+.io span { font-weight: 600; color: var(--ink-2); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.two .panel, .panel.scroll { display: grid; gap: 10px; align-content: start; }
+#flow-ratio { width: 100%; display: block; }
+#flow-ratio text { font-size: 12px; fill: var(--ink-2); } #flow-ratio text.lab { fill: var(--ink); font-weight: 500; }
+@media (max-width: 720px) {
+  .stage { grid-template-columns: 1fr; }
+  .impl, .impl.three { grid-template-columns: 1fr; }
+  .flow-row { grid-template-columns: 1fr; }
+  .node + .node::before { content: "\2193"; left: 20px; top: -24px; transform: none; }
+}
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
 .steps .panel { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .steps p { font-size: 14px; }
@@ -375,13 +412,115 @@ a { color: var(--model); }
 </section>
 
 <section data-tab="agents">
-  <span class="eyebrow">What the agents do</span>
-  <h2>From a new claim to a receipt, without a person in the loop</h2>
-  <div class="steps">
-    <div class="panel"><span class="pill flag">Saturday</span><h3>1. Find</h3><p>Search arXiv, Hugging Face, GitHub and Zenodo for forecasting claims published this week.</p></div>
-    <div class="panel"><span class="pill warn">Rules ready</span><h3>2. Judge</h3><p>Read the primary source, extract the claim with a citation, and score it against our problem. No source, no pass.</p></div>
-    <div class="panel"><span class="pill good">Working</span><h3>3. Run</h3><p>If the model can be run, forecast the same scored weeks under the frozen protocol, with pinned weights.</p></div>
-    <div class="panel"><span class="pill good">Working</span><h3>4. Receipt</h3><p>Claimed against measured, with a range, the mismatch in setup, and how many weeks the model cannot have seen.</p></div>
+  <span class="eyebrow">How the processing runs</span>
+  <h2>Set up once, then three agents turn each week's claims into receipts</h2>
+  <p>The benchmark is built and frozen once. After that, each week's run goes through the same five stages. Three of them are agents: a language model following written instructions, with a fixed list of tools. Each agent can do its web work in two ways, with Claude's own search or with You.com, and the outputs are kept apart so the two can be compared.</p>
+
+  <div class="lane">
+    <div class="lane-h"><span class="pill flag">Once</span><h3>Set up the benchmark</h3></div>
+    <ol class="flow flow-row">
+      <li class="node"><span class="kick">Data</span><b>Load and weather</b><p>Hourly load for four PJM zones and the temperature each forecaster would have had. Every raw file is hashed; scoring refuses to run if a file changed.</p><code>fetch.py</code></li>
+      <li class="node"><span class="kick">Rules</span><b>Freeze the protocol</b><p>Forecast every Monday at midnight for the next 168 hours. Weeks, baseline, the 10% bar and the verdict wording are fixed at a git tag.</p><code>protocol.yaml</code></li>
+      <li class="node"><span class="kick">Dry run</span><b>Gate weeks</b><p>Code is debugged only on a few earlier weeks, never on the scored ones.</p><code>harness/</code></li>
+      <li class="node"><span class="kick">Score</span><b>Score once</b><p>Baselines and pretrained models each run once on the <span class="n-weeks"></span> scored weeks. Weights are pinned to a dated revision.</p><code>results/leaderboard</code></li>
+      <li class="node"><span class="kick">Target</span><b>Write the problem spec</b><p>What counts as relevant to our problem, and what each label means. The judge scores against this file.</p><code>spec.yaml</code></li>
+    </ol>
+  </div>
+
+  <div class="lane" id="flow-weekly">
+    <div class="lane-h"><span class="pill good">Every week</span><h3>From new claims to receipts</h3></div>
+    <p class="note">Today a person starts the run with one command (<code>tools/pipeline.py</code>) and the stages run in the background, each one recorded in <code>runs/</code>. A weekly schedule is planned, not built.</p>
+    <ol class="flow flow-col">
+      <li class="stage">
+        <div class="stage-h"><span class="kick">Stage 1 &#183; no agent</span><b>Read the listings</b><code>tools/feeds.py</code></div>
+        <div class="stage-b">
+          <p>A plain script reads public listings directly. They give exact dates and a complete list for each site, which web search does not.</p>
+          <p class="snip" id="flow-feeds"></p>
+          <p class="io"><span>Writes</span> <code>candidates/feeds/</code>: title, URL and date only. Abstracts stay on the laptop.</p>
+        </div>
+      </li>
+      <li class="stage agent">
+        <div class="stage-h"><span class="kick">Stage 2 &#183; agent 1</span><b>Scan: find the claims</b><code>/scan</code></div>
+        <div class="stage-b">
+          <p>Shortlists listing items by title, then runs each query once per site inside the date window. Drops pages that are undated, off topic, duplicates or rewrites, and keeps claims that point at a primary source, closest to our problem first.</p>
+          <div class="impl">
+            <div><span class="impl-h">With Claude's own search</span><ul><li>Web search for each query and site group</li><li>Web fetch to confirm a date or a source</li></ul></div>
+            <div><span class="impl-h">With You.com</span><ul><li>Search, with an exact date range and one <code>site:</code> per query; every result comes back dated</li><li>Contents to read a page</li></ul></div>
+          </div>
+          <p class="snip" id="flow-scan"></p>
+          <p class="io"><span>Writes</span> <code>candidates/&lt;provider&gt;/</code> and a ledger with the reason every page was kept or dropped.</p>
+        </div>
+      </li>
+      <li class="stage agent">
+        <div class="stage-h"><span class="kick">Stage 3 &#183; agent 2</span><b>Judge: check one claim</b><code>/judge</code></div>
+        <div class="stage-b">
+          <p>Reads the primary sources, states the claim with a citation for every statement, and checks what decides whether it applies to us: was the test planned in advance, did the baseline get the same inputs, how far ahead, what licence, could the model have trained on our test weeks. Then it gives one of four labels.</p>
+          <div class="impl">
+            <div><span class="impl-h">With Claude's own search</span><ul><li>A research helper that searches and fetches</li><li>Web fetch for each primary source</li></ul></div>
+            <div><span class="impl-h">With You.com</span><ul><li>Research: one task that returns an answer with its sources as a list</li><li>Contents: about eight pages per claim</li><li>Search: up to two targeted lookups</li></ul></div>
+          </div>
+          <p class="snip" id="flow-judge"></p>
+          <p class="io"><span>Writes</span> <code>scorecards/&lt;provider&gt;/</code>, checked against a fixed schema, and <code>evidence/&lt;provider&gt;/</code> with one row per source. No primary source, no pass.</p>
+        </div>
+      </li>
+      <li class="stage agent">
+        <div class="stage-h"><span class="kick">Stage 4 &#183; agent 3</span><b>Run: measure it</b><code>/run-candidate</code></div>
+        <div class="stage-b">
+          <p>Only for claims labelled "can be run now". No web search. What happens depends on the model the claim needs:</p>
+          <div class="impl three">
+            <div><span class="impl-h">Already on the leaderboard</span><ul><li>Go straight to the receipt</li></ul></div>
+            <div><span class="impl-h">New model the library wraps</span><ul><li>Pin the weights, run the gate weeks, then the scored weeks once</li></ul></div>
+            <div><span class="impl-h">Needs new code</span><ul><li>Stop and report what a person has to write</li></ul></div>
+          </div>
+          <p class="snip">A background run may only take the first path. It never downloads weights, changes code or starts a model by itself.</p>
+          <p class="io"><span>Writes</span> forecasts and a leaderboard row under <code>results/</code>, when a model is run.</p>
+        </div>
+      </li>
+      <li class="stage">
+        <div class="stage-h"><span class="kick">Stage 5 &#183; no agent</span><b>Write the receipt</b><code>tools/receipt.py</code></div>
+        <div class="stage-b">
+          <p>A plain script fills in the receipt from the scored results. The agent supplies the claim in its own words and how the claim's setup differs from ours; it never supplies a number.</p>
+          <p class="io"><span>Writes</span> the receipt into the scorecard: claimed, measured ratio with its range per zone, the setup mismatch, weeks the model cannot have seen, and the verdict. This page is rebuilt from those files.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section data-tab="agents">
+  <span class="eyebrow">Scoring</span>
+  <h2>Two scores: a label for the claim, a ratio for the model</h2>
+  <div class="two">
+    <div class="panel">
+      <h3>1. The judge's label</h3>
+      <p>Given by agent 2 from the sources alone, before anything is run.</p>
+      <table>
+        <tr><th>Label</th><th>Meaning</th></tr>
+        <tr><td>Can be run now</td><td>Relevant, has a primary source, and the model fits our benchmark as it is.</td></tr>
+        <tr><td>Needs more work to run</td><td>Relevant and sourced, but running it takes more than an adapter.</td></tr>
+        <tr><td>Thin evidence</td><td>Relevant, but the primary source is missing or weak. A claim with no primary source cannot score higher.</td></tr>
+        <tr><td>Off target</td><td>Not about our problem, or nothing usable behind the claim.</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h3>2. The measured ratio</h3>
+      <p>Each week's error is the average miss over its 168 hours, in megawatts. The ratio is the model's average weekly error divided by the baseline's: 0.90 means 10% less error. The range comes from re-drawing whole weeks 2,000 times, the same weeks for both.</p>
+      <p>The reading depends on where the whole range falls against the 10% bar:</p>
+      <svg id="flow-ratio" role="img" aria-label="Measured ratios with their 90% ranges against the band from 0.90 to 1.10, and the reading each one gets"></svg>
+      <p class="note">Chronos-2 with temperature in every row. Dot: the ratio. Line: its 90% range. Shaded: 0.90 to 1.10, a practical tie if the whole range is inside.</p>
+    </div>
+  </div>
+  <div class="panel scroll">
+    <h3>3. From the reading to the receipt's wording</h3>
+    <p>The receipt is a transfer test: does the published result carry over to our problem? So the wording depends on what was claimed.</p>
+    <table>
+      <tr><th>What we measured</th><th>If the claim was "about a tie"</th><th>If the claim was "the model is better"</th></tr>
+      <tr><td>Model clearly better (range below 0.90)</td><td>Does not transfer</td><td>Transfers</td></tr>
+      <tr><td>Practical tie (range inside 0.90 to 1.10)</td><td>Transfers</td><td>Does not transfer</td></tr>
+      <tr><td>Baseline clearly better (range above 1.10)</td><td>Does not transfer</td><td>Does not transfer</td></tr>
+      <tr><td>Inconclusive (range crosses a bar)</td><td>Partially</td><td>Partially</td></tr>
+    </table>
+    <p class="note">Zones that disagree give "partially". If most scored weeks fall before the model's weights were published, the receipt says "untestable": the model may have trained on them.</p>
   </div>
 </section>
 
@@ -518,7 +657,7 @@ a { color: var(--model); }
     { tab: "leaderboard", at: "#board", ms: 6500, text: "Every model against the same baseline, DOM and JC side by side. Timestral, the grey diamond, was published after most test weeks, so it may have seen them." },
     { tab: "weather", at: "#wx-ratio", ms: 7500, text: "With better weather forecasts the regressions catch up. Against the field's standard benchmark the model is level under every source (" + tourNum.min + " to " + tourNum.max + "); on DOM it goes from " + tourNum.gfs + " with GFS weather to " + tourNum.era5 + " with perfect weather." },
     { tab: "candidates", at: "#cands", ms: 6000, text: "The scan agent reads arXiv, Hugging Face and Zenodo, and keeps new claims that cite a primary source.", act: () => type("#cand-q", "PJM", 2600) },
-    { tab: "agents", at: ".steps", ms: 5000, text: "Find, judge, run, receipt: from a new claim to a measured answer, with every source cited." }
+    { tab: "agents", at: "#flow-weekly", ms: 5000, text: "Find, judge, run, receipt: from a new claim to a measured answer, with every source cited." }
   ];
   // ?tourms=5000,6000,... sets each step's length (used to fit the tour to a narration)
   (new URLSearchParams(location.search).get("tourms") || "").split(",").map(Number).forEach((v, i) => { if (v > 0 && TOUR[i]) TOUR[i].ms = v; });
@@ -839,6 +978,44 @@ a { color: var(--model); }
     function all() { funnel(); draw(); hitsTable(); }
     if (provs.length > 1) seg("cand-prov", provs.map(k => ({ label: provName[k], value: k })), "claude", v => { S = D.scan[v]; all(); });
     all();
+  })();
+
+  // ---------- how it works: live snippets in the flow, and the scoring illustration
+  (function flow() {
+    const names = { arxiv: "arXiv", huggingface: "Hugging Face", zenodo: "Zenodo", crossref: "two journals", pypi: "PyPI releases", github_releases: "GitHub releases" };
+    const fc = D.feed_counts || {}, total = Object.values(fc).reduce((a, b) => a + b, 0);
+    if (total) d3.select("#flow-feeds").text("Latest run: " + fmt(total) + " items from the last " + D.scan_window_days + " days (" + Object.entries(fc).map(([k, v]) => (names[k] || k) + " " + v).join(", ") + ").");
+    const sc = D.scan || {}, part = (k, n) => sc[k] ? n + ": " + fmt(sc[k].hits.length) + " pages looked at, " + sc[k].candidates.length + " claims kept" : null;
+    const parts = [part("claude", "Claude's search"), part("youcom", "You.com")].filter(Boolean);
+    if (parts.length) d3.select("#flow-scan").text("Latest scans. " + parts.join(". ") + ".");
+    const P = D.provider_comparison || [], both = P.filter(r => r.label_claude && r.label_youcom);
+    if (both.length) d3.select("#flow-judge").text(P.filter(r => r.label_youcom).length + " claims judged with You.com and " + P.filter(r => r.label_claude).length + " with Claude's search so far. On the " + both.length + " judged both ways, the label was the same for " + both.filter(r => r.agree === "yes").length + ". A judge takes three to five minutes.");
+    function draw() {
+      const node = document.getElementById("flow-ratio"); if (!node) return;
+      const rows = [];
+      ["DOM", "JC"].forEach(z => { const r = D.board.find(b => b.model === "chronos2_temperature" && b.zone === z && b.regime === "forecast");
+        if (r) rows.push({ name: z + ", against the first baseline", v: r }); });
+      ["DOM", "JC"].forEach(z => { if (D.vs_standard && D.vs_standard[z]) rows.push({ name: z + ", against the standard benchmark", v: D.vs_standard[z] }); });
+      if (D.v2) D.v2.pairs.filter(q => q.kind === "primary").forEach(q => rows.push({ name: q.zone + ", fresh zone, standard benchmark", v: q }));
+      const reading = r => r.hi < lo ? "Model clearly better" : (r.lo >= lo && r.hi <= hi) ? "Practical tie" : r.lo > hi ? "Baseline clearly better" : "Inconclusive";
+      const svg = d3.select(node); svg.selectAll("*").remove();
+      const W = widthOf(node, 440), wide = W >= 640, rh = wide ? 36 : 46, top = 6, H = top + rows.length * rh + 24;
+      const x0 = wide ? 215 : 10, x1 = W - (wide ? 150 : 12), x = d3.scaleLog([0.62, 1.2], [x0, x1]);
+      svg.attr("viewBox", "0 0 " + W + " " + H).attr("height", H);
+      svg.append("rect").attr("x", x(lo)).attr("y", top).attr("width", x(hi) - x(lo)).attr("height", rows.length * rh).attr("fill", "var(--band)");
+      [0.7, 0.8, lo, 1, hi].forEach(t => { svg.append("line").attr("x1", x(t)).attr("x2", x(t)).attr("y1", top).attr("y2", top + rows.length * rh).attr("stroke", t === 1 ? "var(--ink-3)" : "var(--grid)").attr("stroke-width", 1);
+        svg.append("text").attr("x", x(t)).attr("y", H - 6).attr("text-anchor", "middle").text(f2(t)); });
+      rows.forEach((row, i) => {
+        const y = top + i * rh + (wide ? rh / 2 : rh - 13), g = svg.append("g");
+        g.append("title").text(row.name + ": " + f2(row.v.ratio) + ", range " + f2(row.v.lo) + " to " + f2(row.v.hi) + ". " + reading(row.v) + ".");
+        g.append("rect").attr("x", 0).attr("y", top + i * rh).attr("width", W).attr("height", rh).attr("fill", "transparent");
+        g.append("text").attr("class", "lab").attr("x", wide ? 0 : 10).attr("y", wide ? y + 4 : top + i * rh + 15).text(row.name + (wide ? "" : ": " + f2(row.v.ratio) + ", " + reading(row.v).toLowerCase()));
+        g.append("line").attr("x1", x(row.v.lo)).attr("x2", x(row.v.hi)).attr("y1", y).attr("y2", y).attr("stroke", "var(--model)").attr("stroke-width", 2).attr("stroke-linecap", "round");
+        g.append("circle").attr("cx", x(row.v.ratio)).attr("cy", y).attr("r", 5).attr("fill", "var(--model)").attr("stroke", "var(--panel)").attr("stroke-width", 2);
+        if (wide) g.append("text").attr("x", x1 + 12).attr("y", y + 4).text(f2(row.v.ratio) + "  " + reading(row.v));
+      });
+    }
+    draw(); drawers.push(draw);
   })();
 
   // ---------- the judge under two search providers
