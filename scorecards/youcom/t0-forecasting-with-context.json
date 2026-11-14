@@ -1,0 +1,227 @@
+{
+  "candidate_id": "t0-forecasting-with-context",
+  "title": "t0: A Time-Series Foundation Model for Forecasting with Context",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://arxiv.org/abs/2609.24559",
+    "provider": "claude",
+    "retrieved_at": "2026-11-14T16:16:33Z"
+  },
+  "candidate_type": "model_release",
+  "primary_sources": [
+    {
+      "url": "https://arxiv.org/pdf/2609.24559",
+      "kind": "arxiv",
+      "paraphrase": "Full text of the technical report (39 pages). Describes t0-alpha (102M) and t0-beta (256M), their time and variate attention, and the evaluation: GIFT-Eval, fev-bench and TIME scores, a same-checkpoint covariate ablation on fev-bench, a Victoria hourly demand case with temperature, and an ERCOT price study written by an outside firm. Does not cover t0-gamma.",
+      "evidence_id": "1f4f75cb79e7"
+    },
+    {
+      "url": "https://arxiv.org/abs/2609.24559",
+      "kind": "arxiv",
+      "paraphrase": "Abstract page, v1 submitted 21 Sep 2026, CC BY 4.0. Headline: open-weight models that take past and known-future covariates without retraining; known-future covariates lift t0-alpha's fev-bench skill by 6.3 points over 30 tasks; t0-beta is third on GIFT-Eval and fev-bench among the zero-shot models compared.",
+      "evidence_id": "b3d9185bac7a"
+    },
+    {
+      "url": "https://huggingface.co/theforecastingcompany/t0-gamma",
+      "kind": "hf_card",
+      "paraphrase": "Model card of the third release: about 256M parameters, Apache-2.0, needs tfc-t0 0.6.1 or later, known-future covariates passed over context plus horizon, 21 native quantiles, up to 1024 steps in one pass. Its table shows gamma ahead of beta on GIFT-Eval, fev-bench and TIME.",
+      "evidence_id": "75f2dd82cf5d"
+    },
+    {
+      "url": "https://huggingface.co/api/models/theforecastingcompany/t0-gamma/commits/main",
+      "kind": "hf_card",
+      "paraphrase": "Commit list of the gamma weights repository: initial upload e08aee0 on 15 Oct 2026 and fef67ab on 9 Nov 2026, titled as a rescore with tfc-t0 0.6.1. No per-file dates, so it does not show whether the second commit changed the weights file.",
+      "evidence_id": "60a9c6658536"
+    },
+    {
+      "url": "https://github.com/theforecastingcompany/tfc-t0",
+      "kind": "github",
+      "paraphrase": "Official inference package for the t0 models (PyTorch and MLX runtimes, notebooks, benchmark and parity notes); 47 commits, the latest on 9 Nov 2026.",
+      "evidence_id": "6ca79c9e76f5"
+    },
+    {
+      "url": "https://huggingface.co/theforecastingcompany/t0-beta",
+      "kind": "hf_card",
+      "paraphrase": "Model card of the second release: about 256M parameters, Apache-2.0, same covariate interface, needs tfc-t0 0.5.0 or later. Card table: GIFT-Eval CRPS 0.4738, MASE 0.6865, fev-bench skill 46.65, each better than alpha.",
+      "evidence_id": "6d2c98f170ef"
+    }
+  ],
+  "claims": [
+    {
+      "text": "Passing known-future covariates to the same t0-alpha checkpoint raises its fev-bench skill from 36.7 to 43.0 on the 30 tasks that have them, a lift of 6.3 points (95% bootstrap interval over tasks +2.2 to +10.9; 19 of 30 tasks improve).",
+      "metric": "fev-bench skill lift (percentage points)",
+      "value": 6.3,
+      "dataset": "fev-bench, 30 tasks with known-future covariates",
+      "horizon": null,
+      "baseline": "the same checkpoint with covariates dropped, skill 36.7",
+      "baseline_same_inputs": "partly",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Passing past-only covariates to the same t0-alpha checkpoint raises fev-bench skill from 32.9 to 35.6 on 12 tasks, a lift of 2.7 points (95% interval +1.0 to +4.2).",
+      "metric": "fev-bench skill lift (percentage points)",
+      "value": 2.7,
+      "dataset": "fev-bench, 12 tasks with past covariates only",
+      "horizon": null,
+      "baseline": "the same checkpoint with covariates dropped, skill 32.9",
+      "baseline_same_inputs": "partly",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "The covariate gain is not uniform: 11 of the 30 known-future tasks score worse with covariates, the worst by 15% in quantile loss on a 15-minute electricity series with weather covariates.",
+      "metric": "quantile loss change with covariates (%)",
+      "value": 15,
+      "dataset": "fev-bench, one 15-minute electricity task with weather covariates",
+      "horizon": null,
+      "baseline": "the same checkpoint with covariates dropped",
+      "baseline_same_inputs": "partly",
+      "test_window_days": null,
+      "citation_idx": 0
+    },
+    {
+      "text": "Victoria hourly demand, 2024 rerun, 8192-hour context, temperature and holiday as known-future inputs: t0-beta has MAE 334.92 MW, second to Chronos-2.",
+      "metric": "MAE (MW)",
+      "value": 334.92,
+      "dataset": "AEMO VIC1 demand, hourly, Oct 31 to Dec 31 2024",
+      "horizon": "24 hours",
+      "baseline": "Chronos-2, MAE 324.24 (24 h seasonal naive 614.57)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 62,
+      "citation_idx": 0
+    },
+    {
+      "text": "Victoria hourly demand, 2024 rerun, 8192-hour context: t0-alpha has MAE 372.51 MW, behind Chronos-2 and t0-beta.",
+      "metric": "MAE (MW)",
+      "value": 372.51,
+      "dataset": "AEMO VIC1 demand, hourly, Oct 31 to Dec 31 2024",
+      "horizon": "24 hours",
+      "baseline": "Chronos-2, MAE 324.24 (24 h seasonal naive 614.57)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 62,
+      "citation_idx": 0
+    },
+    {
+      "text": "ERCOT hourly real-time prices, four load zones, in a study run by an outside firm: t0-alpha and t0-beta each cut the MAE of a repeat-last-day price baseline by 38%.",
+      "metric": "MAE reduction vs baseline (%)",
+      "value": 38,
+      "dataset": "ERCOT real-time prices, four load zones, Jan 2024 to May 2026",
+      "horizon": "next operating day, issued 09:00 the day before",
+      "baseline": "hourly price profile of the most recent complete day",
+      "baseline_same_inputs": "no",
+      "test_window_days": 880,
+      "citation_idx": 1
+    },
+    {
+      "text": "GIFT-Eval, 97 configurations, no covariates used: t0-beta reaches CRPS 0.4738, third among the zero-shot models the report compares.",
+      "metric": "CRPS (normalised to seasonal naive)",
+      "value": 0.4738,
+      "dataset": "GIFT-Eval",
+      "horizon": "short, medium and long terms",
+      "baseline": "seasonal naive = 1; t0-alpha 0.4941",
+      "baseline_same_inputs": "yes",
+      "test_window_days": null,
+      "citation_idx": 0
+    },
+    {
+      "text": "GIFT-Eval: t0-beta reaches MASE 0.6865, third among the zero-shot models compared.",
+      "metric": "MASE (normalised to seasonal naive)",
+      "value": 0.6865,
+      "dataset": "GIFT-Eval",
+      "horizon": "short, medium and long terms",
+      "baseline": "seasonal naive = 1; t0-alpha 0.7240",
+      "baseline_same_inputs": "yes",
+      "test_window_days": null,
+      "citation_idx": 0
+    },
+    {
+      "text": "fev-bench, 100 tasks: t0-beta reaches skill 46.7 (46.65 on the card), third among the models compared and 2.0 points behind the leader; t0-alpha scores 42.2.",
+      "metric": "skill score",
+      "value": 46.7,
+      "dataset": "fev-bench",
+      "horizon": null,
+      "baseline": "seasonal naive = 0; t0-alpha 42.2",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0
+    },
+    {
+      "text": "t0-gamma card: GIFT-Eval CRPS 0.4503 against t0-beta's 0.4738.",
+      "metric": "CRPS (normalised to seasonal naive)",
+      "value": 0.4503,
+      "dataset": "GIFT-Eval",
+      "horizon": null,
+      "baseline": "t0-beta, 0.4738",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 2
+    },
+    {
+      "text": "t0-gamma card: GIFT-Eval MASE 0.6580 against t0-beta's 0.6865.",
+      "metric": "MASE (normalised to seasonal naive)",
+      "value": 0.658,
+      "dataset": "GIFT-Eval",
+      "horizon": null,
+      "baseline": "t0-beta, 0.6865",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 2
+    },
+    {
+      "text": "t0-gamma card: fev-bench skill 49.40 against t0-beta's 46.65.",
+      "metric": "skill score",
+      "value": 49.4,
+      "dataset": "fev-bench",
+      "horizon": null,
+      "baseline": "t0-beta, 46.65",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 2
+    },
+    {
+      "text": "t0-gamma card: TIME CRPS 0.5340 against t0-beta's 0.5551.",
+      "metric": "CRPS (normalised to seasonal naive)",
+      "value": 0.534,
+      "dataset": "TIME",
+      "horizon": null,
+      "baseline": "t0-beta, 0.5551",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 2
+    },
+    {
+      "text": "t0-gamma card: TIME MASE 0.6370 against t0-beta's 0.6647.",
+      "metric": "MASE (normalised to seasonal naive)",
+      "value": 0.637,
+      "dataset": "TIME",
+      "horizon": null,
+      "baseline": "t0-beta, 0.6647",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 2
+    }
+  ],
+  "relevance": {
+    "target_match": 2,
+    "horizon_match": 2,
+    "covariates_match": 3,
+    "rationale": "A general-purpose model whose headline evidence is on mixed-domain benchmarks, but the report includes one hourly electric-demand case (Victoria) with temperature, and energy tasks inside fev-bench; target is scored 2 rather than 3 because that case is a secondary use case, not the headline. The load and price cases are both day-ahead (24 hours); the model decodes up to 1024 steps in one pass, which covers our 168, but no week-ahead load result is reported. Temperature enters as a known-future covariate, as our spec requires; in the Victoria case it is the realized temperature, which corresponds to our oracle regime, not the forecast regime of our primary comparison."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "high",
+    "independent_replication": "yes",
+    "notes": "Central model for our run: t0-gamma, the family's current checkpoint and the one REFERENCE.md lists; the report's own numbers are for alpha and beta, and gamma's are on its card only. pre_registered: no; the report and cards describe no plan fixed before the results. training_overlap_risk is about our run and follows the date rule: the gamma repository's initial upload is dated 2026-10-15 (commit e08aee0), so 3 of 52 scored weeks (2026-10-19, 10-26, 11-02) start after it, fewer than half, so high. A second commit on 2026-11-09 is titled as a rescore; the commit list has no per-file dates, so if it touched the weights file no scored week follows it. Alpha and beta also show a single commit on 2026-10-15, although the paper of 21 Sep links them and an article of 2 Jul reran alpha, so their histories look squashed and their first upload dates are not recoverable. Against the date rule, the report says every real series in the pretraining corpus ends before 2022, which would put our 2025-26 window outside the training data; that statement is the authors' and covers alpha, and nothing was found on gamma's training data. Eight fev-bench tasks, including GEFCom load, are declared as in alpha's pretraining data. independent_replication: yes, but narrow. An outside author reran t0-alpha on GIFT-Eval and matched CRPS 0.4941 and MASE 0.7240 (fetched, ledger e4473590ec3b); a GIFT-Eval maintainer reran gamma on a subset and reported identical results before merging (fetched, ledger 464df11a9ab4); the ERCOT price study in the report was run by an outside firm. None of these replicates the covariate lift or any load result. evidence_strength: moderate; public weights, code and notebooks, a controlled same-checkpoint ablation with an interval, and partial outside reruns, but vendor-reported, not pre-registered, and the one load case has a 62-day window, under the 90-day minimum. baseline_same_inputs is 'partly' for the ablation rows because the comparison deliberately withholds the covariates from an otherwise identical run; 'no' for ERCOT because the baseline uses lagged price only. The source's intervals are 95%, so ci90 is left empty. The ERCOT test_window_days of 880 is our conversion of about 29 months, and the 38% figure is cited from the abstract; the section's tables were not read. Not verified: the gamma figures in the vendor's release post (GIFT-Eval 0.4520, fev-bench 49.42, from research snippets) differ slightly from the card fetched today (0.4503, 49.40), which the 9 Nov rescore commit probably explains; the leaderboard ranks themselves (leaderboard pages not opened); which fev-bench task is the 15-minute electricity series; CPU runtime of the 256M model on our laptop against the 60-minute limit (the report's timings are on an M4 with an accelerator); that the T0 wrapper in our pinned FoundationForecast passes temperature correctly (the installed wrapper file mentions t0-gamma and tfc-t0 0.6.1 is in the lock file, but nothing was run). The arXiv HTML version does not exist; the PDF was read instead."
+  },
+  "evidence_strength": "moderate",
+  "license": "Apache-2.0",
+  "license_ok_for_commercial": true,
+  "runnable_class": "ff_native_exog",
+  "label": "ACCEPT_RUN",
+  "label_reason": "A covariate-aware model release with open Apache-2.0 weights, code, model cards and a technical report, already listed in our spec as runnable with temperature through FoundationForecast. Its load evidence is one day-ahead case with realized temperature in which it trails Chronos-2, and its weights date leaves 3 of 52 scored weeks after it, so the run must carry that label.",
+  "implementation_hint": "Run models_ff/run_ff.py with theforecastingcompany/t0-gamma (ff_native_exog, temperature as a known-future covariate). Needed first: a SPECS entry using the library's T0 wrapper with 2,048 hours of context, and a pin in models/pins.json with the weights file's own commit date (the commit list read here shows e08aee0 on 2026-10-15 and fef67ab on 2026-11-09; check which one last changed the weights). Report n_windows_after_weights = 3 if the weights date is 2026-10-15, 0 if 2026-11-09. tfc-t0 0.6.1 is already in models_ff/uv.lock, which the gamma card requires. The library ignores cross-inference when known-future covariates are passed, so the vendor's benchmark settings do not apply to our row. t0-beta (same size) and t0-alpha (102M, the checkpoint the 6.3-point claim is about) use the same wrapper if runtime is a problem or a second row is wanted. Gate origins first, on CPU.",
+  "receipt": null
+}

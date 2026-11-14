@@ -1,0 +1,300 @@
+{
+ "candidate_id": "tsfm-load-covariate-uncertainty",
+ "title": "Benchmarking Time Series Foundation Models for Load Forecasting Under Covariate Uncertainty",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2610.07232",
+  "provider": "claude",
+  "retrieved_at": "2026-11-14T16:13:39Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2610.07232",
+   "kind": "arxiv",
+   "paraphrase": "Full text. Day-ahead hourly load on ISO-NE (2015-2019), an anonymous North American utility (1987-1991) and CAISO (2021-2025), one-year test each. Four trained models and four pretrained ones; only Informer, TimesNet and Chronos-2 get future covariates. Covariate uncertainty is synthetic Gaussian noise scaled by lambda. Two tables of MAE and MAPE, no intervals; no code or data release named.",
+   "evidence_id": "57bd4ef90bb0"
+  },
+  {
+   "url": "https://arxiv.org/abs/2610.07232",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page, submitted 5 Oct 2026. Headline: Chronos-2 is best zero-shot and fine-tuned when future covariates are available or accurately forecast, and degrades as covariate forecasts get noisier, where TimesNet is more robust. No linked code or data.",
+   "evidence_id": "287e89a61882"
+  },
+  {
+   "url": "https://huggingface.co/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the central model: 120M parameters, zero-shot, native past and known-future covariates, prediction length up to 1024 steps, runs on CPU.",
+   "evidence_id": "f090fb358b2c"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the weights repository: licence tag apache-2.0, created 30 Oct 2025, head 29ec376 last modified 5 Jun 2026.",
+   "evidence_id": "d33d62d68de3"
+  },
+  {
+   "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the weights repository: weights and config added on 30 Oct 2025 (commit 95a9710); later commits, up to 29ec376 on 5 Jun 2026, are README, tag or deployment-guide edits by their titles.",
+   "evidence_id": "d67e199eeeac"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Chronos-2 is the most accurate model, zero-shot and fine-tuned, when future covariates are available or accurately forecast; it degrades as covariate forecasts get noisier, where TimesNet is more robust (the headline as the abstract states it).",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "ISO-NE, exact future covariates (lambda 0): fine-tuned Chronos-2 has MAPE 1.67, ahead of TimesNet.",
+   "metric": "MAPE",
+   "value": 1.67,
+   "dataset": "ISO New England, hourly system load, 2015-2019",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 1.91",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "ISO-NE, exact future covariates (lambda 0): zero-shot Chronos-2 has MAPE 1.92, level with but not ahead of TimesNet.",
+   "metric": "MAPE",
+   "value": 1.92,
+   "dataset": "ISO New England, hourly system load, 2015-2019",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 1.91",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "NAU, exact future covariates (lambda 0): fine-tuned Chronos-2 has MAPE 1.99, ahead of TimesNet.",
+   "metric": "MAPE",
+   "value": 1.99,
+   "dataset": "anonymous North American utility, hourly load, 1987-1991",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 2.24",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "NAU, exact future covariates (lambda 0): zero-shot Chronos-2 has MAPE 2.31, slightly behind TimesNet.",
+   "metric": "MAPE",
+   "value": 2.31,
+   "dataset": "anonymous North American utility, hourly load, 1987-1991",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 2.24",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "CAISO, exact future covariates (lambda 0): fine-tuned Chronos-2 has MAPE 2.13, ahead of TimesNet.",
+   "metric": "MAPE",
+   "value": 2.13,
+   "dataset": "CAISO, hourly system load, 2021-2025",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 2.40",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "CAISO, exact future covariates (lambda 0): zero-shot Chronos-2 has MAPE 2.47, slightly behind TimesNet.",
+   "metric": "MAPE",
+   "value": 2.47,
+   "dataset": "CAISO, hourly system load, 2021-2025",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 2.40",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "ISO-NE, noisy future covariates (lambda 1): zero-shot Chronos-2 rises to MAPE 2.80, behind TimesNet.",
+   "metric": "MAPE",
+   "value": 2.8,
+   "dataset": "ISO New England, hourly system load, 2015-2019",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 2.19",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "ISO-NE, noisy future covariates (lambda 1): fine-tuned Chronos-2 rises to MAPE 2.46, behind TimesNet.",
+   "metric": "MAPE",
+   "value": 2.46,
+   "dataset": "ISO New England, hourly system load, 2015-2019",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 2.19",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "CAISO, noisy future covariates (lambda 1): zero-shot Chronos-2 rises to MAPE 3.25, behind TimesNet.",
+   "metric": "MAPE",
+   "value": 3.25,
+   "dataset": "CAISO, hourly system load, 2021-2025",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 2.50",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "NAU, noisy future covariates (lambda 1): zero-shot Chronos-2 rises to MAPE 2.62, behind TimesNet.",
+   "metric": "MAPE",
+   "value": 2.62,
+   "dataset": "anonymous North American utility, hourly load, 1987-1991",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 2.47",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "ISO-NE, severely noisy future covariates (lambda 5): zero-shot Chronos-2 reaches MAPE 9.14, far behind TimesNet.",
+   "metric": "MAPE",
+   "value": 9.14,
+   "dataset": "ISO New England, hourly system load, 2015-2019",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 5.17",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "CAISO, severely noisy future covariates (lambda 5): zero-shot Chronos-2 reaches MAPE 5.65, behind TimesNet.",
+   "metric": "MAPE",
+   "value": 5.65,
+   "dataset": "CAISO, hourly system load, 2021-2025",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "TimesNet, MAPE 3.72",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "ISO-NE, no future covariates: zero-shot Chronos-2 (with past covariates) has MAPE 3.44, ahead of the best univariate pretrained model.",
+   "metric": "MAPE",
+   "value": 3.44,
+   "dataset": "ISO New England, hourly system load, 2015-2019",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "Moirai 2.0 zero-shot, univariate, MAPE 3.52",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "NAU, no future covariates: zero-shot Chronos-2 (with past covariates) has MAPE 2.86, ahead of the best univariate pretrained model.",
+   "metric": "MAPE",
+   "value": 2.86,
+   "dataset": "anonymous North American utility, hourly load, 1987-1991",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "Moirai 2.0 zero-shot, univariate, MAPE 3.06",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "CAISO, no future covariates: zero-shot Chronos-2 (with past covariates) has MAPE 2.72, ahead of the best univariate pretrained model.",
+   "metric": "MAPE",
+   "value": 2.72,
+   "dataset": "CAISO, hourly system load, 2021-2025",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "Moirai 2.0 zero-shot, univariate, MAPE 2.85",
+   "baseline_same_inputs": "no",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "ISO-NE: giving zero-shot Chronos-2 exact future covariates lowers its MAPE from 3.44 to 1.92; the ISO-NE covariates include the operator's own day-ahead demand forecast.",
+   "metric": "MAPE",
+   "value": 1.92,
+   "dataset": "ISO New England, hourly system load, 2015-2019",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "the same model without future covariates, MAPE 3.44",
+   "test_window_days": 365,
+   "citation_idx": 0
+  },
+  {
+   "text": "NAU (temperature is the only covariate): giving zero-shot Chronos-2 exact future temperature lowers its MAPE from 2.86 to 2.31.",
+   "metric": "MAPE",
+   "value": 2.31,
+   "dataset": "anonymous North American utility, hourly load, 1987-1991",
+   "horizon": "day-ahead (hourly steps)",
+   "baseline": "the same model without future covariates, MAPE 2.86",
+   "test_window_days": 365,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load at system level for two US ISOs and one utility, the same kind of series as our PJM zones. The horizon is day-ahead, not a week, so horizon_match is 2. Temperature enters as a known-future covariate and the paper's central question, how accuracy changes when that covariate is exact versus uncertain, is the question our oracle and forecast regimes separate. Its uncertain covariates are exact values plus synthetic noise, though, not archived weather forecasts, and ISO-NE and CAISO add covariates we do not use (the operator's day-ahead demand forecast, dew point, solar and wind mix); NAU, with temperature only, is the closest to our inputs."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: the full text mentions no plan or registration. training_overlap_risk is about our run: the Chronos-2 weights file was committed on 2025-10-30 (Hugging Face commit list, fetched), before our first scored week (2025-11-10), so all 52 weeks follow it; zero-shot weights only, a fine-tuned copy would be new weights. independent_replication: two searches and one research call found no replication and no author repository. Related studies named by the research call (snippets only, not fetched, not cited as claims) are not replications and point both ways: arXiv 2609.06656 and 2604.28149 find zero-shot Chronos-2 with exact weather behind or level with trained models; arXiv 2607.15705 has a trained Transformer ahead on two of three datasets; none tests covariate noise. evidence_strength is weak by the spec's rule: numbers without code or processed data and without intervals, although the test window is a year on each of three datasets; one dataset is an anonymous utility from 1987-1991 and the CAISO set is the authors' own build, not released. Central model: Chronos-2. The abstract's zero-shot wording is stronger than the future-covariate table: with exact covariates zero-shot Chronos-2 is behind TimesNet on all three datasets (1.92 vs 1.91, 2.31 vs 2.24, 2.47 vs 2.40) and only the fine-tuned model leads; zero-shot leads only in the table without future covariates, where its rivals are univariate or trained on a 168-hour context. baseline_same_inputs is 'partly' for the TimesNet rows: same covariates and calendar features, but TimesNet uses a 168-hour context and 3.5 years of training while Chronos-2's context length (256 up to 8192) was chosen by lowest error; 'no' for the Moirai rows, which are univariate. Not verified: on which split the pretrained models' context length was chosen (the text does not say; if on the test year it favours them); the forecast issue time and whether day-ahead means exactly 24 steps; seeds and run-to-run spread of the noise draws; whether the ISO-NE result at lambda 0 is driven by the noise-free day-ahead demand covariate; the figure's values. The licence is the Hub record's tag (apache-2.0); the fetched card text did not show it. The fetched abstract page did not show the comments field; the conference acceptance (2027 IEEE PES Grid Edge) comes from a search highlight only."
+ },
+ "evidence_strength": "weak",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "direct_adapter",
+ "label": "ACCEPT_RUN",
+ "label_reason": "On target (hourly system load, temperature as a known-future covariate, exact versus uncertain) with a full-text primary source, and the zero-shot half of its headline can be re-measured now: Chronos-2 with temperature under our oracle and forecast regimes, against the temperature-only regression and the univariate pretrained rows. The fine-tuned results and the TimesNet comparison cannot be re-measured today, and the evidence is weak by the spec's rule (no code, no intervals), so the run tests whether the oracle-to-forecast degradation transfers, not the ranking against TimesNet.",
+ "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, weights at the pinned revision). Nothing new to build for the zero-shot half: compare the existing Chronos-2-with-temperature rows across the oracle and forecast regimes per zone (the paper's lambda 0 versus lambda above 0, with real lead-matched forecasts in place of synthetic noise), and against the temperature-only regression and google/timesfm-2.5-200m-pytorch (ff_univariate, models_ff/run_ff.py) for the no-future-covariate table; Moirai 2.0 and TiRex have FoundationForecast wrappers (ff_univariate), not yet run here. Not runnable now: TimesNet, Informer, DLinear, PatchTST (trained per dataset, no code released by the authors) and fine-tuned Chronos-2 (the paper used a full fine-tune, learning rate 1e-6, batch 64, 1000 steps; needs a training step on load before each cutoff and a new weights date). The paper is day-ahead; ours is 168 hours.",
+ "receipt": {
+  "claimed": "Zero-shot Chronos-2 given future covariates is the most accurate model when those covariates are exact or well forecast (day-ahead MAPE 1.92 to 2.47 on three load datasets, level with or slightly behind TimesNet at 1.91 to 2.40; only the fine-tuned model leads), and it loses accuracy as the covariates get noisier (2.62 to 3.25 at noise level 1), where TimesNet holds up better.",
+  "measured": [
+   {
+    "zone": "DOM",
+    "regime": "forecast",
+    "error_ratio": 0.73,
+    "ci90": [
+     0.665,
+     0.805
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "forecast",
+    "error_ratio": 0.817,
+    "ci90": [
+     0.686,
+     0.96
+    ]
+   },
+   {
+    "zone": "DOM",
+    "regime": "oracle",
+    "error_ratio": 0.663,
+    "ci90": [
+     0.579,
+     0.759
+    ]
+   },
+   {
+    "zone": "JC",
+    "regime": "oracle",
+    "error_ratio": 0.698,
+    "ci90": [
+     0.589,
+     0.824
+    ]
+   }
+  ],
+  "horizon_mismatch": "The paper is day-ahead on ISO-NE, CAISO and an anonymous utility, a one-year test each, with exact covariates plus synthetic Gaussian noise, against trained deep models (TimesNet); two of its datasets add covariates we do not use (the operator's day-ahead demand forecast, dew point, solar and wind). Ours is week-ahead (168 h) on PJM zones JC and DOM over 48 scored weeks, temperature only, with archived lead-matched weather forecasts in place of synthetic noise, against the temperature-only regression. TimesNet and fine-tuned Chronos-2 are not run here, so the ranking against TimesNet is not tested; the verdict is read in the forecast regime, and the oracle rows show the exact-covariate case. Zero-shot weights at revision 29ec376.",
+  "n_windows": 48,
+  "n_windows_after_weights": 48,
+  "verdict": "partially"
+ }
+}

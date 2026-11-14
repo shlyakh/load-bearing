@@ -1,0 +1,169 @@
+{
+  "candidate_id": "chronos2-covariate-grid-load",
+  "title": "Assessing Covariate-Informed Grid Load Forecasting with a Time-Series Foundation Model",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://arxiv.org/abs/2609.06656",
+    "provider": "claude",
+    "retrieved_at": "2026-11-14T16:12:35Z"
+  },
+  "candidate_type": "paper",
+  "primary_sources": [
+    {
+      "url": "https://arxiv.org/html/2609.06656v1",
+      "kind": "arxiv",
+      "paraphrase": "Full text. Chronos-2 (zero-shot, LoRA, full fine-tune) against small TCN, LSTM and Transformer models trained with the authors' masked multi-step framework, on daily ISO-NE zonal demand (test year 2021) and daily-peak ENTSO-E load (test year 2019), horizons 30, 60 and 90 days, with weather and calendar covariates. Two MAPE tables, no intervals; no code or data release.",
+      "evidence_id": "d5d1d6b70b0c"
+    },
+    {
+      "url": "https://arxiv.org/abs/2609.06656",
+      "kind": "arxiv",
+      "paraphrase": "Abstract page, submitted 6 Sep 2026, presented at IJCNN 2026. Headline: Chronos-2 gains a lot from task-specific fine-tuning and is strong at short horizons, but zero-shot it trails task-specific models and its error grows faster with forecast step. No linked code or data.",
+      "evidence_id": "0daa14332d79"
+    },
+    {
+      "url": "https://huggingface.co/amazon/chronos-2",
+      "kind": "hf_card",
+      "paraphrase": "Model card of the central model: 120M parameters, zero-shot, native past and known-future covariates, prediction length up to 1024 steps, runs on CPU. The Hub record carries the licence tag apache-2.0.",
+      "evidence_id": "f090fb358b2c"
+    },
+    {
+      "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+      "kind": "hf_card",
+      "paraphrase": "Commit history of the weights repository: the weights file was added on 30 Oct 2025 (commit 95a9710); later commits, up to 29ec376 on 5 Jun 2026, are README or tag edits by their titles.",
+      "evidence_id": "d67e199eeeac"
+    }
+  ],
+  "claims": [
+    {
+      "text": "ISO-NE, with covariates, 30-day horizon: fully fine-tuned Chronos-2 reaches MAPE 4.06, just ahead of the best task-specific model.",
+      "metric": "MAPE",
+      "value": 4.06,
+      "dataset": "ISO New England, 8 zones, daily demand",
+      "horizon": "30 days (daily steps)",
+      "baseline": "MMMF Transformer, MAPE 4.13",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "ISO-NE, with covariates, 30-day horizon: zero-shot Chronos-2 has MAPE 6.71, behind every task-specific model.",
+      "metric": "MAPE",
+      "value": 6.71,
+      "dataset": "ISO New England, 8 zones, daily demand",
+      "horizon": "30 days (daily steps)",
+      "baseline": "MMMF Transformer, MAPE 4.13",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "ISO-NE, with covariates, 30-day horizon: LoRA fine-tuning gives MAPE 4.33, between zero-shot and full fine-tuning.",
+      "metric": "MAPE",
+      "value": 4.33,
+      "dataset": "ISO New England, 8 zones, daily demand",
+      "horizon": "30 days (daily steps)",
+      "baseline": "MMMF Transformer, MAPE 4.13",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "ISO-NE, with covariates, 90-day horizon: zero-shot Chronos-2 degrades to MAPE 15.78.",
+      "metric": "MAPE",
+      "value": 15.78,
+      "dataset": "ISO New England, 8 zones, daily demand",
+      "horizon": "90 days (daily steps)",
+      "baseline": "MMMF Transformer, MAPE 5.50",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "ISO-NE, with covariates, 90-day horizon: fully fine-tuned Chronos-2 has MAPE 5.36, still slightly ahead of the best task-specific model.",
+      "metric": "MAPE",
+      "value": 5.36,
+      "dataset": "ISO New England, 8 zones, daily demand",
+      "horizon": "90 days (daily steps)",
+      "baseline": "MMMF Transformer, MAPE 5.50",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "ENTSO-E, with covariates, 30-day horizon: fully fine-tuned Chronos-2 reaches MAPE 4.31, ahead of the best task-specific model.",
+      "metric": "MAPE",
+      "value": 4.31,
+      "dataset": "ENTSO-E, 6 countries, daily peak load",
+      "horizon": "30 days (daily steps)",
+      "baseline": "MMMF TCN, MAPE 4.52",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "ENTSO-E, with covariates, 30-day horizon: zero-shot Chronos-2 has MAPE 5.63, behind the best task-specific model.",
+      "metric": "MAPE",
+      "value": 5.63,
+      "dataset": "ENTSO-E, 6 countries, daily peak load",
+      "horizon": "30 days (daily steps)",
+      "baseline": "MMMF TCN, MAPE 4.52",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "ENTSO-E, with covariates, 90-day horizon: fully fine-tuned Chronos-2 has MAPE 4.86, now behind the best task-specific model.",
+      "metric": "MAPE",
+      "value": 4.86,
+      "dataset": "ENTSO-E, 6 countries, daily peak load",
+      "horizon": "90 days (daily steps)",
+      "baseline": "MMMF TCN, MAPE 4.43",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "ISO-NE, 60-day horizon: adding cyclically encoded calendar features lowers fully fine-tuned Chronos-2's MAPE from 5.58 to 5.19; zero-shot gains nothing from them.",
+      "metric": "MAPE",
+      "value": 5.19,
+      "dataset": "ISO New England, 8 zones, daily demand",
+      "horizon": "60 days (daily steps)",
+      "baseline": "the same fine-tuned model without calendar features, MAPE 5.58",
+      "test_window_days": 365,
+      "citation_idx": 0
+    },
+    {
+      "text": "Fully fine-tuned Chronos-2 beats the task-specific models in the first weeks of the horizon, after which its weekly error rises faster and passes theirs (shown in a figure; no numbers in the text).",
+      "metric": null,
+      "value": null,
+      "citation_idx": 0
+    },
+    {
+      "text": "Chronos-2 with covariates gains substantially from task-specific fine-tuning and is strong at short horizons against task-specific deep learning models (the headline as the abstract states it).",
+      "metric": null,
+      "value": null,
+      "citation_idx": 1
+    }
+  ],
+  "relevance": {
+    "target_match": 2,
+    "horizon_match": 1,
+    "covariates_match": 3,
+    "rationale": "Electric load for US ISO zones and European countries, but at daily resolution (daily demand, daily peak), not hourly, so target_match is 2 rather than 3. Horizons are 30, 60 and 90 daily steps with a 30-day context; our 168 hourly steps fall inside the first week of the paper's weekly-error figure, for which it gives no numbers. Temperature and other weather enter as known-future covariates, as in our spec; the text does not say they are forecasts, so the setup is closest to our oracle regime."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "low",
+    "independent_replication": "unknown",
+    "notes": "pre_registered: the full text mentions no plan or registration. training_overlap_risk is about our run: the Chronos-2 weights file was committed on 2025-10-30 (Hugging Face commit list), before our first scored week (2025-11-10), so all 52 weeks follow it; this applies to the zero-shot weights only, a fine-tuned copy would be new weights. independent_replication: one search and one research call found no replication of this experiment. Related studies point both ways on zero-shot: arXiv 2610.07232 (abstract fetched; numbers from snippets only) reports Chronos-2 best zero-shot and fine-tuned on hourly day-ahead load including ISO-NE when future covariates are accurate; arXiv 2604.28149 (snippets only) finds zero-shot Chronos-2 competitive with a trained Transformer. evidence_strength is weak by judgement: the test window is a full year and the baselines got the same covariates, but there is no code, no processed data, no intervals, and the short-horizon leads are small (4.06 vs 4.13; 4.31 vs 4.52); the raw data sources are public, so 'moderate' is arguable. A third-party review page (pith.science, snippets only) notes the baselines trained for a fixed 1000 epochs without validation selection while Chronos-2 got checkpoint selection; the paper's text is consistent with that. Central model: Chronos-2; the headline is about its fine-tuned form. baseline_same_inputs is 'partly' for zero-shot rows because the baselines were trained on the full history and the zero-shot model saw a 30-day context. Licence Apache-2.0 is the Hub record's tag for the weights; the paper itself is CC BY-NC-SA 4.0. Not verified: whether weather inputs were observed or forecast, the standard deviations over seeds (said to be reported, absent from the tables), the weekly figure's values, and the research answer's 20 Oct 2025 release-announcement date."
+  },
+  "evidence_strength": "weak",
+  "license": "Apache-2.0",
+  "license_ok_for_commercial": true,
+  "runnable_class": "direct_adapter",
+  "label": "ACCEPT_STAGE3",
+  "label_reason": "Relevant and sourced: Chronos-2 with temperature as a known-future covariate on US ISO zonal load, from a paper with full tables. Its headline comparison (fine-tuned Chronos-2 against task-specific deep learning models) cannot be re-measured now: our adapter runs Chronos-2 zero-shot only, fine-tuning needs a training pipeline beyond an adapter, and the baselines have no public code. Only the secondary zero-shot finding overlaps with what we already run.",
+  "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, weights pinned at 29ec376). Runnable today: zero-shot Chronos-2 with temperature against the temperature-only regression, which is the protocol's primary comparison and speaks only to the paper's zero-shot finding, against a different baseline. To test the headline: add a fine-tuning step (the paper used 20 epochs, full fine-tune, learning rate 1e-6, on a GPU; whether the installed chronos-forecasting exposes fine-tuning was not checked) trained only on load before each cutoff, record the new weights' date, and check it fits the 60-minute CPU limit. The paper's baselines (MMMF TCN, LSTM, Transformer) have no public code. The paper is daily with 30 to 90 steps; ours is hourly with 168.",
+  "receipt": null
+}

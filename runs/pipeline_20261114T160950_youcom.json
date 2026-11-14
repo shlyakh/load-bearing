@@ -1,0 +1,113 @@
+{
+ "provider": "youcom",
+ "started_at": "2026-11-14T16:09:50+00:00",
+ "candidates_file": "candidates/claude/scan_2026-11-14.jsonl",
+ "candidates": [
+  {
+   "candidate_id": "chronos2-covariate-grid-load",
+   "judge": {
+    "run_id": "20261114T160950_judge_youcom_chronos2-covariate-grid-load_a2de",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 34,
+    "total_cost_usd": 2.808101,
+    "wall_seconds": 216.5
+   },
+   "label": "ACCEPT_STAGE3",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "gb-demand-weather-zero-shot-backtest",
+   "judge": {
+    "run_id": "20261114T160950_judge_youcom_gb-demand-weather-zero-shot-backtest_d534",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 38,
+    "total_cost_usd": 2.9016100000000002,
+    "wall_seconds": 213.1
+   },
+   "run_candidate": {
+    "run_id": "20261114T161741_run-candidate_youcom_gb-demand-weather-zero-shot-backtest_5a6d",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 7,
+    "total_cost_usd": 0.5846468,
+    "wall_seconds": 27.6
+   },
+   "run_candidate_report": "The model row was already on the leaderboard (`chronos2_temperature`, forecast regime, both zones), so I wrote the receipt into `scorecards/youcom/gb-demand-weather-zero-shot-backtest.json`. No weights were downloaded, no code changed and no model was run.\n\n**Verdict: the claim partially transfers.**\n\n- **Claimed:** given the same forecast weather, Chronos-2's error was 0.966 times the weekly-lag regression's (90% range 0.931 to 1.001) on GB national demand, day-ahead, over 960 days. The study reads this as a rough tie.\n- **Measured:** Chronos-2 with temperature against the temperature-only regression, on our benchmark:\n\n  | Zone | Regime | Error ratio | 90% range | Tool's per-zone call |\n  |---|---|---|---|---|\n  | DOM | forecast | 0.730 | 0.665 to 0.805 | worth switching |\n  | JC | forecast | 0.817 | 0.686 to 0.960 | inconclusive |\n  | DOM | oracle | 0.663 | 0.579 to 0.759 | not given |\n  | JC | oracle | 0.698 | 0.589 to 0.824 | not given |\n\n- **Reading:** the tie does not transfer to DOM, where Chronos-2 is clearly ahead of the regression. JC is inconclusive. The forecast-regime rows are the primary comparison; the oracle rows are secondary.\n- **Setup mismatch:**\n\n  | | Study | Ours |\n  |---|---|---|\n  | Load | GB national demand, half-hourly | PJM zones JC and DOM, hourly |\n  | Horizon | day-ahead | week-ahead (168 h) |\n  | Weather inputs | temperature, wind and solar forecasts | temperature only |\n  | Regression | calendar terms, refit daily on a year of data | temperature-only regression |\n\n  The study also gave Chronos-2 an eight-week context. The Chronos-2 weights revision is the same in both (29ec376).\n- **Weeks after the weights:** 48 of 48 scored weeks fall after the weights date (30 Oct 2025).\n\nThe scorecard's hint also names secondary rows for Timestral and TimesFM 2.5; I did not write receipts for those, since the tool takes one model per call and the headline claim is the Chronos-2 one. The scorecard is still untracked in git, and nothing was committed.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": "partially"
+  },
+  {
+   "candidate_id": "pjm-cold-spell-calibration-benchmark",
+   "judge": {
+    "run_id": "20261114T160950_judge_youcom_pjm-cold-spell-calibration-benchmark_b865",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 37,
+    "total_cost_usd": 3.0358206,
+    "wall_seconds": 222.0
+   },
+   "label": "ACCEPT_STAGE3",
+   "runnable_class": "not_runnable",
+   "receipt_verdict": null
+  },
+  {
+   "candidate_id": "tsfm-load-covariate-uncertainty",
+   "judge": {
+    "run_id": "20261114T161323_judge_youcom_tsfm-load-covariate-uncertainty_bba9",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 32,
+    "total_cost_usd": 3.0848864000000003,
+    "wall_seconds": 223.6
+   },
+   "run_candidate": {
+    "run_id": "20261114T161809_run-candidate_youcom_tsfm-load-covariate-uncertainty_7deb",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 7,
+    "total_cost_usd": 0.6720118,
+    "wall_seconds": 34.9
+   },
+   "run_candidate_report": "The model row was already on the leaderboard (`chronos2_temperature`), so I wrote the receipt into `scorecards/youcom/tsfm-load-covariate-uncertainty.json`. No weights were downloaded, no code was changed and no model was run.\n\n**Verdict: partially transfers** (read in the forecast regime: DOM clears the bar for switching, JC is inconclusive).\n\n**Claimed (paraphrased):** Zero-shot Chronos-2 given future covariates is the most accurate model when those covariates are exact or well forecast. Its day-ahead MAPE is 1.92 to 2.47 on three load datasets, level with or slightly behind TimesNet at 1.91 to 2.40; only the fine-tuned model leads. It loses accuracy as the covariates get noisier (2.62 to 3.25 at noise level 1), where TimesNet holds up better.\n\n**Measured:** error ratio of Chronos-2 with temperature against the temperature-only regression (MAE, below 1 means Chronos-2 is better):\n\n| Zone | Regime | Ratio | 90% range | Per-zone reading |\n|---|---|---|---|---|\n| DOM | forecast | 0.730 | 0.665 to 0.805 | worth switching |\n| JC | forecast | 0.817 | 0.686 to 0.960 | inconclusive |\n| DOM | oracle | 0.663 | 0.579 to 0.759 | secondary |\n| JC | oracle | 0.698 | 0.589 to 0.824 | secondary |\n\n- **Degradation with real forecasts:** Chronos-2's lead over the regression narrows in both zones when exact temperature is replaced by archived forecasts. Its own MAE rises about 41% in DOM (519 to 734) and 31% in JC (167 to 218), against 29% and 12% for the regression. That is the same direction as the paper's noise result, but this oracle-to-forecast comparison is secondary and has no interval of its own.\n- **Weeks after the weights:** 48 of 48 scored weeks follow the weights (revision 29ec376, weights dated 2025-10-30).\n\n**Setup mismatch:**\n- **Horizon and data:** the paper is day-ahead on ISO-NE, CAISO and an anonymous utility with a one-year test each; ours is week-ahead (168 h) on PJM zones JC and DOM over 48 scored weeks.\n- **Covariates:** the paper uses exact covariates plus synthetic Gaussian noise, and two of its datasets add inputs we do not use (the operator's day-ahead demand forecast, dew point, solar and wind). We use temperature only, with lead-matched archived forecasts in place of noise.\n- **Baseline:** the paper compares against trained deep models; ours is the temperature-only regression. TimesNet and fine-tuned Chronos-2 are not run here, so the ranking against TimesNet is not tested.\n\nI used `--claim-kind model_better`, the same verdict the existing `claude` receipt for this candidate reached. The receipt is uncommitted, and `receipt.py` rewrote the scorecard file with one-space indentation.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "direct_adapter",
+   "receipt_verdict": "partially"
+  },
+  {
+   "candidate_id": "t0-forecasting-with-context",
+   "judge": {
+    "run_id": "20261114T161326_judge_youcom_t0-forecasting-with-context_a43c",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 41,
+    "total_cost_usd": 3.6733315999999996,
+    "wall_seconds": 255.0
+   },
+   "run_candidate": {
+    "run_id": "20261114T161844_run-candidate_youcom_t0-forecasting-with-context_30d5",
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "num_turns": 4,
+    "total_cost_usd": 0.3977618,
+    "wall_seconds": 18.0
+   },
+   "run_candidate_report": "Stopped without writing a receipt: the model row this scorecard needs is not on the leaderboard. Nothing was downloaded, changed or run.\n\n**Missing row:** `theforecastingcompany/t0-gamma` with temperature (`ff_native_exog`). `results/leaderboard.csv` has no t0 row of any kind, and there is no t0 entry in `SPECS` in `models_ff/run_ff.py`, no t0 pin in `models/pins.json`, and no t0 file in `results/forecasts/`.\n\n**Steps a person has to run** (skill steps 1 to 4, then 5 and 6):\n\n1. **Add the `SPECS` entry** in `models_ff/run_ff.py` for t0-gamma using the library's T0 wrapper, with temperature as a known-future covariate and 2,048 hours of context, never tuned.\n2. **Pin the weights** with `uv run --project models python models/download.py theforecastingcompany/t0-gamma <full sha>`. The scorecard lists two commits, `e08aee0` (2026-10-15) and `fef67ab` (2026-11-09), and could not tell which last changed the weights file. That decides the weeks after the weights: 3 of 52 if Oct 15, 0 if Nov 9.\n3. **Gate first** with `uv run --project models_ff python models_ff/run_ff.py <name> gate`, then `uv run --project core python -m harness.score gate`. The scorecard flags two things as unverified for this step:\n   - whether the T0 wrapper in the pinned FoundationForecast passes temperature correctly;\n   - whether the 256M model fits the 60-minute CPU limit on the laptop.\n4. **Commit, then score once** with `run_ff.py <name> scored`, `harness.score scored` and `harness.stats scored`.\n5. **Write the receipt** with `tools/receipt.py scorecards/youcom/t0-forecasting-with-context.json <model_name> --claim-kind ... --claimed ... --mismatch ...`, or re-run this pipeline step, which will then find the row.\n\nFor the receipt's mismatch text: the source's only load evidence is day-ahead Victoria demand with realized temperature over 62 days, where t0-beta trails Chronos-2, and its headline covariate lift is for t0-alpha on fev-bench. Ours is week-ahead PJM load, and the primary comparison uses the forecast regime.",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog",
+   "receipt_verdict": null
+  }
+ ],
+ "total_cost_usd": 17.16
+}

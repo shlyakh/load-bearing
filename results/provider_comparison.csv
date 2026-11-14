@@ -1,7 +1,8 @@
 candidate_id,label_claude,label_youcom,agree,runnable_class_claude,runnable_class_youcom,primary_sources_claude,primary_sources_youcom,ledger_rows_claude,ledger_rows_youcom,judge_cost_usd_claude,judge_cost_usd_youcom,judge_wall_seconds_claude,judge_wall_seconds_youcom,provider_tool_calls_claude,provider_tool_calls_youcom
-chronos2-covariate-grid-load,ACCEPT_STAGE3,,,direct_adapter,,3,,10,,1.8496,,224.1,,7,
-gb-demand-weather-zero-shot-backtest,ACCEPT_RUN,,,direct_adapter,,7,,16,,2.2939,,282.2,,11,
-item-02,ACCEPT_RUN,,,direct_adapter,,5,,5,,,,,,,
-pjm-cold-spell-calibration-benchmark,ACCEPT_STAGE3,,,not_runnable,,5,,14,,2.2144,,316.0,,6,
+chronos2-covariate-grid-load,ACCEPT_STAGE3,ACCEPT_STAGE3,yes,direct_adapter,direct_adapter,3,4,10,17,1.8496,2.8081,224.1,216.5,7,17
+gb-demand-weather-zero-shot-backtest,ACCEPT_RUN,ACCEPT_RUN,yes,direct_adapter,direct_adapter,7,5,16,19,2.2939,2.9016,282.2,213.1,11,16
+item-02,ACCEPT_RUN,ACCEPT_RUN,yes,direct_adapter,direct_adapter,5,5,5,13,,2.8222,,185.5,,9
+pjm-cold-spell-calibration-benchmark,ACCEPT_STAGE3,ACCEPT_STAGE3,yes,not_runnable,not_runnable,5,5,14,11,2.2144,3.0358,316.0,222.0,6,12
+t0-forecasting-with-context,,ACCEPT_RUN,,,ff_native_exog,,6,,20,,3.6733,,255.0,,10
 timestral,ACCEPT_RUN,,,ff_native_exog,,7,,15,,,,,,,
-tsfm-load-covariate-uncertainty,ACCEPT_RUN,,,direct_adapter,,3,,10,,,,,,,
+tsfm-load-covariate-uncertainty,ACCEPT_RUN,ACCEPT_RUN,yes,direct_adapter,direct_adapter,3,5,10,21,,3.0849,,223.6,,14
