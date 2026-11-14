@@ -108,6 +108,12 @@ Waiting on Yuri:
   `spec.yaml`. Dashboard has a You.com tab; the tour has 11 steps including it.
   Narrated video: `tools/make_video.py --backend openai` writes
   `video/out/receipts_demo.mp4` (git-ignored); OpenAI key in `.env`.
+- **Video chosen (Yuri, Nov 14, 15:05):** `video/out/receipts_demo.mp4`, 164 seconds,
+  13 steps, OpenAI voice, recorded 15:02 (copy: `receipts_demo_final_164s.mp4`; both
+  git-ignored, on the laptop only). `video/narration.json` holds exactly its text. The
+  dashboard tour follows the same 13 steps. Dashboard also has You.com and Open Crawl
+  tabs. Failed agent runs now exit nonzero and stop the pipeline
+  (`tests/test_pipeline_failures.py`).
 - **Repository renamed** to `load-bearing` (Yuri, Nov 14). Dashboard:
   https://shlyakh.github.io/load-bearing/ ; the old Pages address returns 404. The
   local folder is still `receipts`.
