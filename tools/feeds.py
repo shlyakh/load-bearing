@@ -1,4 +1,5 @@
-"""Read public listings for /scan: arXiv, the Hugging Face Hub and Zenodo.
+"""Read public listings for /scan: arXiv, the Hugging Face Hub, Zenodo, Crossref (journals
+by ISSN), PyPI release feeds and GitHub releases.
 
     uv run --project core python tools/feeds.py [--date YYYY-MM-DD]
 
@@ -21,6 +22,7 @@ import re
 import time
 import xml.etree.ElementTree as ET
 from datetime import date, timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 import requests
@@ -147,6 +149,112 @@ def zenodo(cfg: dict, start: date, end: date) -> list[dict]:
     return rows
 
 
+def crossref(cfg: dict, start: date, end: date) -> list[dict]:
+    """New DOIs in the listed journals. `published_at` is the day the DOI was registered:
+    Crossref's publication date often has no day, the registration date always does."""
+    rows, seen = [], set()
+    for issn in cfg["issns"]:
+        r = get(
+            f"https://api.crossref.org/journals/{issn}/works",
+            {
+                "filter": f"from-created-date:{start},until-created-date:{end}",
+                "query": cfg["query"],
+                "rows": 200,
+                "select": "DOI,title,created,author,container-title",
+            },
+        )
+        for it in r.json()["message"]["items"]:
+            title = " ".join(((it.get("title") or [""])[0]).split())
+            low = title.lower()
+            matched = [w for w in cfg["any_of"] if w in low]
+            if not all(w in low for w in cfg["must_match"]) or not matched or it["DOI"] in seen:
+                continue
+            seen.add(it["DOI"])
+            first = (it.get("author") or [{}])[0]
+            rows.append(
+                {
+                    "source": "crossref",
+                    "url": f"https://doi.org/{it['DOI']}",
+                    "title": title,
+                    "published_at": it["created"]["date-time"][:10],
+                    "authors_or_owner": " ".join(
+                        x for x in (first.get("given"), first.get("family")) if x
+                    ),
+                    "matched": matched + (it.get("container-title") or [])[:1],
+                }
+            )
+        time.sleep(1)
+    return rows
+
+
+def pypi(cfg: dict, start: date, end: date) -> list[dict]:
+    """Releases of the listed packages. The feed's author field holds e-mail addresses,
+    so the owner stored is the package name."""
+    rows = []
+    for pkg in cfg["packages"]:
+        r = requests.get(f"https://pypi.org/rss/project/{pkg}/releases.xml", headers=UA, timeout=60)
+        if r.status_code == 404:
+            print(f"pypi: no package named {pkg}")
+            continue
+        r.raise_for_status()
+        for item in ET.fromstring(r.text).iter("item"):
+            day = parsedate_to_datetime(item.findtext("pubDate", "")).date()
+            if start <= day <= end:
+                version = item.findtext("title", "")
+                rows.append(
+                    {
+                        "source": "pypi",
+                        "url": item.findtext("link", ""),
+                        "title": f"{pkg} {version}",
+                        "published_at": day.isoformat(),
+                        "authors_or_owner": pkg,
+                        "matched": ["release"],
+                    }
+                )
+    return rows
+
+
+def github_releases(cfg: dict, start: date, end: date) -> list[dict]:
+    """Releases of the listed repositories, through the REST API (GitHub's robots file
+    disallows the Atom feeds). Unauthenticated: 60 requests an hour, one per repository."""
+    rows = []
+    for repo in cfg["repos"]:
+        r = requests.get(
+            f"https://api.github.com/repos/{repo}/releases",
+            params={"per_page": 30},
+            headers=UA,
+            timeout=60,
+        )
+        if r.status_code == 404:
+            print(f"github_releases: no repository named {repo}")
+            continue
+        r.raise_for_status()
+        for rel in r.json():
+            day = (rel.get("published_at") or "")[:10]
+            if day and start.isoformat() <= day <= end.isoformat() and not rel.get("draft"):
+                rows.append(
+                    {
+                        "source": "github_releases",
+                        "url": rel["html_url"],
+                        "title": f"{repo} {rel.get('name') or rel['tag_name']}",
+                        "published_at": day,
+                        "authors_or_owner": repo.split("/")[0],
+                        "matched": ["prerelease" if rel.get("prerelease") else "release"],
+                    }
+                )
+    return rows
+
+
+SOURCES = (
+    ("arxiv", arxiv),
+    ("huggingface", huggingface),
+    ("zenodo", zenodo),
+    ("crossref", crossref),
+    ("pypi", pypi),
+    ("github_releases", github_releases),
+)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", default=date.today().isoformat())
@@ -175,10 +283,17 @@ def main() -> None:
         else {}
     )
     rows = []
-    for name, fn in (("arxiv", arxiv), ("huggingface", huggingface), ("zenodo", zenodo)):
+    for name, fn in SOURCES:
+        if name not in scan["feeds"]:
+            continue
         try:
             got = fn(scan["feeds"][name], start, end)
-        except (requests.RequestException, ET.ParseError) as e:  # report, do not hide
+        except (
+            requests.RequestException,
+            ET.ParseError,
+            ValueError,
+            KeyError,
+        ) as e:  # report, do not hide
             kept = [
                 dict(r, abstract=old_abs.get(r["url"], "")) for r in old_rows if r["source"] == name
             ]

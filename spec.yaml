@@ -108,6 +108,24 @@ scan:
       queries:
         - 'forecast* AND (electricity OR load OR demand) AND (backtest OR benchmark OR "pre-registered" OR preregistered)'
         - '"foundation model" AND forecast* AND "time series"'
+    # Added Nov 14 from notes/source_seed_list.md; each endpoint was checked live that day.
+    crossref:
+      issns: ['0169-2070', '0306-2619']            # Int. J. of Forecasting, Applied Energy
+      query: load forecasting
+      must_match: [forecast]                       # in the title (Crossref rarely has abstracts)
+      any_of: [load, electricity, energy demand, power demand, foundation model, zero-shot]
+    pypi:
+      packages: [chronos-forecasting, timesfm, openstef, neuralforecast, tabpfn-time-series]
+    github_releases:
+      repos:
+        - amazon-science/chronos-forecasting
+        - google-research/timesfm
+        - DataDog/toto
+        - SalesforceAIResearch/uni2ts
+        - ibm-granite/granite-tsfm
+        - Nixtla/neuralforecast
+        - OpenSTEF/openstef
+        - autogluon/fev
   queries:
     - time series foundation model release
     - electricity load forecasting foundation model benchmark

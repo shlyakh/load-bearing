@@ -11,8 +11,11 @@ Provider is `claude` unless given (see `.claude/skills/providers.md`).
    days; compute the start date.
 1b. Read the direct listings first (same for every provider):
    `uv run --project core python tools/feeds.py --date <YYYY-MM-DD>`
-   It writes `candidates/feeds/feeds_<date>.jsonl`: arXiv, Hugging Face and Zenodo items
-   already inside the window, with exact dates, titles and URLs. If a feed reports
+   It writes `candidates/feeds/feeds_<date>.jsonl`: arXiv, Hugging Face, Zenodo and
+   Crossref (journal) items and PyPI and GitHub releases of the main forecasting
+   libraries, already inside the window, with exact dates, titles and URLs. Crossref,
+   PyPI and GitHub rows have no stored abstract: a release row is a lead to the
+   project's release notes, not a claim by itself. If a feed reports
    FAILED, say so in the report. Shortlist by title: at most 40 rows that could bear on
    the spec's `problem` (load or energy forecasting, pretrained forecasting models,
    covariates, pre-registered or benchmark-style backtests). Skip re-uploads and
