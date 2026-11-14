@@ -144,6 +144,21 @@ def parse(stream: Path) -> tuple[dict, dict, dict]:
     return result, tools, init
 
 
+def failure(meta: dict) -> str | None:
+    """Why a run did not finish properly, or None when it did. A run counts as failed when
+    the CLI timed out, exited nonzero, reported an error, or ended without a result line
+    (for example when it was cut off by a usage limit)."""
+    if meta.get("timed_out"):
+        return "timed out"
+    if meta.get("exit_code") != 0:
+        return f"the CLI exited with status {meta.get('exit_code')}"
+    if meta.get("is_error"):
+        return "the CLI reported an error"
+    if meta.get("num_turns") is None:
+        return "the run ended without a result"
+    return None
+
+
 def run(
     skill: str, provider: str, args: list[str], note: str = "", model: str = "", timeout: int = 3600
 ) -> dict:
@@ -206,6 +221,7 @@ def run(
         "model_usage": result.get("modelUsage"),
         "tool_calls": tools,
     }
+    meta["failure"] = failure(meta)
     (ROOT / "runs" / f"{run_id}.meta.json").write_text(json.dumps(meta, indent=1) + "\n")
     if provider == "youcom":
         status = {s["name"]: s["status"] for s in init.get("mcp_servers", [])}
@@ -230,6 +246,8 @@ def main() -> None:
     print(json.dumps({k: meta[k] for k in ("run_id", "exit_code", "num_turns", "total_cost_usd")}))
     if meta["result"]:
         print(meta["result"])
+    if meta["failure"]:  # so a shell, a scheduler or a pipeline sees the failure
+        sys.exit(f"{meta['run_id']} FAILED: {meta['failure']}")
 
 
 if __name__ == "__main__":

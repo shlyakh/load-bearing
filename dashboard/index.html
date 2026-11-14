@@ -493,6 +493,7 @@ a { color: var(--model); }
       <h3>Review without OpenCrawl</h3>
       <p>The repository runs Claude Code headlessly through <code>claude -p</code>. <a href="https://github.com/shlyakh/receipts/blob/dbfd1666d862450d66e17b0935c2b9c2a5c648b3/tools/run_skill.py"><code>tools/run_skill.py</code></a> builds the command, restricts available tools by provider, and records a JSONL transcript plus run metadata. <a href="https://github.com/shlyakh/receipts/blob/dbfd1666d862450d66e17b0935c2b9c2a5c648b3/tools/pipeline.py"><code>tools/pipeline.py</code></a> combines scans, parallel candidate judging, and accepted-candidate processing. Headless runs do not execute model evaluations.</p>
       <p><strong>Finding:</strong> A failed or timed-out Claude subprocess is recorded in metadata, but the CLI does not return a nonzero exit status, and the pipeline does not stop after a failed scan. A scheduler could therefore report success while acting on an old scan or incomplete results. Propagate failures to the pipeline and scheduler.</p>
+      <p class="note"><strong>Acted on the same day.</strong> A failed or cut-off run now exits with a failing status, a failed scan stops the pipeline before anything is judged, and a claim whose judge failed gets no receipt (tests/test_pipeline_failures.py).</p>
       <p><strong>Periodic status:</strong> No scheduled agent workflow or LaunchAgent is implemented in the repository. The current pipeline is run manually; the checked-in GitHub workflow deploys the static site.</p>
     </div>
     <div class="panel stack">

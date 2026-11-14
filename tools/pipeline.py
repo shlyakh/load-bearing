@@ -18,6 +18,8 @@ Steps (each is `claude -p "/<skill> ..."` through tools/run_skill.py):
                      receipt. Headless runs do not start model runs: if the model row is
                      not on the leaderboard the step stops and says what is needed.
 Writes runs/pipeline_<id>.json (committed) and prints one line per candidate.
+Failures are not swallowed: a failed scan stops the run before any judging, a candidate
+whose judge failed gets no receipt, and the command exits nonzero if any step failed.
 """
 
 from __future__ import annotations
@@ -48,7 +50,15 @@ def scorecard(provider: str, cid: str) -> dict | None:
 
 
 def step(meta: dict) -> dict:
-    keep = ("run_id", "exit_code", "timed_out", "is_error", "num_turns", "total_cost_usd")
+    keep = (
+        "run_id",
+        "exit_code",
+        "timed_out",
+        "is_error",
+        "num_turns",
+        "total_cost_usd",
+        "failure",
+    )
     return {k: meta.get(k) for k in keep} | {"wall_seconds": meta.get("wall_seconds")}
 
 
@@ -78,6 +88,11 @@ def main() -> None:
 
     if a.scan:
         out["scan"] = step(run("scan", a.provider, [], model=a.model))
+        if out["scan"]["failure"]:
+            # Do not go on to judge an older scan as if it were this one.
+            pid = f"pipeline_{started:%Y%m%dT%H%M%S}_{a.provider}"
+            (ROOT / "runs" / f"{pid}.json").write_text(json.dumps(out, indent=1) + "\n")
+            sys.exit(f"{pid}: the scan FAILED ({out['scan']['failure']}); nothing was judged")
     files = sorted(
         (ROOT / "candidates" / source).glob("scan_*.jsonl"), key=lambda p: p.stat().st_mtime
     )
@@ -103,6 +118,8 @@ def main() -> None:
 
     for i in chosen:  # one at a time: receipts read and write the shared results
         card = scorecard(a.provider, i)
+        if (rows[i].get("judge") or {}).get("failure"):
+            continue  # this run's judge did not finish: do not build a receipt on its scorecard
         if card and card.get("label") == "ACCEPT_RUN" and not card.get("receipt"):
             m = run("run-candidate", a.provider, [i], note=NO_MODEL_RUNS, model=a.model)
             rows[i]["run_candidate"] = step(m)
@@ -128,6 +145,14 @@ def main() -> None:
         label = r["label"] or "not judged"
         verdict = r["receipt_verdict"] or "none"
         print(f"  {r['candidate_id']}: {label} ({r['runnable_class']}), receipt: {verdict}")
+    failed = [
+        f"{r['candidate_id']} {k.replace('_', '-')}: {r[k]['failure']}"
+        for r in out["candidates"]
+        for k in ("judge", "run_candidate")
+        if (r.get(k) or {}).get("failure")
+    ]
+    if failed:  # a nonzero status, so a scheduler does not report success
+        sys.exit(f"{pid}: {len(failed)} step(s) FAILED\n  " + "\n  ".join(failed))
 
 
 if __name__ == "__main__":
