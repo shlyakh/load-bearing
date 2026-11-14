@@ -9,7 +9,11 @@ protocol-v1.2 weather sources (additive; the commands above are unchanged):
     uv run --project core python fetch.py download-v12  # ERA5, IFS 0.25, AIFS raw files
     uv run --project core python fetch.py process-v12   # their parquet files + coverage
 
-Zones, stations and date ranges come from protocol.yaml.
+protocol-v2 (additive; AEP and AE only, nothing above changes):
+    uv run --project core python fetch.py download-v2   # AEP/AE load, ERA5 + 3 forecast sources
+    uv run --project core python fetch.py process-v2    # load_v2 and weather_v2_* parquet files
+
+Zones, stations and date ranges come from protocol.yaml (v2 weather points: protocol-v2.yaml).
 """
 
 from __future__ import annotations
@@ -94,7 +98,8 @@ def get_json(url: str, params: list[tuple[str, str]] | dict, tries: int = 5) -> 
 # ------------------------------------------------------------------ download
 
 
-def download_eia(proto: dict) -> None:
+def download_eia(proto: dict, zones: list[str] | None = None) -> None:
+    """EIA-930 pages for `zones` (default: the protocol-v1 zones), protocol-v1 date range."""
     from dotenv import load_dotenv
 
     load_dotenv(ROOT / ".env")
@@ -102,7 +107,7 @@ def download_eia(proto: dict) -> None:
     if not key:
         sys.exit("EIA_API_KEY is missing from .env")
     cfg = proto["load"]
-    for zone in proto["zones"]:
+    for zone in proto["zones"] if zones is None else zones:
         out = RAW / "eia" / zone
         out.mkdir(parents=True, exist_ok=True)
         offset, total = 0, None
@@ -215,13 +220,16 @@ def verify_manifest() -> None:
 # ------------------------------------------------------------------- process
 
 
-def process_load(proto: dict) -> pd.DataFrame:
+def process_load(
+    proto: dict, zones: list[str] | None = None, quality_log: Path = QUALITY_LOG
+) -> pd.DataFrame:
+    """Apply the protocol-v1 load rules to `zones` (default: the protocol-v1 zones)."""
     cfg = proto["load"]
     full = pd.date_range(
         pd.Timestamp(cfg["start"], tz="UTC"), pd.Timestamp(cfg["end"], tz="UTC"), freq="h"
     )
     frames, log = [], []
-    for zone in proto["zones"]:
+    for zone in proto["zones"] if zones is None else zones:
         rows = []
         for page in sorted((RAW / "eia" / zone).glob("offset_*.json")):
             rows += json.loads(page.read_text())["data"]
@@ -263,7 +271,7 @@ def process_load(proto: dict) -> pd.DataFrame:
     qlog = pd.DataFrame(
         log, columns=["unique_id", "ds", "action", "raw_value", "reference_or_fill"]
     )
-    qlog.sort_values(["unique_id", "ds", "action"]).to_csv(QUALITY_LOG, index=False)
+    qlog.sort_values(["unique_id", "ds", "action"]).to_csv(quality_log, index=False)
     return load
 
 
@@ -379,7 +387,7 @@ def download_v12(proto: dict) -> list[Path]:
     return written
 
 
-def add_to_manifest() -> None:
+def add_to_manifest(stamp: str = "v12_added_at") -> None:
     """Add raw files that are not yet listed. Listed entries are never rewritten: the
     existing manifest is verified first (ignoring only the unlisted files), so a changed
     raw file cannot be re-hashed into acceptance."""
@@ -392,7 +400,7 @@ def add_to_manifest() -> None:
     for p in new:
         listed[str(p.relative_to(ROOT))] = {"sha256": sha256(p), "bytes": p.stat().st_size}
     data["files"] = dict(sorted(listed.items()))
-    data["v12_added_at"] = datetime.now(UTC).isoformat(timespec="seconds")
+    data[stamp] = datetime.now(UTC).isoformat(timespec="seconds")
     MANIFEST.write_text(json.dumps(data, indent=1) + "\n")
     print(f"manifest: added {len(new)} files, {len(listed)} listed")
 
@@ -514,6 +522,227 @@ def process_v12_cmd() -> None:
         print("\nincomplete origins:\n" + bad.to_string(index=False))
 
 
+# ------------------------------------------------------- protocol-v2 (protocol-v2.yaml)
+# Additive: no v1 or v1.2 command reads or writes these files. Primary zones AEP and AE:
+# EIA-930 load into data/raw/eia/<zone>/ (same pages, date range and rules as protocol-v1),
+# and temperature at the zones' weather points (ERA5 grid cells, requested at the cell
+# centre, protocol-v2.yaml zones.selected.*.weather_points) from ERA5 and three archived
+# forecast sources, every request naming its model. Zone temperature = weighted mean with
+# the protocol's PJM weights. DOM and JC are not touched here: they keep their v1 points,
+# unweighted mean and the v1/v1.2 files.
+V2_FILE = ROOT / "protocol-v2.yaml"
+V2_ZONES = ["AEP", "AE"]
+V2_TRUTH_MODEL = V12_TRUTH_MODEL  # era5
+# regime -> Previous Runs model id. gfs_seamless is the explicit name of what the v1
+# best_match request resolved to (HRRR day 1, GFS days 2 to 7; protocol-v1.2 finding).
+V2_FORECAST_MODELS = {
+    "forecast_gfs": "gfs_seamless",
+    "forecast_ifs": "ecmwf_ifs025",
+    "forecast_aifs": "ecmwf_aifs025_single",
+}
+V2_PARQUET = {
+    "load": "load_v2.parquet",
+    "oracle_era5": "weather_v2_oracle_era5.parquet",
+    "forecast_gfs": "weather_v2_forecast_gfs.parquet",
+    "forecast_ifs": "weather_v2_forecast_ifs.parquet",
+    "forecast_aifs": "weather_v2_forecast_aifs.parquet",
+}
+V2_QUALITY_LOG = ROOT / "data" / "quality_log_v2.csv"
+V2_COVERAGE = PROCESSED / "weather_v2_coverage.csv"
+
+
+def weather_points_v2() -> dict[str, list[dict]]:
+    """AEP and AE weather points with weights, read from protocol-v2.yaml."""
+    sel = yaml.safe_load(V2_FILE.read_text())["zones"]["selected"]
+    pts = {z: sel[z]["weather_points"] for z in V2_ZONES}
+    for z, p in pts.items():
+        if abs(sum(float(s["weight"]) for s in p) - 1.0) > 1e-9:
+            raise ValueError(f"weights of {z} do not sum to 1")
+    return pts
+
+
+def download_v2(proto: dict) -> None:
+    """AEP and AE load, then ERA5 and the three forecast sources at the six cell centres.
+    Existing files are kept, so a rerun only fills in what is missing."""
+    have = {z for z in V2_ZONES if any((RAW / "eia" / z).glob("offset_*.json"))}
+    download_eia(proto, [z for z in V2_ZONES if z not in have])
+    w = proto["weather"]
+    chunks = date_chunks(
+        w["previous_runs"]["start_date"], w["previous_runs"]["end_date"], PREVIOUS_RUNS_CHUNK_DAYS
+    )
+    prev_vars = [f"{v}_previous_day{k}" for v in V12_VARS for k in LEAD_DAYS]
+    for zone, points in weather_points_v2().items():
+        for s in points:
+            base = {"latitude": s["lat"], "longitude": s["lon"], "timezone": "GMT"}
+            out = RAW_MODELS / V2_TRUTH_MODEL
+            out.mkdir(parents=True, exist_ok=True)
+            path = out / f"archive_{zone}_{s['name']}.json"
+            if not path.exists():
+                arch = get_json(
+                    w["archive"]["endpoint"],
+                    base
+                    | {
+                        "models": V2_TRUTH_MODEL,
+                        "hourly": ",".join(V12_VARS),
+                        "start_date": w["archive"]["start_date"],
+                        "end_date": w["archive"]["end_date"],
+                    },
+                )
+                path.write_text(json.dumps(arch))
+                print(f"{V2_TRUTH_MODEL} {zone} {s['name']}: {len(arch['hourly']['time'])} hours")
+                time.sleep(10)
+            for model in V2_FORECAST_MODELS.values():
+                out = RAW_MODELS / model
+                out.mkdir(parents=True, exist_ok=True)
+                for a, b in chunks:
+                    path = out / f"previous_runs_{zone}_{s['name']}_{a}.json"
+                    if path.exists():
+                        continue
+                    prev = get_json(
+                        w["previous_runs"]["endpoint"],
+                        base
+                        | {
+                            "models": model,
+                            "hourly": ",".join(prev_vars),
+                            "start_date": a,
+                            "end_date": b,
+                        },
+                    )
+                    path.write_text(json.dumps(prev))
+                    print(f"{model} {zone} {s['name']} {a}: {len(prev['hourly']['time'])} hours")
+                    time.sleep(5)
+
+
+def weighted_zone_mean(frames: list[pd.DataFrame], weights: list[float]) -> pd.DataFrame:
+    """Weighted mean of the points' series. A zone value exists only when every point has
+    one (NaN propagates, as the v1 unweighted mean)."""
+    if abs(sum(weights) - 1.0) > 1e-9:
+        raise ValueError("weights must sum to 1")
+    return sum(w * f for w, f in zip(weights, frames, strict=True))
+
+
+def process_v2(proto: dict) -> dict[str, pd.DataFrame]:
+    """AEP and AE tables, same layouts as the v1/v1.2 files:
+
+    load_v2:                  unique_id, ds, y                         (v1 load rules)
+    weather_v2_oracle_era5:   unique_id, ds, temperature_2m            (ERA5)
+    weather_v2_forecast_<s>:  unique_id, ds, lead_day, temperature_2m  (gfs, ifs, aifs)
+    """
+    tables = {"load": process_load(proto, V2_ZONES, V2_QUALITY_LOG)}
+    out = {"oracle_era5": []} | {r: [] for r in V2_FORECAST_MODELS}
+    for zone, points in weather_points_v2().items():
+        weights = [float(s["weight"]) for s in points]
+        era5 = weighted_zone_mean(
+            [
+                _station_frame(RAW_MODELS / V2_TRUTH_MODEL / f"archive_{zone}_{s['name']}.json")
+                for s in points
+            ],
+            weights,
+        ).reset_index()
+        era5.insert(0, "unique_id", zone)
+        out["oracle_era5"].append(era5)
+        for regime, model in V2_FORECAST_MODELS.items():
+            p = weighted_zone_mean(
+                [
+                    pd.concat(
+                        _station_frame(f)
+                        for f in sorted(
+                            (RAW_MODELS / model).glob(f"previous_runs_{zone}_{s['name']}_*.json")
+                        )
+                    ).astype(float)
+                    for s in points
+                ],
+                weights,
+            )
+            for k in LEAD_DAYS:
+                cols = {f"{v}_previous_day{k}": v for v in V12_VARS}
+                part = p[list(cols)].rename(columns=cols).reset_index()
+                part.insert(0, "unique_id", zone)
+                part.insert(2, "lead_day", k)
+                out[regime].append(part)
+    for r, f in out.items():
+        df = pd.concat(f, ignore_index=True)
+        df[V12_VARS] = df[V12_VARS].astype(float)
+        tables[r] = df
+    return tables
+
+
+def coverage_v2(proto: dict, tables: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    """Per origin, zone and regime (AEP, AE): missing temperature hours a model would need
+    (ERA5 history over 730 days, and the regime's lead-matched horizon), and missing load
+    hours (730 days before the cutoff, and the 168 actuals)."""
+    tz = proto["timezone"]
+    era5 = {
+        z: g.set_index("ds")["temperature_2m"].sort_index()
+        for z, g in tables["oracle_era5"].groupby("unique_id")
+    }
+    load = {z: g.set_index("ds")["y"].sort_index() for z, g in tables["load"].groupby("unique_id")}
+    fc = {
+        r: {
+            z: g.pivot(index="ds", columns="lead_day", values="temperature_2m").sort_index()
+            for z, g in tables[r].groupby("unique_id")
+        }
+        for r in V2_FORECAST_MODELS
+    }
+    rows = []
+    h = pd.Timedelta(hours=1)
+    for which in ("gate", "scored"):
+        for d in proto["origins"][which]:
+            c = pd.Timestamp(f"{d} 00:00", tz=tz).tz_convert("UTC")
+            hz = pd.date_range(c + h, periods=proto["horizon_hours"], freq="h")
+            past = pd.date_range(c - pd.Timedelta(days=730) + h, c, freq="h")
+            for zone in V2_ZONES:
+                hist_missing = int(era5[zone].reindex(past).isna().sum())
+                load_hist_missing = int(load[zone].reindex(past).isna().sum())
+                actuals_missing = int(load[zone].reindex(hz).isna().sum())
+                lag_missing = int(load[zone].reindex(hz - pd.Timedelta(hours=168)).isna().sum())
+                horizon = {"oracle_era5": era5[zone].reindex(hz).to_numpy()}
+                lead = np.arange(len(hz)) // 24
+                for r in V2_FORECAST_MODELS:
+                    tab = fc[r][zone].reindex(index=hz, columns=list(LEAD_DAYS)).to_numpy()
+                    horizon[r] = tab[np.arange(len(hz)), lead]
+                for r, v in horizon.items():
+                    miss = np.isnan(v)
+                    rows.append(
+                        {
+                            "origin_set": which,
+                            "origin": d,
+                            "unique_id": zone,
+                            "regime": r,
+                            "history_missing": hist_missing,
+                            "horizon_missing": int(miss.sum()),
+                            "horizon_missing_by_day": ",".join(
+                                str(int(miss[24 * k : 24 * (k + 1)].sum())) for k in range(7)
+                            ),
+                            "load_history_missing_730d": load_hist_missing,
+                            "load_lag168_missing": lag_missing,
+                            "actuals_missing": actuals_missing,
+                            "weather_complete": hist_missing == 0 and not miss.any(),
+                        }
+                    )
+    return pd.DataFrame(rows)
+
+
+def process_v2_cmd() -> None:
+    verify_manifest()
+    proto = load_protocol()
+    tables = process_v2(proto)
+    for name, df in tables.items():
+        df.to_parquet(PROCESSED / V2_PARQUET[name], index=False)
+        col = "y" if name == "load" else "temperature_2m"
+        print(name, df.shape, "missing:", int(df[col].isna().sum()))
+    cov = coverage_v2(proto, tables)
+    cov.to_csv(V2_COVERAGE, index=False)
+    print(
+        cov.groupby(["origin_set", "regime", "unique_id"])["weather_complete"]
+        .agg(["sum", "size"])
+        .to_string()
+    )
+    bad = cov[~cov["weather_complete"] | (cov["actuals_missing"] > 0)]
+    if len(bad):
+        print("\nincomplete origins:\n" + bad.to_string(index=False))
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "download":
@@ -532,6 +761,12 @@ if __name__ == "__main__":
         add_to_manifest()
     elif cmd == "process-v12":
         process_v12_cmd()
+    elif cmd == "download-v2":
+        verify_manifest()  # refuse to add files on top of a manifest that already fails
+        download_v2(load_protocol())
+        add_to_manifest("v2_added_at")
+    elif cmd == "process-v2":
+        process_v2_cmd()
     elif cmd == "verify":
         verify_manifest()
         print("raw files match fetch_manifest.json")
