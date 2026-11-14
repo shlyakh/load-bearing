@@ -270,6 +270,12 @@ a { color: var(--model); }
     <p class="note">Chronos-2 with temperature divided by the Vanilla benchmark with trend, forecast weather, 90% ranges. Added as a secondary result under protocol-v1.1 and scored once. The verdicts above are unchanged because their baseline was fixed in advance, but against the standard benchmark the tie reported for Great Britain largely reappears.</p>
   </div>
   <div class="panel stack">
+    <h3>A third check: two zones no model had been run on</h3>
+    <p>Both checks above were read on zones we had already looked at. So the comparison against the standard benchmark was fixed in advance and run once on two fresh zones, AEP and AE.</p>
+    <div class="facts" id="vs-fresh"></div>
+    <p class="note">Chronos-2 with temperature divided by the Vanilla benchmark with trend, ECMWF AIFS forecast weather, 90% ranges, protocol-v2. Both read inconclusive: no clear lead on either zone. Details on the <a href="#newzones">New zones</a> tab.</p>
+  </div>
+  <div class="panel stack">
     <h3>Where in the week the lead comes from</h3>
     <div class="split" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
       <div><div class="note">DOM, error ratio by forecast day</div><svg id="day-DOM" viewBox="0 0 440 200" role="img" aria-label="DOM error ratio by day"></svg></div>
@@ -491,19 +497,23 @@ a { color: var(--model); }
     const W = D.weather_v12, pv = (z, rg) => W && W.pairs.find(p => p.kind === "chronos2_vs_vanilla_benchmark_trend" && p.zone === z && p.regime === rg);
     const all = W ? W.pairs.filter(p => p.kind === "chronos2_vs_vanilla_benchmark_trend").map(p => p.ratio) : [];
     return { claim: f2(D.claim.ratio), prim: f2(prim.ratio), std: std ? f2(std.ratio) : "", gfs: W ? f2(pv("DOM", "forecast_gfs").ratio) : "", era5: W ? f2(pv("DOM", "oracle_era5").ratio) : "",
-      min: all.length ? f2(d3.min(all)) : "", max: all.length ? f2(d3.max(all)) : "" };
+      min: all.length ? f2(d3.min(all)) : "", max: all.length ? f2(d3.max(all)) : "",
+      v2: z => { const p = D.v2 && D.v2.pairs.find(q => q.kind === "primary" && q.zone === z); return p ? f2(p.ratio) : ""; } };
   })();
   const TOUR = [
     { tab: "story", at: "#usmap", ms: 5000, text: "Grid operators schedule power plants from a forecast of demand. PJM is the largest operator in the United States." },
-    { tab: "story", at: "#zonemap", ms: 5000, text: "We forecast two PJM zones that behave differently: JC in New Jersey and DOM in Virginia." },
+    { tab: "story", at: "#zonemap", ms: 5000, text: "We forecast PJM zones that behave differently: first JC in New Jersey and DOM in Virginia, then AEP and AE, two zones kept back for a fresh test." },
     { tab: "story", at: "#week", ms: 6000, text: "Every Monday, each method forecasts the next 168 hours. Here: a plain regression and Chronos-2, a pretrained model.", act: () => click("#wk-zone button:nth-child(2)", 3000) },
-    { tab: "methods", at: "section[data-tab='methods'] table", ms: 5000, text: "Every method gets the same history and the same temperature. The regression with temperature is the baseline." },
+    { tab: "methods", at: "section[data-tab='methods'] table", ms: 5000, text: "Every method gets the same history and the same temperature. The regression with temperature is the first baseline." },
     { tab: "receipt", at: "#receipt", ms: 7500, text: "A study found a tie in Great Britain: " + tourNum.claim + ". Against our first baseline we measured " + tourNum.prim + " on DOM. Against the field's standard benchmark it is " + tourNum.std + ": close to a tie again." },
+    { tab: "newzones", at: "#v2-primary", ms: 8000, text: "The fresh test: two zones no model had been run on, with the rules fixed in advance. Chronos-2 against the standard benchmark: " + tourNum.v2("AEP") + " on AEP and " + tourNum.v2("AE") + " on AE. No clear lead." },
     { tab: "leaderboard", at: "#board", ms: 6500, text: "Every model against the same baseline, DOM and JC side by side. Timestral, the grey diamond, was published after most test weeks, so it may have seen them." },
     { tab: "weather", at: "#wx-ratio", ms: 7500, text: "With better weather forecasts the regressions catch up. Against the field's standard benchmark the model is level under every source (" + tourNum.min + " to " + tourNum.max + "); on DOM it goes from " + tourNum.gfs + " with GFS weather to " + tourNum.era5 + " with perfect weather." },
     { tab: "candidates", at: "#cands", ms: 6000, text: "The scan agent reads arXiv, Hugging Face and Zenodo, and keeps new claims that cite a primary source.", act: () => type("#cand-q", "PJM", 2600) },
     { tab: "agents", at: ".steps", ms: 5000, text: "Find, judge, run, receipt: from a new claim to a measured answer, with every source cited." }
   ];
+  // ?tourms=5000,6000,... sets each step's length (used to fit the tour to a narration)
+  (new URLSearchParams(location.search).get("tourms") || "").split(",").map(Number).forEach((v, i) => { if (v > 0 && TOUR[i]) TOUR[i].ms = v; });
   const tourSecs = Math.round(TOUR.reduce((a, s) => a + s.ms, 0) / 5000) * 5;
   document.getElementById("tour-start").textContent = "\u25b6 Play the " + tourSecs + "-second tour";
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -815,6 +825,9 @@ a { color: var(--model); }
     });
   })();
 
+  // ---------- the fresh zones (protocol-v2), summarised on the receipt tab
+  if (D.v2) d3.select("#vs-fresh").selectAll("div").data(D.v2.pairs.filter(q => q.kind === "primary")).join("div").attr("class", "fact")
+    .html(q => "<b>" + f2(q.ratio) + "</b><span><strong>" + q.zone + "</strong>, 90% range " + f2(q.lo) + " to " + f2(q.hi) + ", " + q.n + " weeks</span>");
   // ---------- against the field's standard benchmark
   if (D.vs_standard) d3.select("#vs-standard").selectAll("div").data(["DOM", "JC"].filter(z => D.vs_standard[z])).join("div").attr("class", "fact")
     .html(z => { const v = D.vs_standard[z], tie = v.lo >= lo && v.hi <= hi;

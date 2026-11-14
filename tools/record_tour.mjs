@@ -1,5 +1,6 @@
 // Record the dashboard's own tour to dashboard/tour.webm with headless Chrome and ffmpeg (no npm packages).
 //   node tools/record_tour.mjs <work dir> [output]
+//   TOUR_QUERY='?tourms=5000,6000,...' sets each step's length (to fit a narration).
 // Serves dashboard/ on 127.0.0.1, blocks every other host (so the recording doubles as an offline check),
 // starts the page's tour, screenshots as fast as the browser allows, and lets ffmpeg hold each frame for
 // its real duration so the video runs at the tour's speed.
@@ -35,14 +36,14 @@ try {
   const evaluate = async (expression) => (await send("Runtime.evaluate", { expression, returnByValue: true })).result?.result?.value;
   await send("Page.enable"); await send("Runtime.enable");
   await send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false });
-  await send("Page.navigate", { url: `http://127.0.0.1:${HTTP}/index.html` });
+  await send("Page.navigate", { url: `http://127.0.0.1:${HTTP}/index.html${process.env.TOUR_QUERY || ""}` });
   for (let i = 0; i < 100; i++) { if (await evaluate("typeof window.startTour === 'function' && !!document.querySelector('#board circle')")) break; await sleep(100); }
   const ready = await evaluate("JSON.stringify({ d3: typeof d3, tour: typeof window.startTour, board: document.querySelectorAll('#board circle').length, map: document.querySelectorAll('#usmap path').length, cands: document.querySelectorAll('#cands .cand').length })");
   console.log("page without network:", ready, "script errors:", JSON.stringify(errors));
   if (!ready || JSON.parse(ready).tour !== "function") throw new Error("the page did not load its tour");
   await evaluate("window.startTour(); 1");
   const t0 = Date.now(); const stamps = [];
-  while (Date.now() - t0 < 90000) {
+  while (Date.now() - t0 < 300000) {
     const st = await evaluate("document.body.dataset.demo || ''");
     const r = await send("Page.captureScreenshot", { format: "jpeg", quality: 82 });
     const name = `f${String(stamps.length).padStart(5, "0")}.jpg`;
