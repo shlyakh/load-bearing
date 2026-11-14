@@ -62,3 +62,13 @@ new version file.
   `results/v2/`. Kept windows: AEP and AE 45 with AIFS weather and 48 in the other three
   regimes; DOM and JC 47 with AIFS, 50 with GFS and IFS, 49 with ERA5. No definition was
   changed and nothing crashed.
+- **2026-11-14, TimesFM 3.0 with temperature added as a flagged secondary row**
+  (`timesfm3_temperature`, Yuri's decision after two judged claims needed it). Not a new
+  protocol version: protocol-v1 defines pretrained models as a class, and the row is added
+  the way `timestral_temperature` was. Weights `google/timesfm-3.0-pytorch` at commit
+  43046b8, weights file dated 2026-08-24, non-commercial licence. Settings fixed before
+  any scored run: temperature as a known-future covariate, 2,048 hours of context, the
+  library's defaults (symmetric averaging, forecasts made positive). Gate origins first
+  (complete and plausible, existing gate rows unchanged), then the scored origins once.
+  Most scored weeks precede the weights, so the row is flagged as not out-of-sample and
+  cannot change the primary outcome.

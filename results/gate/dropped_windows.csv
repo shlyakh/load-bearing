@@ -51,6 +51,10 @@ DOM,2025-10-27 04:00:00+00:00,timesfm25_temperature,forecast
 DOM,2025-10-27 04:00:00+00:00,timesfm25_temperature,oracle
 JC,2025-10-27 04:00:00+00:00,timesfm25_temperature,forecast
 JC,2025-10-27 04:00:00+00:00,timesfm25_temperature,oracle
+DOM,2025-10-27 04:00:00+00:00,timesfm3_temperature,forecast
+DOM,2025-10-27 04:00:00+00:00,timesfm3_temperature,oracle
+JC,2025-10-27 04:00:00+00:00,timesfm3_temperature,forecast
+JC,2025-10-27 04:00:00+00:00,timesfm3_temperature,oracle
 DOM,2025-10-27 04:00:00+00:00,timestral_temperature,forecast
 DOM,2025-10-27 04:00:00+00:00,timestral_temperature,oracle
 JC,2025-10-27 04:00:00+00:00,timestral_temperature,forecast
