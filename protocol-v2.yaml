@@ -1,10 +1,9 @@
 # protocol-v2. Written 2026-11-13 from protocol-v2-draft.yaml (which is left as it is) and
-# the owner's decisions 26 to 37. NOT FROZEN: the gate runs are done and pending the owner's
-# review; the git tag protocol-v2 has NOT been created and no v2 row has been run on a
-# scored origin. Until the tag exists every v2 entry point refuses the scored set
-# (CLAUDE.md rule 12). After the tag, this file is not edited (rule 5).
+# the owner's decisions 26 to 37. Gate runs done 2026-11-13; reviewed and approved by the
+# owner on 2026-11-14. FROZEN at git tag protocol-v2: do not edit (CLAUDE.md rule 5). The
+# scored origins are run once, after the tag (rule 12).
 version: protocol-v2
-status: not frozen — gate results pending owner review; tag protocol-v2 has NOT been created
+status: frozen
 based_on: protocol-v1.3
 why_a_new_version: >
   protocol-v1 named its baseline before the search for the field's standards and used
@@ -295,23 +294,23 @@ primary_comparison:
   outcome_sentences:
     worth_switching: >
       On {zone}, a week ahead with archived ECMWF AIFS forecast weather, Chronos-2's
-      error was {ratio} of the temperature-only regression's (Tao's Vanilla Benchmark
-      with trend; 90% interval {low} to {high}). The whole interval is below 0.90, so the
+      error was {ratio} of that of Tao's Vanilla Benchmark with trend (90% interval
+      {low} to {high}). The whole interval is below 0.90, so the
       model clears the 10% bar on a zone it had not been run on before.
     practical_tie: >
       On {zone}, a week ahead with archived ECMWF AIFS forecast weather, Chronos-2's
-      error was {ratio} of the temperature-only regression's (Tao's Vanilla Benchmark
-      with trend; 90% interval {low} to {high}). The whole interval lies between 0.90 and
+      error was {ratio} of that of Tao's Vanilla Benchmark with trend (90% interval
+      {low} to {high}). The whole interval lies between 0.90 and
       1.10, so the two are a practical tie and the GB claim transfers to this zone.
     baseline_clearly_better: >
       On {zone}, a week ahead with archived ECMWF AIFS forecast weather, Chronos-2's
-      error was {ratio} of the temperature-only regression's (Tao's Vanilla Benchmark
-      with trend; 90% interval {low} to {high}). The whole interval is above 1.10, so the
-      regression is clearly better and the model is not worth running here.
+      error was {ratio} of that of Tao's Vanilla Benchmark with trend (90% interval
+      {low} to {high}). The whole interval is above 1.10, so the
+      benchmark is clearly better and the model is not worth running here.
     inconclusive: >
       On {zone}, a week ahead with archived ECMWF AIFS forecast weather, Chronos-2's
-      error was {ratio} of the temperature-only regression's (Tao's Vanilla Benchmark
-      with trend; 90% interval {low} to {high}). The interval crosses the 10% bar, so {n}
+      error was {ratio} of that of Tao's Vanilla Benchmark with trend (90% interval
+      {low} to {high}). The interval crosses the 10% bar, so {n}
       weeks cannot separate a tie from a real difference.
   leakage_statement: >
     {n_after} of {n} scored weeks start after the date of the pinned weights. Earlier
@@ -373,7 +372,7 @@ prospective_panel:
   zones: the v2 primary zones plus DOM and JC
   rows: every row registered in this file
   data_gap_rule: >
-    Proposed, to be confirmed before the first counted week. Each model sees load only up
+    Confirmed by the owner on 2026-11-14 with the freeze. Each model sees load only up
     to the last hour EIA had published when the job started (recorded per zone). A model
     that reads recent load forecasts from that hour through the end of the week, and only
     the 168 scored hours are kept (as the 48-hour-gap Chronos-2 row of protocol-v1 does).
@@ -391,7 +390,7 @@ gate:
   - tests/test_gates.py, test_weather_v12.py, test_v13.py unchanged and passing
   - every v2 row run on the 6 gate origins in all four regimes from a committed tree (2 windows first)
 gate_results_2026_11_14: >
-  Passed, pending the owner's review. Code at clean commit 82b8436; core rows smoke-run on
+  Passed; reviewed by the owner on 2026-11-14. Code at clean commit 82b8436; core rows smoke-run on
   2 gate origins first, then all rows on the 6 gate origins (results/gate/v2/). Windows
   kept: AEP and AE 4 of 6 per regime (2025-10-27 actuals and 2025-11-03 168-hour lag hit
   the EIA gap on 2025-11-02, as in v1); DOM and JC 5 of 6 (only 2025-10-27 dropped: no v2

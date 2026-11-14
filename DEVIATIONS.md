@@ -49,3 +49,11 @@ new version file.
   `results/gate/v2/`. The file is marked not frozen pending the owner's review; the tag
   `protocol-v2` does not exist and no v2 row has been run on a scored origin. Every
   earlier protocol file and result is unchanged.
+- **2026-11-14, protocol-v2 frozen and tagged:** the owner reviewed the gate results and
+  approved the freeze. Changed before the tag, wording only and without reference to any
+  scored result: the outcome sentences name the baseline as Tao's Vanilla Benchmark with
+  trend (not "the temperature-only regression"), and the panel's data-gap rule is marked
+  confirmed. Accepted as written: the default holiday treatment of
+  `vanilla_benchmark_trend_holiday` (the cited paper's full text was not read), and DOM
+  and JC keeping more windows under the v2 drop rule than under v1.2 (development zones;
+  not like-for-like with v1.2). The scored origins are run once, after the tag.
