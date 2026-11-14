@@ -214,6 +214,8 @@ def main() -> None:
     }
     out["weather_v12"] = weather_v12(res / "weather_v12")
     out["protocol"] = sorted(set(out["protocol"]) | set(out["weather_v12"]["protocol"]))
+    out["v2"] = protocol_v2(res / "v2")
+    out["protocol"] = sorted(set(out["protocol"]) | {"protocol-v2"})
     (ROOT / "dashboard" / "data.js").write_text("window.DATA = " + json.dumps(out) + ";\n")
     print("data.js:", len(board), "leaderboard rows,", len(weeks), "sample weeks")
 
@@ -270,6 +272,42 @@ def weather_v12(d: Path) -> dict:
         "rows": rows,
         "pairs": pairs,
         "temp_rmse": temp,
+    }
+
+
+def protocol_v2(d: Path) -> dict:
+    """protocol-v2: the primary pair on the new zones AEP and AE, DOM and JC as development
+    zones, and the calendar rows. Mean absolute error only."""
+    lb = pd.read_csv(d / "leaderboard.csv")
+    st = pd.read_csv(d / "stats.csv")
+    st = st[(st["metric"] == "mae") & (st["kind"] != "forecast_vs_oracle_era5")]
+    return {
+        "rows": [
+            {
+                "model": r.model,
+                "zone": r.unique_id,
+                "regime": r.regime,
+                "n": int(r.n_windows),
+                "mae": round(r.mae, 1),
+            }
+            for r in lb.itertuples()
+        ],
+        "pairs": [
+            {
+                "kind": r.kind,
+                "zone": r.unique_id,
+                "regime": r.regime,
+                "a": r.model_a,
+                "b": r.model_b,
+                "n": int(r.n_windows),
+                "ratio": round(r.ratio, 3),
+                "lo": round(r.ci90_low, 3),
+                "hi": round(r.ci90_high, 3),
+                "reading": r.reading_10pct_bar,
+            }
+            for r in st.itertuples()
+        ],
+        "primary_text": (d / "primary.md").read_text(),
     }
 
 

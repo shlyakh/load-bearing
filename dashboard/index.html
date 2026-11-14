@@ -149,6 +149,7 @@ a { color: var(--model); }
   <a href="#story" data-tab="story">The problem</a>
   <a href="#methods" data-tab="methods">Methods</a>
   <a href="#receipt" data-tab="receipt">Receipt</a>
+  <a href="#newzones" data-tab="newzones">New zones</a>
   <a href="#leaderboard" data-tab="leaderboard">Leaderboard</a>
   <a href="#weather" data-tab="weather">Weather</a>
   <a href="#candidates" data-tab="candidates">New claims <span class="count" id="tab-count"></span></a>
@@ -173,7 +174,7 @@ a { color: var(--model); }
   <span class="eyebrow">Our benchmark</span>
   <h2>Two PJM zones that behave differently</h2>
   <div class="split">
-    <div class="panel"><svg id="zonemap" role="img" aria-label="Map of the eastern United States with the areas of four PJM zones shaded by county: JC and DOM, the current benchmark, and AEP and AE, chosen for the next test, each with its weather points"></svg></div>
+    <div class="panel"><svg id="zonemap" role="img" aria-label="Map of the eastern United States with the areas of four PJM zones shaded by county: JC and DOM, the original benchmark, and AEP and AE, the new test zones, each with its weather points"></svg></div>
     <div class="stack">
       <p>PJM is split into about twenty delivery zones. We forecast two of them, one hour at a time, a full week ahead.</p>
       <div class="facts">
@@ -181,8 +182,8 @@ a { color: var(--model); }
         <div class="fact"><b id="dom-mean"></b><span><strong>DOM</strong>, Dominion, Virginia. Average load; peak <span id="dom-peak"></span>. Large and growing, with heavy data-centre demand.</span></div>
       </div>
       <p>Temperature is the main driver in both, so every model gets the same temperature: the average of three weather points per zone (the dots). A weather point is a place we picked inside the zone, read from the weather model's grid; it is not a weather station. We test with the forecast that was available at the time, and with weather analysed after the fact. The Weather tab adds ERA5, the reference record of past weather, and two more forecast sources.</p>
-      <p><strong>Next test: two new zones.</strong> We have now seen every model on JC and DOM, so the next version of the test is read on two zones no model has been run on. They were picked by a written rule, as the closest matches on load statistics from before the test year: <strong>AEP</strong> (<span id="aep-name"></span>, Indiana to Virginia) for DOM, at <span id="aep-mean"></span> MW average and growing, and <strong>AE</strong> (<span id="ae-name"></span>, southern New Jersey) for JC, at <span id="ae-mean"></span> MW with a summer peak <span id="ae-sw"></span> times its winter peak.</p>
-      <p class="note"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--map-pjm)" aria-hidden="true"></span> JC and DOM, the current benchmark. <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--base)" aria-hidden="true"></span> AEP and AE, the next test. Shaded areas are the zones; dots are weather points. For AEP and AE the points are the weather-model grid cells that hold the airports PJM uses for those zones, averaged with PJM's weights.</p>
+      <p><strong>The newest test: two new zones.</strong> Every model had already been seen on JC and DOM, so the latest version of the test (the New zones tab) was read on two zones no model had been run on. They were picked by a written rule, as the closest matches on load statistics from before the test year: <strong>AEP</strong> (<span id="aep-name"></span>, Indiana to Virginia) for DOM, at <span id="aep-mean"></span> MW average and growing, and <strong>AE</strong> (<span id="ae-name"></span>, southern New Jersey) for JC, at <span id="ae-mean"></span> MW with a summer peak <span id="ae-sw"></span> times its winter peak.</p>
+      <p class="note"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--map-pjm)" aria-hidden="true"></span> JC and DOM, the original benchmark. <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--base)" aria-hidden="true"></span> AEP and AE, the new test. Shaded areas are the zones; dots are weather points. For AEP and AE the points are the weather-model grid cells that hold the airports PJM uses for those zones, averaged with PJM's weights.</p>
       <p class="note">Load: EIA hourly data. Weather: Open-Meteo. Zone areas are drawn by county, from EIA's list of the counties each zone's main utility serves. A county shared by two utilities is drawn for one, and co-operatives and city utilities inside a zone are not mapped separately.</p>
     </div>
   </div>
@@ -274,6 +275,38 @@ a { color: var(--model); }
       <div><div class="note">DOM, error ratio by forecast day</div><svg id="day-DOM" viewBox="0 0 440 200" role="img" aria-label="DOM error ratio by day"></svg></div>
       <div><div class="note">JC, error ratio by forecast day</div><svg id="day-JC" viewBox="0 0 440 200" role="img" aria-label="JC error ratio by day"></svg></div>
     </div>
+  </div>
+</section>
+
+<section data-tab="newzones">
+  <span class="eyebrow">The fresh test &#183; protocol-v2</span>
+  <h2>On two zones no model had been run on, Chronos-2 has no clear lead</h2>
+  <p id="v2-lede"></p>
+  <p class="note">Why a new test: every model had already been seen on DOM and JC, and the first baseline turned out weaker than the field's standard. So the comparison, the baseline, the weather source and the two zones were fixed in advance, the zones were picked by a written rule from load statistics, and the scored weeks were run once.</p>
+  <div class="panel stack">
+    <h3>Chronos-2 with temperature against the Vanilla benchmark with trend</h3>
+    <div class="legend">
+      <span><i style="background:var(--model)"></i>AEP and AE: the new zones, the primary result</span>
+      <span><i style="background:var(--ink-3)"></i>DOM and JC: development zones, seen before</span>
+    </div>
+    <svg id="v2-primary" role="img" aria-label="Chronos-2 error divided by Vanilla benchmark with trend error on AEP, AE, DOM and JC, with 90% ranges"></svg>
+    <p class="note" id="v2-primary-cap"></p>
+    <div class="stack" id="v2-sentences"></div>
+  </div>
+  <div class="panel stack">
+    <h3>Does giving the models the calendar help?</h3>
+    <p id="v2-cal-lede"></p>
+    <div class="legend">
+      <span><i style="background:var(--model)"></i>Chronos-2: with calendar inputs &#247; without</span>
+      <span><i style="background:var(--base)"></i>Vanilla with trend: with holiday terms &#247; without</span>
+    </div>
+    <svg id="v2-cal" role="img" aria-label="Error with calendar inputs divided by error without, for Chronos-2 and for the Vanilla benchmark with trend, in four zones"></svg>
+    <p class="note">Above 1 the calendar made the forecast worse. The calendar is the same table for every model: hour, day of week, US federal holiday and the Christmas to New Year week. Chronos-2 gets it as known-future inputs; Vanilla gets holiday and year-end terms by hour. Secondary results.</p>
+  </div>
+  <div class="panel stack">
+    <h3>Average error of every row, in megawatts</h3>
+    <div class="scroll"><table id="v2-table"></table></div>
+    <p class="note" id="v2-table-cap"></p>
   </div>
 </section>
 
@@ -382,7 +415,7 @@ a { color: var(--model); }
   <div class="panel scroll">
     <table>
       <tr><th></th><th>Today</th><th>Next</th></tr>
-      <tr><td>Coverage</td><td>2 PJM zones</td><td>All PJM zones, then the other six operators. The data source already covers them.</td></tr>
+      <tr><td>Coverage</td><td>4 PJM zones: 2 original, 2 new for the fresh test</td><td>All PJM zones, then the other six operators. The data source already covers them.</td></tr>
       <tr><td>Models</td><td>3 pretrained models, 4 simple ones</td><td>Any model with public weights. The library we use wraps 16.</td></tr>
       <tr><td>Claims</td><td>One study, checked by hand-started runs</td><td>A weekly scan that judges and runs new claims by itself.</td></tr>
       <tr><td>Newest models</td><td>Cannot be tested fairly if published inside the test year</td><td>Score forward on many zones, and test on simulated load built from real history, once validated.</td></tr>
@@ -529,7 +562,7 @@ a { color: var(--model); }
   const isNext = z => !!(D.next_zones && D.next_zones[z]);
   const zoneShapes = CT ? Object.keys(ZN).map(z => { const ids = new Set(ZN[z].fips);
     return { zone: z, n: ZN[z].fips.length, name: ZN[z].name, shape: topojson.merge(CT, CT.objects.counties.geometries.filter(g => ids.has(String(g.id)))) }; }) : [];
-  const zoneTip = d => "<b>" + d.zone + "</b>, " + d.name + "<br>" + d.n + " counties served by its main utility<br>" + (isNext(d.zone) ? "chosen for the next test" : "in the current benchmark");
+  const zoneTip = d => "<b>" + d.zone + "</b>, " + d.name + "<br>" + d.n + " counties served by its main utility<br>" + (isNext(d.zone) ? "new test zone (protocol-v2)" : "original benchmark zone");
 
   (function usMap() {
     const svg = d3.select("#usmap");
@@ -1075,6 +1108,67 @@ a { color: var(--model); }
     const all = () => { drawMae("DOM"); drawMae("JC"); drawRatio(); drawTemp("DOM"); drawTemp("JC"); };
     all(); drawers.push(all);
   })();
+  // ---------- protocol-v2: the fresh test on new zones
+  (function newZones() {
+    const V = D.v2; if (!V) return;
+    const pr = (kind, z, a) => V.pairs.find(p => p.kind === kind && p.zone === z && p.regime === "forecast_aifs" && (!a || p.a === a));
+    const readTxt = { inconclusive: "inconclusive", practical_tie: "practical tie", worth_switching: "worth switching", baseline_clearly_better: "benchmark clearly better",
+      A_better_beyond_bar: "better beyond the bar", B_better_beyond_bar: "worse beyond the bar" };
+    const rng = p => f2(p.lo) + " to " + f2(p.hi);
+    // rows: [{ label, series: [{ p, col, square }] }]
+    function forest(id, rows, domain, ticks, axisNote, what) {
+      const svg = d3.select("#" + id); svg.selectAll("*").remove();
+      const W = widthOf(svg.node(), 960), narrow = W < 600, labW = narrow ? 0 : Math.min(300, Math.round(W * 0.34));
+      const x = d3.scaleLog(domain, [labW + 8, W - 46]), rowH = narrow ? 52 : 38, top = 24, bot = top + rows.length * rowH, H = bot + 42;
+      svg.attr("viewBox", "0 0 " + W + " " + H).attr("height", H);
+      svg.append("rect").attr("x", x(lo)).attr("width", x(hi) - x(lo)).attr("y", top - 2).attr("height", bot - top + 4).attr("fill", "var(--band)");
+      const shown = tickLabels(x, ticks);
+      ticks.forEach(t => { svg.append("line").attr("x1", x(t)).attr("x2", x(t)).attr("y1", top - 2).attr("y2", bot + 2).attr("stroke", t === 1 ? "var(--ink-3)" : "var(--grid)");
+        if (shown.has(t)) svg.append("text").attr("x", x(t)).attr("y", bot + 18).attr("text-anchor", "middle").text(tickTxt(t)); });
+      svg.append("text").attr("x", labW + 8).attr("y", bot + 36).attr("fill", "var(--ink-3)").text(axisNote);
+      const cl = v => Math.max(domain[0], Math.min(domain[1], v));
+      rows.forEach((r, i) => {
+        const cy = narrow ? top + i * rowH + rowH - 16 : top + i * rowH + rowH / 2;
+        svg.append("text").attr("class", "lab halo").attr("x", narrow ? 0 : labW - 14).attr("y", narrow ? top + i * rowH + 13 : cy + 4).attr("text-anchor", narrow ? "start" : "end").text(r.label);
+        r.series.forEach((sr, j) => { const p = sr.p, y = cy + (r.series.length > 1 ? (j - 0.5) * 14 : 0);
+          svg.append("line").attr("x1", x(cl(p.lo))).attr("x2", x(cl(p.hi))).attr("y1", y).attr("y2", y).attr("stroke", sr.col).attr("stroke-width", 2.5).attr("stroke-linecap", "round");
+          if (sr.square) svg.append("rect").attr("x", x(cl(p.ratio)) - 5).attr("y", y - 5).attr("width", 10).attr("height", 10).attr("fill", sr.col).attr("stroke", "var(--panel)").attr("stroke-width", 2);
+          else svg.append("circle").attr("cx", x(cl(p.ratio))).attr("cy", y).attr("r", 6).attr("fill", sr.col).attr("stroke", "var(--panel)").attr("stroke-width", 2);
+          const right = x(cl(p.hi)) + 8, fits = right + 30 < W;
+          svg.append("text").attr("class", "halo").attr("x", fits ? right : x(cl(p.lo)) - 8).attr("y", y + 4).attr("text-anchor", fits ? "start" : "end").attr("fill", "var(--ink)").text(f2(p.ratio)); });
+        const tipTxt = r.series.map(sr => sr.name + ": " + f3(sr.p.ratio) + ", 90% range " + f3(sr.p.lo) + " to " + f3(sr.p.hi) + ", " + sr.p.n + " weeks, " + (readTxt[sr.p.reading] || sr.p.reading));
+        hit(svg.append("rect").attr("x", 0).attr("y", top + i * rowH).attr("width", W).attr("height", rowH), r.label + ". " + tipTxt.join(". "), "<b>" + r.label + "</b><br>" + tipTxt.join("<br>") + "<br>" + what);
+      });
+    }
+    const Z = [["AEP", "AEP, new zone (matches DOM)", "primary"], ["AE", "AE, new zone (matches JC)", "primary"], ["DOM", "DOM, development zone", "development_primary_pair"], ["JC", "JC, development zone", "development_primary_pair"]];
+    const prim = Z.map(([z, label, kind]) => ({ label, series: [{ p: pr(kind, z), col: kind === "primary" ? "var(--model)" : "var(--ink-3)", name: "Chronos-2 / Vanilla with trend" }] }));
+    const cal = Z.map(([z]) => ({ label: z, series: [
+      { p: pr("calendar_vs_temperature_only", z, "chronos2_temperature_calendar"), col: "var(--model)", name: "Chronos-2, with calendar / without" },
+      { p: pr("calendar_vs_temperature_only", z, "vanilla_benchmark_trend_holiday"), col: "var(--base)", square: true, name: "Vanilla with trend, with holidays / without" }] }));
+    const draw = () => {
+      forest("v2-primary", prim, [0.75, 1.3], [1, 0.8, 1.2, 0.9, 1.1], "← Chronos-2 better · log scale", "ECMWF AIFS forecast weather, protocol-v2");
+      forest("v2-cal", cal, [0.9, 1.25], [1, 0.9, 1.1, 1.2], "calendar made it worse →", "ECMWF AIFS forecast weather, secondary, protocol-v2");
+    };
+    draw(); drawers.push(draw);
+    const a = pr("primary", "AEP"), e = pr("primary", "AE");
+    d3.select("#v2-lede").text("Chronos-2 with temperature against the field's standard benchmark, a week ahead, with the weather forecast available at the time: its error was " +
+      f2(a.ratio) + " of the benchmark's on AEP (90% range " + rng(a) + ") and " + f2(e.ratio) + " on AE (" + rng(e) + "), over " + a.n + " weeks each. Neither clears the 10% bar, and neither is a confirmed tie: both read inconclusive.");
+    d3.select("#v2-primary-cap").text("Dot: Chronos-2's mean weekly error divided by the Vanilla benchmark with trend's, same weeks, ECMWF AIFS forecast weather. Bar: 90% whole-week bootstrap interval. Shaded: the 10% bar, 0.90 to 1.10; a win needs the whole bar left of it, a tie needs the whole bar inside it. AEP and AE: " +
+      a.n + " weeks; DOM and JC: " + pr("development_primary_pair", "DOM").n + " weeks, shown for comparison and not part of the verdict. Log scale.");
+    d3.select("#v2-sentences").selectAll("p").data(V.primary_text.split("\n").filter(t => t.startsWith("**"))).join("p").attr("class", "note")
+      .html(t => t.replace(/\*\*(.+?)\*\*/, "<strong>$1</strong>"));
+    const cc = Z.map(([z]) => pr("calendar_vs_temperature_only", z, "chronos2_temperature_calendar").ratio), vv = Z.map(([z]) => pr("calendar_vs_temperature_only", z, "vanilla_benchmark_trend_holiday").ratio);
+    d3.select("#v2-cal-lede").text("Not here. Handed the calendar, Chronos-2 got worse in all four zones (" + f2(d3.min(cc)) + " to " + f2(d3.max(cc)) + " of its error without it). Holiday terms left the Vanilla benchmark almost where it was (" +
+      f2(d3.min(vv)) + " to " + f2(d3.max(vv)) + "). Federal holidays are only about 4% of the scored hours, so they can move a weekly average very little.");
+    const M = [["chronos2_temperature", "Chronos-2 + temperature"], ["vanilla_benchmark_trend", "Vanilla benchmark with trend"], ["vanilla_benchmark_trend_holiday", "Vanilla with trend + holidays"],
+      ["chronos2_temperature_calendar", "Chronos-2 + temperature + calendar"], ["lightgbm_competition", "LightGBM, competition-grade"], ["lag_regression_temperature", "Regression + temperature (first baseline)"], ["chronos2", "Chronos-2, no weather"]];
+    const cell = (m, z) => { const r = V.rows.find(q => q.model === m && q.zone === z && q.regime === "forecast_aifs"); return r ? fmt(Math.round(r.mae)) : "not run"; };
+    d3.select("#v2-table").html("<tr><th>Row</th>" + Z.map(([z]) => "<th>" + z + "</th>").join("") + "</tr>" +
+      M.map(([m, label]) => "<tr><td>" + label + "</td>" + Z.map(([z]) => "<td class='num'>" + cell(m, z) + "</td>").join("") + "</tr>").join(""));
+    d3.select("#v2-table-cap").text("Mean absolute error over the scored weeks, ECMWF AIFS forecast weather (" + a.n + " weeks on AEP and AE, " + pr("development_primary_pair", "DOM").n +
+      " on DOM and JC). Three rows were registered for the new zones only. Lowest error on AEP is the competition-grade LightGBM; that comparison is also inconclusive.");
+  })();
+
   d3.select("#proto-line").text("Prototype \u00b7 built from scored results, " + [].concat(D.protocol).join(" and ") + " (each table shows its rows' version)");
 })();
 </script>

@@ -19,7 +19,8 @@ the repository, the repository wins.
 - GitHub Pages: https://shlyakh.github.io/receipts/ . Deployed by the workflow on every
   push to `main` that touches `dashboard/`; the `gh-pages` branch is no longer used.
 - Development artifact: https://claude.ai/artifact/UyjuJT9VXa4bcjnSrFgmjr
-- Tabs: The problem, Methods, Receipt, Leaderboard, Weather, New claims, How it works.
+- Tabs: The problem, Methods, Receipt, New zones, Leaderboard, Weather, New claims, How
+  it works. The tour and its video predate the New zones tab and the new maps.
   Tour of 9 steps, video in `dashboard/tour.webm`.
 
 ## What the results say (48 scored weeks, PJM zones DOM and JC, week ahead)
@@ -46,7 +47,7 @@ the repository, the repository wins.
    AIFS weather, 45 weeks: AEP 1.006 (0.906 to 1.118) and AE 0.890 (0.796 to 0.999), both
    inconclusive. The calendar made Chronos-2 worse in all four zones (1.04 to 1.13);
    holiday terms left Vanilla within 3%. Section "protocol-v2" of `results/README.md`.
-   The dashboard does not show v2 results yet.
+   The dashboard shows them on the "New zones" tab.
 
 ## Open decisions (Yuri)
 
