@@ -745,18 +745,18 @@ a { color: var(--model); }
       v2: z => { const p = D.v2 && D.v2.pairs.find(q => q.kind === "primary" && q.zone === z); return p ? f2(p.ratio) : ""; } };
   })();
   const TOUR = [
-    { tab: "story", at: "header", ms: 7000, text: "Live research agents, with results that are verified. Test case: week-ahead electricity load. Not a bid to beat the industry's forecasts: fast enough to prove the idea, and weather matters." },
+    { tab: "agents", at: "#flow-weekly", ms: 6000, text: "Live research agents, with results that are verified. Each week three agents find new forecasting claims, check their sources, and measure them on our own data." },
+    { tab: "story", at: "header", ms: 7000, text: "Test case: week-ahead electricity load. Not a bid to beat the industry's forecasts: fast enough to prove the idea, and weather matters." },
     { tab: "story", at: "#usmap", ms: 5000, text: "Grid operators schedule power plants from a forecast of demand. PJM is the largest operator in the United States." },
-    { tab: "story", at: "#zonemap", ms: 5000, text: "We forecast PJM zones that behave differently: first JC in New Jersey and DOM in Virginia, then AEP and AE, two zones kept back for a fresh test." },
-    { tab: "story", at: "#week", ms: 6000, text: "Every Monday, each method forecasts the next 168 hours. Here: a plain regression and Chronos-2, a pretrained model.", act: () => click("#wk-zone button:nth-child(2)", 3000) },
-    { tab: "methods", at: "section[data-tab='methods'] table", ms: 5000, text: "Every method gets the same history and the same temperature. The regression with temperature is the first baseline." },
+    { tab: "story", at: "#week", ms: 6000, text: "Every Monday, each method forecasts the next 168 hours in four PJM zones, from the same history and the same temperature forecast.", act: () => click("#wk-zone button:nth-child(2)", 3000) },
     { tab: "receipt", at: "#receipt", ms: 7500, text: "A study found a tie in Great Britain: " + tourNum.claim + ". Against our first baseline we measured " + tourNum.prim + " on DOM. Against the field's standard benchmark it is " + tourNum.std + ": close to a tie again." },
     { tab: "newzones", at: "#v2-primary", ms: 8000, text: "The fresh test: two zones no model had been run on, with the rules fixed in advance. Chronos-2 against the standard benchmark: " + tourNum.v2("AEP") + " on AEP and " + tourNum.v2("AE") + " on AE. No clear lead." },
     { tab: "leaderboard", at: "#board", ms: 6500, text: "Every model against the same baseline, DOM and JC side by side. The grey diamonds, Timestral and TimesFM 3.0, were published after most test weeks, so they may have seen them." },
     { tab: "weather", at: "#wx-ratio", ms: 7500, text: "With better weather forecasts the regressions catch up. Against the field's standard benchmark the model is level under every source (" + tourNum.min + " to " + tourNum.max + "); on DOM it goes from " + tourNum.gfs + " with GFS weather to " + tourNum.era5 + " with perfect weather." },
     { tab: "candidates", at: "#cands", ms: 6000, text: "Two scans, one with Claude's search and one with You.com, find new claims that cite a primary source. Here they are combined.", act: () => type("#cand-q", "PJM", 2600) },
     { tab: "providers", at: "#pu-scan-panel", ms: 7000, text: (pu => pu && pu.youcom.scan && pu.claude.scan ? "Same scan, two search engines: You.com kept " + pu.youcom.scan.kept + " claims, Claude's search " + pu.claude.scan.kept + ". " + pu.both + " were found by both, " + pu.youcom.scan.only + " only by You.com." : "The same scan and the same judge, run with You.com and with Claude's own search.")(D.provider_usage) },
-    { tab: "agents", at: "#flow-weekly", ms: 5000, text: "Every week: read the listings, scan, judge, run, receipt. From a new claim to a measured answer, with every source cited." }
+    { tab: "opencrawl", at: "section[data-tab='opencrawl'] .two", ms: 5000, text: "With Open Crawl, a code review could also search the project's history, and recovered why the agents are built this way." },
+    { tab: "agents", at: "#flow-ratio", ms: 5000, text: "Find, judge, run, receipt: every claim gets a label, and every model a measured ratio with its range." }
   ];
   // ?tourms=5000,6000,... sets each step's length (used to fit the tour to a narration)
   (new URLSearchParams(location.search).get("tourms") || "").split(",").map(Number).forEach((v, i) => { if (v > 0 && TOUR[i]) TOUR[i].ms = v; });

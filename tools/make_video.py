@@ -100,6 +100,7 @@ def main() -> None:
     ap.add_argument("--voice", default="", help="default: Samantha for say, marin for openai")
     ap.add_argument("--rate", type=int, default=175, help="words a minute for `say`")
     ap.add_argument("--audio-only", action="store_true", help="make the clips, skip the video")
+    ap.add_argument("--max-seconds", type=float, default=0, help="stop if the narration is longer")
     a = ap.parse_args()
     voice = a.voice or ("marin" if a.backend == "openai" else "Samantha")
     key = openai_key() if a.backend == "openai" else ""
@@ -122,6 +123,10 @@ def main() -> None:
     (OUT / "list.txt").write_text("".join(f"file '{p.name}'\n" for p in padded))
     run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", "list.txt",
          "-c", "copy", "narration.wav"], cwd=OUT)  # fmt: skip
+    total = sum(ms) / 1000
+    if a.max_seconds and total > a.max_seconds:
+        print(f"steps (s): {[round(m / 1000, 1) for m in ms]}")
+        sys.exit(f"narration is {total:.1f} s, over the {a.max_seconds:.0f} s limit: shorten it")
     if a.audio_only:
         print(f"steps (s): {[round(m / 1000, 1) for m in ms]}")
         print(f"narration {seconds(OUT / 'narration.wav'):.1f} s in {OUT.relative_to(ROOT)}")

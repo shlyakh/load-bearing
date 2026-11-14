@@ -1,50 +1,50 @@
 [
  {
   "step": "Opening",
-  "text": "This project is about live research agents whose results get verified. Every week, new forecasting models are published with claims about how good they are. Our agents find those claims, check them against their sources, and then measure them on our own data. We picked electricity load as the test case. It is a hot topic for two reasons: energy demand is growing, in part because of data centers, and foundation models for time series have improved quickly. A disclaimer: week-ahead load forecasting is a well-known problem. We are not trying to beat what power providers and energy hedge funds already model. We chose it because these forecasts run fast enough to build and test the whole idea in a hackathon, and because they show weather doing real work as an input."
+  "text": "This project is about live research agents whose results get verified. Each week, three agents find new forecasting claims, check them against their sources, and measure them on our own data."
+ },
+ {
+  "step": "Why load",
+  "text": "Our test case is electricity load. Demand is growing, partly because of data centers, and foundation models for time series are improving fast. A disclaimer: week-ahead load forecasting is a well-known problem. We are not trying to beat power providers or energy hedge funds. These forecasts run fast enough for a hackathon, and they show weather doing real work as an input."
  },
  {
   "step": "The grid",
-  "text": "Power cannot be stored cheaply, so grid operators schedule power plants from a forecast of demand, called load. PJM is the largest grid operator in the United States. A few percent of forecast error is real money, so every new forecasting model gets attention."
- },
- {
-  "step": "The zones",
-  "text": "Our test bed is hourly load in four PJM zones. We started with Jersey Central in New Jersey and Dominion in Virginia. Then we kept two more zones back for a fresh test: AEP, which stretches from Indiana to Virginia, and Atlantic City Electric in southern New Jersey."
+  "text": "Grid operators schedule power plants from a forecast of demand, called load. PJM is the largest in the United States, and forecast error there is real money."
  },
  {
   "step": "The task",
-  "text": "Every Monday at midnight, each method forecasts the next 168 hours. Here is one week: the actual load, a plain regression, and Chronos-2, a pretrained model used without any training on our data."
- },
- {
-  "step": "The methods",
-  "text": "Every method gets the same load history and the same temperature forecast, and no model can see past the cutoff. The baseline, the ten percent bar and the wording of each verdict were frozen before any scored run."
+  "text": "Every Monday, each method forecasts the next 168 hours in four PJM zones. Every method gets the same history and the same temperature forecast, and the rules were frozen before any scored run."
  },
  {
   "step": "The receipt",
-  "text": "Here is the receipt. A study published this week found that in Great Britain, Chronos-2 roughly ties a regression: a ratio of 0.97. Against our first baseline we measured 0.73 on Dominion, a clear win. But that baseline was weak. Against the field's standard benchmark, the ratio is 0.95: close to a tie again."
+  "text": "Here is a receipt. A study found that in Great Britain, Chronos-2 roughly ties a regression: a ratio of 0.97. Against our first baseline we measured 0.73 on Dominion, a clear win. But against the field's standard benchmark it is 0.95: close to a tie again."
  },
  {
   "step": "New zones",
-  "text": "So we ran a fresh test, on two zones no model had been run on, with everything fixed in advance. Chronos-2 against the standard benchmark: 1.01 on AEP, and 0.89 on Atlantic City Electric. Neither clears our ten percent bar. No clear lead."
+  "text": "So we ran a fresh test on two zones no model had been run on, with everything fixed in advance: 1.01 and 0.89. Neither clears our ten percent bar."
  },
  {
   "step": "Leaderboard",
-  "text": "The leaderboard shows every model against the same baseline, two zones side by side. Each row says how many test weeks start after the model's weights were published. The grey diamonds, Timestral and TimesFM 3.0, were published after most of our test weeks, so their scores are not out of sample."
+  "text": "The leaderboard shows every model against the same baseline, and flags the models published after most of our test weeks."
  },
  {
   "step": "Weather",
-  "text": "Weather matters more than the model. With better weather forecasts the regressions catch up, and against the standard benchmark Chronos-2 is level under every weather source."
+  "text": "Weather matters more than the model. With better weather forecasts, the regressions catch up."
  },
  {
   "step": "New claims",
-  "text": "Each week, two scans look for new forecasting claims: one uses Claude's built-in search, the other uses You.com. Combined, they found sixty claims, thirty-seven of them found by both. The judge agent then checks each claim against its primary sources, with every statement cited."
+  "text": "Each week, two scans look for new claims: one with Claude's built-in search, one with You.com. Combined, they found sixty."
  },
  {
   "step": "You.com",
-  "text": "Here are the two scans side by side. With You.com, every search result carries a date, and a search can be limited to one site and an exact date range. So the agent ran one narrow search per site. It kept fifty-three claims against forty-four, sixteen of which Claude's search missed. And on the six claims judged both ways, the verdicts were the same."
+  "text": "With You.com, every result carries a date, and a search can be limited to one site and an exact date range. It kept fifty-three claims against forty-four. And on the six claims judged both ways, the verdicts were the same."
  },
  {
-  "step": "How it works",
-  "text": "Set up the benchmark once. Then every week: read the listings, scan, judge, run, and write the receipt. A background run never starts a model by itself. Receipts, not hype. The voice in this video is A.I. generated."
+  "step": "Open Crawl",
+  "text": "With Open Crawl, a code review could also search the project's history, and it recovered why the agents were built this way."
+ },
+ {
+  "step": "Close",
+  "text": "Find, judge, run, receipt. Receipts, not hype. The voice in this video is A.I. generated."
  }
 ]
