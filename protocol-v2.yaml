@@ -390,7 +390,38 @@ gate:
   - tests/test_chronos2_v2.py (models) - the calendar handed to Chronos-2 equals harness.data.calendar (numeric hol/yearend, string dow/hour); context ends at the cutoff, 2,048 rows; no load in the future frame; corrupting horizon load changes nothing; incomplete horizon temperature is not forecast; the scored set is refused without the tag
   - tests/test_gates.py, test_weather_v12.py, test_v13.py unchanged and passing
   - every v2 row run on the 6 gate origins in all four regimes from a committed tree (2 windows first)
-gate_results: GATE_RESULTS_TBD
+gate_results_2026_11_14: >
+  Passed, pending the owner's review. Code at clean commit 82b8436; core rows smoke-run on
+  2 gate origins first, then all rows on the 6 gate origins (results/gate/v2/). Windows
+  kept: AEP and AE 4 of 6 per regime (2025-10-27 actuals and 2025-11-03 168-hour lag hit
+  the EIA gap on 2025-11-02, as in v1); DOM and JC 5 of 6 (only 2025-10-27 dropped: no v2
+  row on DOM/JC needs the 168-hour lag, so 2025-11-03 is kept; v1.2 kept 4). DOM/JC
+  reproduce protocol-v1.2 on the common windows: Vanilla with trend identical, Chronos-2
+  with temperature within 0.0002 MW of window MAE (float32 batching). MAE in MW, order
+  Chronos-2 temp / Vanilla trend / Chronos-2 temp+calendar / Vanilla trend+holiday / lag
+  regression temp / LightGBM competition / Chronos-2 univariate:
+  AEP forecast_aifs 453 / 611 / 585 / 615 / 521 / 444 / 585; forecast_gfs 375 / 672 / 422
+  / 677 / 558 / 508 / 585; forecast_ifs 413 / 664 / 541 / 669 / 497 / 486 / 585;
+  oracle_era5 380 / 583 / 491 / 590 / 504 / 402 / 585.
+  AE forecast_aifs 46 / 59 / 65 / 59 / 84 / 100 / 84; forecast_gfs 52 / 60 / 86 / 60 / 75
+  / 96 / 84; forecast_ifs 45 / 60 / 67 / 60 / 81 / 92 / 84; oracle_era5 41 / 59 / 46 / 59
+  / 96 / 103 / 84.
+  DOM (development; first four rows) forecast_aifs 346 / 357 / 418 / 367; forecast_gfs
+  330 / 363 / 368 / 372; forecast_ifs 322 / 369 / 382 / 377; oracle_era5 319 / 320 / 367
+  / 330. JC forecast_aifs 88 / 114 / 110 / 115; forecast_gfs 93 / 113 / 109 / 114;
+  forecast_ifs 97 / 118 / 117 / 119; oracle_era5 83 / 107 / 94 / 108.
+  The primary template was filled on the gate weeks to test it (AEP 0.742, AE 0.780, both
+  "inconclusive" on 4 weeks). The calendar made Chronos-2 worse in every zone and regime
+  (ratio 1.11 to 1.65); the holiday terms changed Vanilla by under 3.5%. Four or five weeks
+  check the pipeline; they are not evidence about any row and change no definition.
+  Runtime per window, CPU (Chronos-2 per zone-window in a batched call): lag regression
+  0.03 s, Vanilla trend 0.10 s, Vanilla holiday 0.14 s, LightGBM 3.6 s, Chronos-2
+  univariate 0.09 s, with temperature 0.13 s, with calendar 0.26 s.
+expected_scored_windows: >
+  AEP and AE: 48 in oracle_era5, forecast_gfs, forecast_ifs; 45 in forecast_aifs. DOM and
+  JC (v2 rows only): 50 in forecast_gfs and forecast_ifs (2026-03-02 and 2026-10-26
+  actuals missing), 49 in oracle_era5 (also 2026-11-02, ERA5 incomplete), 47 in
+  forecast_aifs.
 
 # ------------------------------------------------------------------ scoring
 scoring: >
