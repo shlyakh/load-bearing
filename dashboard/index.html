@@ -190,6 +190,7 @@ a { color: var(--model); }
   <a href="#leaderboard" data-tab="leaderboard">Leaderboard</a>
   <a href="#weather" data-tab="weather">Weather</a>
   <a href="#candidates" data-tab="candidates">New claims <span class="count" id="tab-count"></span></a>
+  <a href="#providers" data-tab="providers">You.com</a>
   <a href="#agents" data-tab="agents">How it works</a>
 </nav>
 
@@ -411,6 +412,53 @@ a { color: var(--model); }
   <div class="panel scroll"><table id="wx-table"></table></div>
 </section>
 
+<section data-tab="providers">
+  <span class="eyebrow">Search providers</span>
+  <h2>You.com and Claude's own search, on the same work</h2>
+  <p>The agent does two kinds of web work: a scan that finds newly published claims, and a judge that checks one claim against its primary sources. Both were run twice on the same inputs, once with Claude's built-in web search and once with You.com through its hosted MCP server. In a You.com run Claude's own search is switched off, so every source cited came through You.com.</p>
+  <div class="facts" id="pu-facts"></div>
+  <div class="panel scroll">
+    <h3>What You.com does at each stage</h3>
+    <table id="pu-stages"></table>
+    <p class="note">Not used: the Answer API (not offered through the MCP server), Finance Research, the Inference Router, and the discover tool, which finds agent tools, not web pages.</p>
+  </div>
+  <div class="panel scroll">
+    <h3>The scan, side by side</h3>
+    <p>One scan each over the same 120 days, the same queries and the same sites. With You.com the agent ran one search per site inside an exact date range; with Claude's search, one per group of sites.</p>
+    <table id="pu-scan"></table>
+    <p class="note">One run of each, so part of the difference is run-to-run variation. Claude's site filter leaked to other sites for the multi-site groups, so its column is not a clean per-site search.</p>
+  </div>
+  <div class="panel scroll">
+    <h3>The judge, on average</h3>
+    <table id="pu-judge"></table>
+  </div>
+  <div class="panel" id="prov-panel" hidden>
+    <h3>Every claim judged so far</h3>
+    <p>Each claim is scored against the same problem spec. Where a claim was judged with both providers, the "Same?" column shows whether the verdict agrees: a verdict that holds under both does not depend on one search engine. Numbers are shown as Claude's search / You.com.</p>
+    <div class="facts" id="prov-facts"></div>
+    <div class="scroll"><table id="prov-table"></table></div>
+    <p class="note">Sources and calls are per judge run. Model cost is the client's estimate and leaves out You.com's own charges. File: results/provider_comparison.csv.</p>
+  </div>
+  <div class="two">
+    <div class="panel">
+      <h3>What it cost</h3>
+      <table id="pu-cost"></table>
+      <p class="note">Model cost is the language model's own estimate for the runs counted on this page. You.com charges are worked out from the counted calls at its list prices ($5 per 1,000 searches, $1 per 1,000 pages, $0.05 per research task); they were not read from the account.</p>
+    </div>
+    <div class="panel">
+      <h3>What the live runs taught us</h3>
+      <ul class="plain">
+        <li><strong>Every result carries a date, and a date range is honoured.</strong> That is what makes "published this week" workable. The date is sometimes when the page last changed, so the agent confirms it before relying on it.</li>
+        <li><strong>One site per query.</strong> A query naming several sites searched the open web with no warning. One site at a time restricts properly, and found more.</li>
+        <li><strong>Research returns its sources as a list,</strong> apart from the prose, so each one can be logged and opened.</li>
+        <li><strong>Research runs in the background.</strong> One task shows up as a start call and several polls, so call counts overstate it; this page counts tasks.</li>
+        <li><strong>Two Zenodo records were found by neither search engine.</strong> They came from reading Zenodo's listing directly.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Details and feedback for You.com: notes/youcom_usage_and_feedback.md. Files: results/provider_comparison.csv, comparisons/, runs/.</p>
+</section>
+
 <section data-tab="agents">
   <span class="eyebrow">How the processing runs</span>
   <h2>Set up once, then three agents turn each week's claims into receipts</h2>
@@ -528,14 +576,7 @@ a { color: var(--model); }
 <section data-tab="candidates">
   <span class="eyebrow">What the scan found</span>
   <h2>New forecasting claims from the last <span id="scan-days"></span> days</h2>
-  <p>The scan reads public listings (arXiv papers, Hugging Face models, Zenodo records, two journals through Crossref, and new releases of the main forecasting libraries on PyPI and GitHub), runs web searches, and keeps items that are dated, about forecasting, and point at a primary source. Closest to our problem first. The few that have been judged so far are in the table below.</p>
-  <div class="panel" id="prov-panel" hidden>
-    <h3>Two search providers, the same claims</h3>
-    <p>Each claim below was judged twice against the same problem spec: once with Claude's own web search and once with You.com (search, page contents and research). A verdict that holds under both providers does not depend on one search engine.</p>
-    <div class="facts" id="prov-facts"></div>
-    <div class="scroll"><table id="prov-table"></table></div>
-    <p class="note">Sources and calls are per judge run. Model cost is the client's estimate and leaves out You.com's own charges. File: results/provider_comparison.csv.</p>
-  </div>
+  <p>The scan reads public listings (arXiv papers, Hugging Face models, Zenodo records, two journals through Crossref, and new releases of the main forecasting libraries on PyPI and GitHub), runs web searches, and keeps items that are dated, about forecasting, and point at a primary source. Closest to our problem first. The claims judged so far, and how the two search providers compare, are on the <a href="#providers">You.com tab</a>.</p>
   <div class="facts" id="scan-funnel"></div>
   <div class="controls">
     <div class="seg" id="cand-prov" role="group" aria-label="Searched with"></div>
@@ -1029,6 +1070,49 @@ a { color: var(--model); }
       });
     }
     draw(); drawers.push(draw);
+  })();
+
+  // ---------- You.com tab: usage and comparison, from the run records
+  (function providerUsage() {
+    const U = D.provider_usage; if (!U || !U.youcom || !U.claude) return;
+    const C = U.claude, Y = U.youcom, show = v => v == null ? "\u2013" : typeof v === "number" ? fmt(v) : v, usd = v => v == null ? "\u2013" : "$" + (+v).toFixed(2);
+    const P = D.provider_comparison || [], both = P.filter(r => r.label_claude && r.label_youcom), agree = both.filter(r => r.agree === "yes").length;
+    const table = (id, head, rows) => { const t = d3.select(id); t.selectAll("*").remove();
+      t.append("tr").selectAll("th").data(head).join("th").text(d => d);
+      rows.forEach(r => t.append("tr").selectAll("td").data(r).join("td").text(d => d)); };
+    const facts = [[Y.judge.claims, "claims judged with You.com"]];
+    if (both.length) facts.push([agree + " of " + both.length, "same verdict as Claude's search, on the claims judged both ways"]);
+    if (C.scan && Y.scan) facts.push([Y.scan.kept + " / " + C.scan.kept, "claims the scan kept, You.com / Claude's search"], [U.both, "of them found by both"]);
+    d3.select("#pu-facts").selectAll("div").data(facts).join("div").attr("class", "fact").html(d => "<b>" + d[0] + "</b><span>" + d[1] + "</span>");
+    table("#pu-stages", ["Stage", "You.com tool", "What it is used for", "Use so far"], [
+      ["Scan: find the claims", "Search", "One query per topic and per site, limited to the scan window, to list dated pages about forecasting", Y.scan ? show(Y.scan.searches) + " searches in the latest scan" : "\u2013"],
+      ["Scan", "Contents", "Read a page when a date or a source needs confirming", Y.scan ? show(Y.scan.pages) + " pages in the latest scan" : "\u2013"],
+      ["Judge: check one claim", "Research", "Find the claim's primary sources and any independent replication, with citations", show(Y.judge.research_tasks) + " tasks over " + Y.judge.runs_with_record + " claims"],
+      ["Judge", "Contents", "Read the primary sources themselves: paper, repository, model card", show(Y.judge.pages) + " pages"],
+      ["Judge", "Search", "Targeted lookups, such as a paper by its exact title", show(Y.judge.searches) + " searches"],
+      ["Run: measure it", "none", "Reads the scorecard and the leaderboard; no web access", "\u2013"]]);
+    if (C.scan && Y.scan) table("#pu-scan", ["", "Claude's own search", "You.com"], [
+      ["Searches", show(C.scan.searches), show(Y.scan.searches)],
+      ["Pages read in full", show(C.scan.pages), show(Y.scan.pages)],
+      ["Pages logged with a reason kept or dropped", show(C.scan.pages_logged), show(Y.scan.pages_logged)],
+      ["Claims kept", show(C.scan.kept), show(Y.scan.kept)],
+      ["Found by both", show(U.both), show(U.both)],
+      ["Found only by this one", show(C.scan.only), show(Y.scan.only)],
+      ["Time", C.scan.minutes + " min", Y.scan.minutes + " min"],
+      ["Model cost", usd(C.scan.model_cost), usd(Y.scan.model_cost)]]);
+    const rec = j => Object.entries(j.receipts).map(([k, v]) => v + " " + k.replace(/_/g, " ")).join(", ") || "none";
+    table("#pu-judge", ["", "Claude's own search", "You.com"], [
+      ["Claims judged", show(C.judge.claims), show(Y.judge.claims)],
+      ["How sources are found", "A research helper that searches and fetches", "One Research task, then Contents for the sources"],
+      ["Pages read per claim", C.judge.pages == null ? "\u2013" : (C.judge.pages / C.judge.runs_with_record).toFixed(1), Y.judge.pages == null ? "\u2013" : (Y.judge.pages / Y.judge.runs_with_record).toFixed(1)],
+      ["Time per claim", show(C.judge.minutes_each) + " min", show(Y.judge.minutes_each) + " min"],
+      ["Model cost per claim", usd(C.judge.model_cost_each), usd(Y.judge.model_cost_each)],
+      ["Receipts written", rec(C.judge), rec(Y.judge)],
+      ["Runs behind the averages", show(C.judge.runs_with_record), show(Y.judge.runs_with_record)]]);
+    const rows = [["Model cost, latest scan", usd(C.scan && C.scan.model_cost), usd(Y.scan && Y.scan.model_cost)], ["Model cost, all judge runs", usd(C.judge.model_cost), usd(Y.judge.model_cost)]];
+    if (U.youcom_charges) { const q = U.youcom_charges;
+      rows.push(["You.com charges, estimated", "\u2013", usd(q.usd)], ["Behind that estimate", "\u2013", fmt(q.searches) + " searches, " + fmt(q.pages) + " pages, " + q.research_tasks + " research tasks"]); }
+    table("#pu-cost", ["", "Claude's own search", "You.com"], rows);
   })();
 
   // ---------- the judge under two search providers

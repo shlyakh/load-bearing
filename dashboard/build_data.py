@@ -40,6 +40,136 @@ LABELS = {
 }
 
 
+# You.com list prices used for the estimate on the providers tab (notes/hackathon_tools.md).
+YOUCOM_PRICE = {"search": 0.005, "page": 0.001, "research_task": 0.05}
+SEARCH_TOOLS = {"WebSearch", "mcp__you-com__you-search"}
+FETCH_TOOLS = {"WebFetch", "mcp__you-com__you-contents"}
+
+
+def stream_counts(run_id: str) -> dict | None:
+    """Pages fetched and research tasks started in one run, from its saved stream
+    (git-ignored, so present only on the machine that ran it). A research task is one
+    start call; the later calls with a task id are polls of the same task."""
+    path = ROOT / "runs" / f"{run_id}.jsonl"
+    if not path.exists():
+        return None
+    pages = tasks = 0
+    for line in path.read_text().splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if event.get("type") != "assistant":
+            continue
+        for block in event.get("message", {}).get("content", []):
+            if block.get("type") != "tool_use":
+                continue
+            name, args = block["name"], block.get("input") or {}
+            if name == "mcp__you-com__you-contents":
+                pages += len(args.get("urls") or [])
+            elif name == "WebFetch":
+                pages += 1
+            elif name == "mcp__you-com__you-research" and "task_id" not in args:
+                tasks += 1
+    return {"pages": pages, "research_tasks": tasks}
+
+
+def calls(meta: dict, names: set[str]) -> int:
+    return sum(v for k, v in (meta.get("tool_calls") or {}).items() if k in names)
+
+
+def provider_usage() -> dict:
+    """What each search provider did, from the run records: the latest finished scan and
+    every finished judge run. Model cost is the client's estimate; You.com charges are an
+    estimate at list prices from the counted calls, not read from the account."""
+    metas = []
+    for path in sorted((ROOT / "runs").glob("*.meta.json")):
+        m = json.loads(path.read_text())
+        if m.get("exit_code") == 0 and m.get("skill") in ("scan", "judge", "run-candidate"):
+            metas.append(m)
+    merged = sorted((ROOT / "candidates" / "merged").glob("scan_*.jsonl"))
+    rows = [json.loads(x) for x in merged[-1].read_text().splitlines()] if merged else []
+    out = {"merged_total": len(rows), "both": sum(len(r["found_by"]) > 1 for r in rows)}
+    for prov in ("claude", "youcom"):
+        scans = [m for m in metas if m["skill"] == "scan" and m["provider"] == prov]
+        files = sorted((ROOT / "candidates" / prov).glob("scan_*.jsonl"))
+        scan = None
+        if scans and files:
+            m = scans[-1]
+            stem = files[-1].stem.replace("scan_", "scan-").replace("_run", "-run")
+            ledger = ROOT / "evidence" / prov / f"{stem}.jsonl"
+            counted = stream_counts(m["run_id"]) or {}
+            scan = {
+                "searches": calls(m, SEARCH_TOOLS),
+                "fetch_calls": calls(m, FETCH_TOOLS),
+                "pages": counted.get("pages"),
+                "pages_logged": len(ledger.read_text().splitlines()) if ledger.exists() else None,
+                "kept": len(files[-1].read_text().splitlines()),
+                "only": sum(r["found_by"] == [prov] for r in rows),
+                "minutes": round(m["wall_seconds"] / 60, 1),
+                "model_cost": round(m["total_cost_usd"], 2),
+            }
+        latest = {}
+        for m in metas:
+            if m["skill"] == "judge" and m["provider"] == prov and m.get("args"):
+                latest[m["args"][0]] = m
+        judges = [
+            m for cid, m in latest.items() if (ROOT / "scorecards" / prov / f"{cid}.json").exists()
+        ]
+        counted = [stream_counts(m["run_id"]) for m in judges]
+        have = [c for c in counted if c]
+        cards = [json.loads(p.read_text()) for p in (ROOT / "scorecards" / prov).glob("*.json")]
+        verdicts: dict[str, int] = {}
+        for c in cards:
+            v = (c.get("receipt") or {}).get("verdict")
+            if v:
+                verdicts[v] = verdicts.get(v, 0) + 1
+        n = len(judges)
+        judge = {
+            "claims": len(cards),
+            "runs_with_record": n,
+            "searches": calls({"tool_calls": _sum_calls(judges)}, SEARCH_TOOLS),
+            "pages": sum(c["pages"] for c in have) if len(have) == n and n else None,
+            "research_tasks": sum(c["research_tasks"] for c in have)
+            if len(have) == n and n
+            else None,
+            "minutes_each": round(sum(m["wall_seconds"] for m in judges) / n / 60, 1)
+            if n
+            else None,
+            "model_cost_each": round(sum(m["total_cost_usd"] for m in judges) / n, 2)
+            if n
+            else None,
+            "model_cost": round(sum(m["total_cost_usd"] for m in judges), 2),
+            "receipts": verdicts,
+        }
+        out[prov] = {"scan": scan, "judge": judge}
+    y = out["youcom"]
+    if y["scan"] and y["judge"]["pages"] is not None:
+        searches = y["scan"]["searches"] + y["judge"]["searches"]
+        pages = (y["scan"]["pages"] or 0) + y["judge"]["pages"]
+        tasks = y["judge"]["research_tasks"]
+        out["youcom_charges"] = {
+            "searches": searches,
+            "pages": pages,
+            "research_tasks": tasks,
+            "usd": round(
+                searches * YOUCOM_PRICE["search"]
+                + pages * YOUCOM_PRICE["page"]
+                + tasks * YOUCOM_PRICE["research_task"],
+                2,
+            ),
+        }
+    return out
+
+
+def _sum_calls(metas: list[dict]) -> dict:
+    total: dict[str, int] = {}
+    for m in metas:
+        for k, v in (m.get("tool_calls") or {}).items():
+            total[k] = total.get(k, 0) + v
+    return total
+
+
 def main() -> None:
     proto = load_protocol()
     res = ROOT / "results"
@@ -185,6 +315,7 @@ def main() -> None:
     out = {
         "scan": scan,
         "provider_comparison": provider_comparison,
+        "provider_usage": provider_usage(),
         "feed_counts": feed_counts,
         "scan_window_days": spec["scan"]["window_days"],
         "built_from_commit": lb["git_commit"].dropna().unique().tolist(),
