@@ -1,0 +1,12 @@
+[
+ {"step": "The grid", "text": "Power cannot be stored cheaply, so grid operators schedule power plants from a forecast of demand, called load. PJM is the largest grid operator in the United States. A few percent of forecast error is real money, so every new forecasting model gets attention."},
+ {"step": "The zones", "text": "Our test bed is hourly load in four PJM zones. We started with Jersey Central in New Jersey and Dominion in Virginia. Then we kept two more zones back for a fresh test: AEP, which stretches from Indiana to Virginia, and Atlantic City Electric in southern New Jersey."},
+ {"step": "The task", "text": "Every Monday at midnight, each method forecasts the next 168 hours. Here is one week: the actual load, a plain regression, and Chronos-2, a pretrained model used without any training on our data."},
+ {"step": "The methods", "text": "Every method gets the same load history and the same temperature forecast, and no model can see past the cutoff. The baseline, the ten percent bar and the wording of each verdict were frozen before any scored run."},
+ {"step": "The receipt", "text": "Here is the receipt. A study published this week found that in Great Britain, Chronos-2 roughly ties a regression: a ratio of 0.97. Against our first baseline we measured 0.73 on Dominion, a clear win. But that baseline was weak. Against the field's standard benchmark, the ratio is 0.95: close to a tie again."},
+ {"step": "New zones", "text": "So we ran a fresh test, on two zones no model had been run on, with everything fixed in advance. Chronos-2 against the standard benchmark: 1.01 on AEP, and 0.89 on Atlantic City Electric. Neither clears our ten percent bar. No clear lead."},
+ {"step": "Leaderboard", "text": "The leaderboard shows every model against the same baseline, two zones side by side. Each row says how many test weeks start after the model's weights were published, so you can see which results are truly out of sample."},
+ {"step": "Weather", "text": "Weather matters more than the model. With better weather forecasts the regressions catch up, and against the standard benchmark Chronos-2 is level under every weather source."},
+ {"step": "New claims", "text": "The scan agent reads arXiv, Hugging Face and Zenodo, and keeps new forecasting claims that cite a primary source. The judge agent scores each one against our problem, with every statement cited."},
+ {"step": "How it works", "text": "Find, judge, run, receipt. From a new claim to a measured answer on our own data. Receipts, not hype."}
+]

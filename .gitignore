@@ -16,3 +16,4 @@ data/feeds/
 runs/*.jsonl
 data/logs/
 data/zone_selection_raw/
+video/out/
