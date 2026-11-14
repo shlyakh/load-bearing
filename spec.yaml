@@ -92,10 +92,11 @@ scan:
     - [arxiv.org]
     - [huggingface.co, github.com]
     - [zenodo.org]
-    # Added Nov 14 from notes/source_seed_list.md (Tier 1 and 2a). The Claude scan of
-    # Nov 14 (comparisons/scan_2026-11-14_claude_baseline) predates these two groups.
-    - [lfenergy.org, pjm.com, gridstatus.io, amperon.co]             # load forecasting practice
-    - [research.google, amazon.science, mistral.ai, nixtla.io]       # model teams
+    # Two groups from notes/source_seed_list.md (lfenergy.org, pjm.com, gridstatus.io,
+    # amperon.co; research.google, amazon.science, mistral.ai, nixtla.io) were tried on
+    # Nov 14 and removed the same day: in three scans they added no candidate beyond two
+    # announcements already found, and about 235 off-topic pages a scan
+    # (notes/youcom_usage_and_feedback.md).
     - []          # open web
   # Direct listings read by tools/feeds.py: exact dates, complete for their site.
   feeds:
