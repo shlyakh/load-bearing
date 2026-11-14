@@ -57,3 +57,8 @@ new version file.
   `vanilla_benchmark_trend_holiday` (the cited paper's full text was not read), and DOM
   and JC keeping more windows under the v2 drop rule than under v1.2 (development zones;
   not like-for-like with v1.2). The scored origins are run once, after the tag.
+- **2026-11-14, protocol-v2 scored once:** every v2 row was run on the 52 scored origins
+  from a clean tree at the tag `protocol-v2`, in one pass with no rerun. Output in
+  `results/v2/`. Kept windows: AEP and AE 45 with AIFS weather and 48 in the other three
+  regimes; DOM and JC 47 with AIFS, 50 with GFS and IFS, 49 with ERA5. No definition was
+  changed and nothing crashed.

@@ -41,6 +41,12 @@ the repository, the repository wins.
    frozen protocol files keep the old wording.
 5. **New model rows (protocol-v1.3, secondary):** see the section at the end of this
    file.
+6. **protocol-v2 (frozen, tagged and scored once on 2026-11-14):** the new primary, on
+   zones no model had been run on, Chronos-2 with temperature against Vanilla with trend,
+   AIFS weather, 45 weeks: AEP 1.006 (0.906 to 1.118) and AE 0.890 (0.796 to 0.999), both
+   inconclusive. The calendar made Chronos-2 worse in all four zones (1.04 to 1.13);
+   holiday terms left Vanilla within 3%. Section "protocol-v2" of `results/README.md`.
+   The dashboard does not show v2 results yet.
 
 ## Open decisions (Yuri)
 

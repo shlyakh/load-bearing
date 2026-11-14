@@ -485,3 +485,47 @@ Details in `notes/foundationforecast.md`; values in `gate/crosscheck/chronos2_ff
 - TimesFM 2.5 with a curved temperature term.
 - Other foundation models.
 - Vanilla + recency regression row (optional in the brief).
+
+## protocol-v2 (scored once, 2026-11-14)
+
+New primary comparison on two zones no model had been run on: Chronos-2 with temperature
+against Tao's Vanilla Benchmark with trend, ECMWF AIFS forecast weather, ERA5 history.
+Files: `results/v2/` (`primary.md`, `leaderboard.csv`, `stats.csv`,
+`holiday_breakdown.csv`, `dropped_windows.csv`). Error ratios with 90% intervals; below 1
+the first-named model is better.
+
+**Primary (45 scored weeks per zone).**
+
+| Zone | Ratio | 90% interval | Reading |
+|---|---:|---|---|
+| AEP | 1.006 | 0.906 to 1.118 | inconclusive |
+| AE | 0.890 | 0.796 to 0.999 | inconclusive |
+
+**The same pair under the other weather sources (secondary).** AEP 1.03 (ERA5), 1.04
+(GFS), 1.04 (IFS); AE 0.93, 0.93, 0.90. Development zones with AIFS: DOM 1.017 (0.933 to
+1.104), JC 1.001 (0.899 to 1.112), 47 weeks each.
+
+**Mean absolute error, MW, AIFS weather.**
+
+| Row | AEP | AE | DOM | JC |
+|---|---:|---:|---:|---:|
+| Chronos-2 with temperature | 602 | 86 | 642 | 183 |
+| Vanilla with trend | 598 | 97 | 631 | 182 |
+| Vanilla with trend and holidays | 580 | 97 | 626 | 182 |
+| Chronos-2 with temperature and calendar | 625 | 95 | 722 | 193 |
+| LightGBM competition | 530 | 92 | | |
+| Lag regression with temperature | 895 | 113 | | |
+| Chronos-2, no weather | 1,215 | 142 | | |
+
+**Secondary readings, AIFS weather.**
+
+- Calendar given to Chronos-2 (against the same model without it): AEP 1.039, AE 1.107,
+  DOM 1.125, JC 1.055. Worse in all four zones; a practical tie on AEP and JC,
+  inconclusive on AE and DOM.
+- Holiday terms added to Vanilla with trend: AEP 0.970 (0.944 to 0.996), AE 1.003, DOM
+  0.993, JC 0.997. A practical tie everywhere.
+- LightGBM competition against Vanilla with trend: AEP 0.886 (0.809 to 0.966), AE 0.952;
+  inconclusive. Chronos-2 with temperature against LightGBM competition: AEP 1.135 (1.016
+  to 1.267), AE 0.935; inconclusive.
+- Chronos-2 with temperature against the v1 lag regression: AEP 0.672, AE 0.765, beyond
+  the bar in both. Temperature against no weather for Chronos-2: AEP 0.495, AE 0.607.
