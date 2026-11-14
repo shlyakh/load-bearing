@@ -39,3 +39,13 @@ new version file.
   every v1, v1.1 and v1.2 row and file are unchanged. LightGBM is scored once after the
   tag; the TabPFN scored run (about 50 h on CPU) is deferred and will be run once at the
   same tag with no change to its definition.
+- **2026-11-13, protocol-v2 drafted and gated, NOT tagged or scored**
+  (`protocol-v2.yaml`, written from `protocol-v2-draft.yaml`, which is unchanged): a new
+  primary comparison, Chronos-2 with temperature against Vanilla with trend, ECMWF AIFS
+  forecast weather with ERA5 history, on the new zones AEP and AE (PJM-weighted ERA5 grid
+  cells); DOM and JC become development zones; secondary rows include two calendar rows
+  (`vanilla_benchmark_trend_holiday`, `chronos2_temperature_calendar`) fed by the harness
+  calendar table. Every row was run on the gate origins only; output in
+  `results/gate/v2/`. The file is marked not frozen pending the owner's review; the tag
+  `protocol-v2` does not exist and no v2 row has been run on a scored origin. Every
+  earlier protocol file and result is unchanged.

@@ -1,0 +1,409 @@
+# protocol-v2. Written 2026-11-13 from protocol-v2-draft.yaml (which is left as it is) and
+# the owner's decisions 26 to 37. NOT FROZEN: the gate runs are done and pending the owner's
+# review; the git tag protocol-v2 has NOT been created and no v2 row has been run on a
+# scored origin. Until the tag exists every v2 entry point refuses the scored set
+# (CLAUDE.md rule 12). After the tag, this file is not edited (rule 5).
+version: protocol-v2
+status: not frozen — gate results pending owner review; tag protocol-v2 has NOT been created
+based_on: protocol-v1.3
+why_a_new_version: >
+  protocol-v1 named its baseline before the search for the field's standards and used
+  weather labels that turned out wrong. v1.1 to v1.3 corrected this with secondary rows
+  only. v2 names a new primary comparison (Chronos-2 with temperature against Vanilla
+  with trend, AIFS forecast weather) on two zones no model has been run on (AEP, AE).
+decisions: >
+  Yuri, 2026-11-13: decision 26 (baseline from the standards search), 28 (ERA5 truth,
+  AIFS preferred), 30 and 31 (harness calendar table, calendar rows secondary), 32
+  (prospective panel starts with v2), 33 (zones AEP and AE), 34 (humidity, solar, wind
+  deferred to v2.x), 36 and 37 (weather points are ERA5 grid cells, PJM weights).
+not_in_v2:
+  - humidity, solar radiation and wind (decision 34; a v2.x addendum)
+  - tabpfn_ts_v2_temperature (its protocol-v1.3 scored run has not been done)
+  - the frozen files protocol.yaml and protocol-v1.1 to v1.3, and every result they
+    produced, are unchanged; no v2 code writes outside results/v2 and results/gate/v2
+
+# ------------------------------------------------------------------ carried over
+unchanged_from_v1: >
+  Horizon (168 hours), issue time (Monday 00:00 America/New_York), load source and the
+  load gap and flag rules, timestamp convention (EIA period = hour ending, UTC), metrics
+  (window MAE; ratio of mean window MAE), the whole-week paired bootstrap (2,000 draws, seed
+  20261112, 90% percentile interval), the 10% bar and the verdict rule, the idealised
+  information set and its caveat, lead matching by run start (publication-latency caveat).
+  The values are read from protocol.yaml by the code (harness.data.load_protocol).
+
+origins:
+  rule: >
+    The gate origins and the 52 scored origins are protocol.yaml's lists origins.gate and
+    origins.scored, read from that file by the harness (harness.data.origins); never
+    inferred from data. ordering_gate is not used in v2.
+  gate: protocol.yaml origins.gate (6 Mondays, 2025-09-29 to 2025-11-03)
+  scored: protocol.yaml origins.scored (52 Mondays, 2025-11-10 to 2026-11-02)
+  prospective_panel: see the prospective_panel block (not implemented in this build)
+
+# ------------------------------------------------------------------ zones
+zones:
+  status: decided (Yuri, 2026-11-13, decision 33)
+  primary: [AEP, AE]
+  development: [DOM, JC]        # reported, labelled development, never read as the primary result
+  rule: >
+    For each development zone, the primary zone is the PJM sub-BA in EIA-930 with the
+    smallest standardised distance to it on seven load statistics over 2023-11-01 to
+    2025-10-31 (before the first scored origin). Record: notes/zone_selection.md,
+    tools/zone_selection/, results/zone_selection/.
+  disclosed: >
+    The rule and its thresholds were written on 2026-11-13 with the load of all 20 zones
+    in view (descriptive statistics only; no model was run on any new zone before these
+    gate runs). AE borders JC (anomaly correlation 0.93).
+  selected:
+    AEP:
+      name: American Electric Power
+      matches: DOM
+      runner_up: AP             # used only if AEP fails a gate for data reasons
+      # ERA5 grid cells holding PJM's stations for the zone, PJM's weights (2026 Long-Term
+      # Load Forecast Supplement, Table 3; decision 37). lat/lon is the cell centre and is
+      # the request coordinate. fetch.py reads this list.
+      weather_points:
+        - {name: columbus, station: CMH, lat: 40.00, lon: -83.00, weight: 0.234}
+        - {name: fort_wayne, station: FWA, lat: 41.00, lon: -85.25, weight: 0.227}
+        - {name: charleston_wv, station: CRW, lat: 38.50, lon: -81.50, weight: 0.226}
+        - {name: roanoke, station: ROA, lat: 37.25, lon: -80.00, weight: 0.162}
+        - {name: akron_canton, station: CAK, lat: 41.00, lon: -81.50, weight: 0.151}
+    AE:
+      name: Atlantic City Electric
+      matches: JC
+      runner_up: PE
+      weather_points:
+        - {name: atlantic_city_airport, station: ACY, lat: 39.50, lon: -74.50, weight: 1.0}
+  zone_temperature: >
+    AEP and AE: the weighted mean over the zone's weather points with the weights above
+    (they sum to 1; fetch.py refuses weights that do not). A zone value exists only for
+    hours where every point has a value (as the v1 unweighted mean). Implemented in
+    fetch.py process-v2 (weighted_zone_mean) only. DOM and JC keep their protocol-v1
+    points (protocol.yaml weather.stations) and the unweighted mean, read from the
+    existing v1 and v1.2 processed files, unchanged.
+
+# ------------------------------------------------------------------ data
+load:
+  source: EIA Open Data API v2, electricity/rto/region-sub-ba-data, facets parent PJM, subba AEP and AE
+  date_range: protocol.yaml load.start to load.end (2019-01-01T00 to 2026-11-11T05 UTC), the same as DOM and JC
+  rules: protocol.yaml load.gap_rule and load.flag_rule, unchanged code (fetch.process_load)
+  raw_files: data/raw/eia/AEP/offset_*.json, data/raw/eia/AE/offset_*.json, SHA-256 added to fetch_manifest.json (fetch.py download-v2; key v2_added_at); every earlier entry unchanged
+  processed: data/processed/load_v2.parquet (AEP, AE); quality log data/quality_log_v2.csv
+  development_zones: DOM and JC read data/processed/load.parquet (protocol-v1), unchanged
+  availability: >
+    Fetched 2026-11-13/14. AEP and AE each 68,617 hourly rows, 2019-01-01T00 to
+    2026-11-11T05 UTC, the same depth as DOM and JC. No value flagged; 5 hours filled by
+    interpolation per zone; 288 hours missing per zone after the gap rule, all on the 12
+    UTC days of a daylight-saving change (EIA has no rows for them, as for DOM and JC).
+    Sanity check: on the 26,400 hours that overlap the separate zone-selection download
+    (data/zone_selection_raw, 2023-11-01 onward) every raw value is identical, both zones.
+    Missing-load days that touch v2 windows: 2025-11-02 (gate origin 2025-10-27 actuals;
+    2025-11-03 168-hour lag), 2026-03-08 (scored 2026-03-02 actuals, 2026-03-09 lag),
+    2026-11-01 (scored 2026-10-26 actuals, 2026-11-02 lag).
+
+weather:
+  truth_and_history: ERA5 (Open-Meteo archive, models=era5), decision 28
+  primary_regime: forecast_aifs
+  secondary_regimes: [oracle_era5, forecast_gfs, forecast_ifs]
+  variables: temperature_2m only (decision 17 stands for v2; decision 34)
+  provider: Open-Meteo, every v2 request names its model (models=), timezone GMT
+  sources:
+    oracle_era5: {endpoint: archive-api.open-meteo.com/v1/archive, model_id: era5, start_date: "2019-01-01", end_date: "2026-11-11"}
+    forecast_gfs:
+      endpoint: previous-runs-api.open-meteo.com/v1/forecast
+      model_id: gfs_seamless
+      note: >
+        The explicit name of what the v1 best_match request resolved to (HRRR on lead day
+        1, GFS on days 2 to 7; protocol-v1.2 finding_v1_forecast_source). For DOM and JC
+        forecast_gfs is the v1 Previous Runs files, as in protocol-v1.2.
+      verified: >
+        2026-11-13, live API, temperature lead days 1 to 7, 2025-08-06 to 2025-11-05 (2,208
+        hours): models=gfs_seamless equals the request without models (best_match) at the
+        AEP columbus cell centre, and equals the stored v1 file at DOM richmond, at every
+        hour and lead (max difference 0.0, no missing-value mismatch).
+    forecast_ifs: {endpoint: previous-runs-api.open-meteo.com/v1/forecast, model_id: ecmwf_ifs025}
+    forecast_aifs: {endpoint: previous-runs-api.open-meteo.com/v1/forecast, model_id: ecmwf_aifs025_single}
+    previous_runs_dates: 2024-02-01 to 2026-11-11 in 92-day chunks (as protocol-v1.2)
+  lead_matching: >
+    As protocol-v1.2: horizon day k (hours cutoff+24(k-1)+1 .. cutoff+24k, k = 1..7) uses
+    temperature_2m_previous_day{k}. A missing horizon value is never filled from another
+    lead or another source.
+  raw_files: data/raw/openmeteo_models/<model_id>/archive_<zone>_<point>.json and previous_runs_<zone>_<point>_<chunk start>.json for AEP and AE, hashed into fetch_manifest.json
+  processed: >
+    data/processed/weather_v2_oracle_era5.parquet, weather_v2_forecast_gfs.parquet,
+    weather_v2_forecast_ifs.parquet, weather_v2_forecast_aifs.parquet (AEP and AE;
+    weighted mean), coverage in data/processed/weather_v2_coverage.csv (fetch.py
+    process-v2). DOM and JC: the protocol-v1.2 files (weather_oracle_era5,
+    weather_forecast, weather_forecast_ifs, weather_forecast_aifs), unchanged.
+  coverage: >
+    Checked before any model run (data/processed/weather_v2_coverage.csv), AEP and AE
+    alike. ERA5 history (730 days before each cutoff) complete for all origins. Horizon
+    complete: oracle_era5 gate 6/6, scored 51/52 (2026-11-02 lacks its last 6 hours; that
+    window is already dropped by the EIA load gap); forecast_gfs and forecast_ifs all
+    origins; forecast_aifs gate 6/6, scored 49/52 (2026-04-13, 2026-04-20, 2026-04-27
+    incomplete: 35, 72 and 19 missing horizon hours, the same weeks as DOM and JC).
+    Expected scored n_windows per primary zone: 48 in oracle_era5, forecast_gfs and
+    forecast_ifs (the four EIA load-gap drops; lag_regression_temperature needs the
+    168-hour lag), 45 in forecast_aifs.
+
+regimes:
+  oracle_era5: ERA5 temperature for every hour, before and after the cutoff (perfect weather against the declared truth)
+  forecast_gfs: ERA5 up to and including the cutoff; horizon HRRR day 1, GFS days 2 to 7, lead-matched
+  forecast_ifs: ERA5 up to and including the cutoff; horizon ECMWF IFS 0.25 deg, lead-matched
+  forecast_aifs: ERA5 up to and including the cutoff; horizon ECMWF AIFS Single, lead-matched (primary)
+  history_temperature_rule: >
+    In every regime the temperature a model sees up to the cutoff (all training rows of
+    the regressions and LightGBM, the past covariate of Chronos-2) is ERA5; only the 168
+    horizon hours come from the regime's source. The regressions are fitted on ERA5 and
+    predict with the regime's series.
+  same_inputs: every model in a regime and zone gets the identical temperature series (rule 3)
+  code: harness.data.DataV2 (the only place that decides what a v2 model may see)
+  never_mixed: each regime is its own row (rule 4)
+
+# ------------------------------------------------------------------ calendar
+calendar:
+  requirement: >
+    Decision 30. The harness supplies one calendar table and every model that takes
+    calendar inputs gets exactly that table. Every leaderboard row states its calendar
+    inputs (column `calendar`).
+  harness_table:
+    function: harness.data.calendar (unchanged since protocol-v1)
+    time: local time (America/New_York) at the start of the hour (ds - 1 h)
+    columns:   # name in the table: meaning (draft name)
+      hour: local hour 0..23 (hour)
+      dow: local day of week, Monday = 0 (day_of_week)
+      hol: 1.0 on a US federal holiday, holidays package country_holidays("US") (us_federal_holiday)
+      yearend: 1.0 from 24 Dec to 2 Jan inclusive (year_end_24dec_to_2jan)
+    delivered_in: data/model_inputs/<set>_v2.parquet beside y and T (harness.v2 export, also harness.export_inputs <set> --v2)
+  treatment: a known-future covariate in the same group as humidity, solar and wind (decision 31); calendar rows are secondary
+  row_labels:
+    vanilla_benchmark_trend: "own: month, day of week x hour (no holidays)"
+    chronos2_temperature: none
+    vanilla_benchmark_trend_holiday: "harness: holiday x hour, year-end x hour; own: month, day of week x hour"
+    chronos2_temperature_calendar: "harness: hour, day of week (categorical), holiday, year-end (0/1)"
+    lag_regression_temperature: "own: hour (per-hour fits), day of week, US federal holiday, year-end"
+    lightgbm_competition: "own: 13 calendar features, US federal holidays included"
+    chronos2: none
+  expected_size: >
+    Small. 12 federal holidays are 3.6% of the scored hours (notes/calendar_inputs.md). On
+    the gate weeks a scratch check found the calendar made Chronos-2 worse; that is not a
+    reason to change the encoding, and the encoding was not changed.
+  pre_registered_breakdown: >
+    Error on federal-holiday hours and on other hours, per row, zone and regime
+    (holiday_breakdown.csv), reported and not read against the bar.
+
+# ------------------------------------------------------------------ rows
+rows:
+  vanilla_benchmark_trend:
+    role: PRIMARY baseline (AEP, AE, forecast_aifs); development on DOM, JC; secondary elsewhere
+    zones: [AEP, AE, DOM, JC]
+    definition: as protocol-v1.1, unchanged code (harness/baselines.py vanilla_benchmark_trend); 730-day window
+  chronos2_temperature:
+    role: PRIMARY challenger (AEP, AE, forecast_aifs); development on DOM, JC; secondary elsewhere
+    zones: [AEP, AE, DOM, JC]
+    definition: >
+      As protocol-v1/v1.2 (models/chronos2.py, --v2): amazon/chronos-2 at revision
+      29ec3766d36d6f73f0696f85560a422f50e8498c (weights 2025-10-30T14:58:57Z), context
+      2,048 hours, temperature as past and known-future covariate, no cross-learning,
+      median as point (quantiles 0.1/0.5/0.9), CPU. Inputs: data/model_inputs/<set>_v2.parquet.
+      A zone-window with incomplete horizon temperature is not forecast.
+  vanilla_benchmark_trend_holiday:
+    role: secondary (calendar row)
+    zones: [AEP, AE, DOM, JC]
+    definition: >
+      Vanilla with trend (same design, 730-day window, least squares, trend in years) plus
+      24 columns holiday x hour indicator and 24 columns year-end x hour indicator, from
+      the harness calendar table (hol, yearend, hour). Nothing else changed; no recency
+      terms. A window with incomplete horizon temperature is not forecast (all 168 values
+      missing). Code: harness/baselines.py vanilla_benchmark_trend_holiday.
+    holiday_treatment_source: >
+      The default fixed by the owner in the build brief (2026-11-13), used because the
+      cited source gives no holiday treatment to follow. BASELINES.md rung 5 and
+      notes/classical_baselines.md describe rung 5 as "Vanilla + recency + holiday terms"
+      but cite only the recency paper (Wang, Liu and Hong 2016, "Electric load
+      forecasting with recency effect: a big data approach", International Journal of
+      Forecasting 32(3) 585-597,
+      https://econpapers.repec.org/RePEc:eee:intfor:v:32:y:2016:i:3:p:585-597). Its
+      abstract (read 2026-11-13) covers lagged and moving-average temperatures only and
+      says nothing about holidays; the full text was not read. So no cited holiday
+      treatment exists to implement.
+  chronos2_temperature_calendar:
+    role: secondary (calendar row)
+    zones: [AEP, AE, DOM, JC]
+    definition: >
+      chronos2_temperature plus the harness calendar table as known-future covariates
+      (also given over the context): hol and yearend numeric 0/1, dow and hour
+      categorical, passed as strings. Same pinned weights, context 2,048 h, CPU, median,
+      no cross-learning. Not tuned. The installed package (chronos-forecasting, models/
+      environment) target-encodes categorical covariates by default
+      (chronos/chronos2/preprocess.py, use_target_encoding=True; read 2026-11-13); that
+      default is used.
+  lag_regression_temperature:
+    role: secondary, for continuity with protocol-v1
+    zones: [AEP, AE]
+    definition: as protocol-v1, unchanged code; fitted on ERA5
+  lightgbm_competition:
+    role: secondary
+    zones: [AEP, AE]
+    definition: as protocol-v1.3, unchanged code and hyperparameters
+  chronos2:
+    role: secondary, univariate (labelled "univariate"; weather none)
+    zones: [AEP, AE]
+    definition: >
+      Chronos-2, same weights and settings, load context only, no covariates. Its inputs
+      are identical in every regime, so it is predicted once per zone and cutoff and the
+      same forecast is written under each regime (so the per-regime drop rule applies).
+development_zone_rows: >
+  On DOM and JC v2 runs vanilla_benchmark_trend, chronos2_temperature and the two calendar
+  rows, so that the registered calendar comparisons and a development reading of the
+  primary pair exist inside results/v2. Their DOM/JC definitions and inputs are those of
+  protocol-v1.2, so the temperature-only rows reproduce the v1.2 numbers (checked at the
+  gate, see gate_results).
+
+# ------------------------------------------------------------------ windows and output
+window_drop_rule: >
+  Scoped per zone and regime, as protocol-v1.2. A window whose forecast or actuals are
+  incomplete for any v2 row run in that zone (including a window a row did not produce)
+  is dropped for every v2 row in that zone AND THAT REGIME only and listed in
+  dropped_windows.csv. A missing horizon value is never filled.
+output: >
+  results/v2/ (gate set: results/gate/v2/): forecasts/<row>.parquet, windows.parquet,
+  leaderboard.csv, dropped_windows.csv, stats.csv, holiday_breakdown.csv, primary.md.
+  Written by harness/v2.py (export, run, score) and models/chronos2.py --v2. No earlier
+  scorer (harness.score, harness.score_weather, harness.v13) reads this folder.
+leaderboard_columns: >
+  model, zone, regime, n_windows, metrics, runtime_s, git_commit, protocol_version,
+  weights_revision, weights_date, n_windows_after_weights, weather, calendar, zone_role,
+  label, ratio_vs_baseline (baseline vanilla_benchmark_trend).
+
+# ------------------------------------------------------------------ primary comparison
+primary_comparison:
+  arm_a: chronos2_temperature (challenger)
+  arm_b: vanilla_benchmark_trend (baseline; the field's standard, decision 26)
+  regime: forecast_aifs
+  reported: per zone, AEP and AE (two primary numbers)
+  covariates: temperature only on both sides
+  statistics: protocol.yaml (ratio of mean window MAE, whole-week paired bootstrap, 2,000 draws, seed 20261112, 90% interval)
+  bar: 0.10
+  verdict_rule:
+    worth_switching: the whole 90% interval of the ratio is below 0.90
+    practical_tie: the whole interval is inside 0.90 to 1.10
+    baseline_clearly_better: the whole interval is above 1.10
+    inconclusive: anything else
+  # Written before any scored run. {zone}, {ratio}, {low}, {high}, {n} are filled in
+  # afterwards; each is followed by the leakage statement.
+  outcome_sentences:
+    worth_switching: >
+      On {zone}, a week ahead with archived ECMWF AIFS forecast weather, Chronos-2's
+      error was {ratio} of the temperature-only regression's (Tao's Vanilla Benchmark
+      with trend; 90% interval {low} to {high}). The whole interval is below 0.90, so the
+      model clears the 10% bar on a zone it had not been run on before.
+    practical_tie: >
+      On {zone}, a week ahead with archived ECMWF AIFS forecast weather, Chronos-2's
+      error was {ratio} of the temperature-only regression's (Tao's Vanilla Benchmark
+      with trend; 90% interval {low} to {high}). The whole interval lies between 0.90 and
+      1.10, so the two are a practical tie and the GB claim transfers to this zone.
+    baseline_clearly_better: >
+      On {zone}, a week ahead with archived ECMWF AIFS forecast weather, Chronos-2's
+      error was {ratio} of the temperature-only regression's (Tao's Vanilla Benchmark
+      with trend; 90% interval {low} to {high}). The whole interval is above 1.10, so the
+      regression is clearly better and the model is not worth running here.
+    inconclusive: >
+      On {zone}, a week ahead with archived ECMWF AIFS forecast weather, Chronos-2's
+      error was {ratio} of the temperature-only regression's (Tao's Vanilla Benchmark
+      with trend; 90% interval {low} to {high}). The interval crosses the 10% bar, so {n}
+      weeks cannot separate a tie from a real difference.
+  leakage_statement: >
+    {n_after} of {n} scored weeks start after the date of the pinned weights. Earlier
+    years of the same public series may be in the model's training data.
+  note: >
+    We have already seen this pair on DOM and JC (0.94 to 1.04 under every weather source
+    in protocol-v1.2). A primary on those zones and weeks would not be a prediction.
+
+registered_comparisons:   # fixed before scoring; per zone and regime; all secondary except the first
+  - kind primary: chronos2_temperature vs vanilla_benchmark_trend, forecast_aifs, AEP and AE
+  - kind primary_pair_other_regime: the same pair in oracle_era5, forecast_gfs, forecast_ifs (AEP, AE)
+  - kind development_primary_pair: the same pair on DOM and JC, all four regimes (development)
+  - kind calendar_vs_temperature_only: chronos2_temperature_calendar vs chronos2_temperature, and vanilla_benchmark_trend_holiday vs vanilla_benchmark_trend, all four zones and regimes
+  - kind vs_vanilla_benchmark_trend: every other row vs vanilla_benchmark_trend (AEP, AE)
+  - kind chronos2_temperature_vs_<row>: chronos2_temperature vs lag_regression_temperature and vs lightgbm_competition (AEP, AE)
+  - kind weather_gain: chronos2_temperature vs chronos2 (AEP, AE)
+  - kind forecast_vs_oracle_era5: each temperature row, each forecast regime / oracle_era5, paired on common weeks, not read against the bar
+  - per-horizon-day ratios of all the above in stats.csv, not read against the bar
+pairing: on the weeks both arms keep in that zone and regime
+readings: >
+  Secondary ratios A/B use the v1 verdict rule with neutral names: A_better_beyond_bar,
+  practical_tie, B_better_beyond_bar, inconclusive. The primary uses the names above.
+wording: >
+  A receipt sentence says "transfers / does not transfer", never true/false. Development
+  and secondary results never change the outcome sentence (rule 11).
+
+# ------------------------------------------------------------------ prospective panel
+prospective_panel:
+  status: decided (Yuri, 2026-11-13) as an addition to v2; it never replaces the retrospective result
+  what_it_is: >
+    A forecast log kept in advance. Every Monday, before the week's load exists, the
+    harness runs each registered model once for the coming 168 hours and commits the
+    forecasts. When the week's load has been published, the stored forecasts are scored
+    against it. Nothing about a model, its settings or its inputs can be adjusted after
+    seeing the answer, because the answer did not exist when the forecast was stored.
+  why: >
+    The retrospective backtest scores weeks that are already in the past: a model's
+    weights may postdate them, and we choose rows knowing roughly how they behave. The
+    panel removes both problems and is the only fair test for models released after
+    today (decision 27).
+  how_it_differs_from_the_backtest:
+    weather: >
+      Only the forecast regime exists (the AIFS forecast available at the issue time).
+      No lead matching from an archive and no perfect-weather row, since the actual
+      weather is not known yet.
+    load_history: >
+      What EIA has published at the issue time, which lags by 1 to 2 days. The idealised
+      cutoff of the backtest does not apply; the gap is recorded per week.
+    proof_of_timing: the forecast file is committed and pushed before the week starts; the commit time is the evidence
+  procedure:
+    - Monday, before 00:00 America/New_York (or as soon after as the weather run allows, recorded): fetch load and the AIFS forecast, hash them, run every registered row once, commit forecasts
+    - the following week, once EIA load for the forecast week is complete: score the stored forecasts; a late or missing forecast is a dropped week, listed, never back-filled
+    - new models may join at any Monday; their panel starts that week and they are compared only on the weeks they share
+  reading: >
+    The primary pair's ratio and 90% interval are read at fixed checkpoints, after 13,
+    26 and 52 scored weeks, and at no other time, with the same 10% bar and verdict
+    rule. A weekly running chart may be shown, labelled "not a reading". With 13 weeks
+    the interval will be wide; "inconclusive" is the expected first reading.
+  zones: the v2 primary zones plus DOM and JC
+  rows: every row registered in this file
+  data_gap_rule: >
+    Proposed, to be confirmed before the first counted week. Each model sees load only up
+    to the last hour EIA had published when the job started (recorded per zone). A model
+    that reads recent load forecasts from that hour through the end of the week, and only
+    the 168 scored hours are kept (as the 48-hour-gap Chronos-2 row of protocol-v1 does).
+    A model with no load input after training (Vanilla, LightGBM competition) forecasts
+    the 168 hours directly. No model is given load that was published later.
+  runner: a scheduled GitHub Actions workflow (decision 35); plan in notes/prospective_panel_plan.md, not built
+  implemented_in_this_build: no (the block above is the draft's text, unchanged; decision 35)
+
+# ------------------------------------------------------------------ gate
+gate:
+  - raw files match fetch_manifest.json; every pre-v2 manifest entry unchanged; v1/v1.2 processed files byte-identical
+  - AEP/AE load agrees with the separate zone-selection download (data/zone_selection_raw) where they overlap
+  - tests/test_v2.py (core) - weights from the protocol, sum to 1, weighted mean recomputed from the raw point files; history is ERA5 in all four regimes for all four zones; DOM/JC inputs identical to protocol-v1.2; lead matching; corrupting load after the cutoff and all disallowed weather changes no forecast of any core v2 row and no exported model input; incomplete horizon temperature is not forecast; the exported calendar equals harness.data.calendar; the scored set is refused without the tag
+  - tests/test_chronos2_v2.py (models) - the calendar handed to Chronos-2 equals harness.data.calendar (numeric hol/yearend, string dow/hour); context ends at the cutoff, 2,048 rows; no load in the future frame; corrupting horizon load changes nothing; incomplete horizon temperature is not forecast; the scored set is refused without the tag
+  - tests/test_gates.py, test_weather_v12.py, test_v13.py unchanged and passing
+  - every v2 row run on the 6 gate origins in all four regimes from a committed tree (2 windows first)
+gate_results: GATE_RESULTS_TBD
+
+# ------------------------------------------------------------------ scoring
+scoring: >
+  After the owner's review: set status to frozen, add the DEVIATIONS.md line, commit, tag
+  protocol-v2. Then the 52 scored origins are run once per row, in all four regimes and
+  all four zones together, from a clean tree at the tagged commit, and scored once. No
+  rerun or adjustment after results are seen; a crash is fixed without changing any
+  definition and reported.
+
+caveats:
+  - ERA5 is a model product, not observations; AIFS is trained on ERA5, so an ERA5 truth may favour AIFS.
+  - AE rests on a single grid cell; the AEP points are 15 to 23% each.
+  - The zone-selection rule was written with all zones' load statistics in view (disclosed above).
+  - The idealised information set and lead matching by run start apply as in v1.
+  - Chronos-2's weights (2025-10-30) predate every scored week; earlier years of the public EIA series for AEP and AE may be in its training data.
+  - EIA-930 data is operator-reported, not settlement quality.
