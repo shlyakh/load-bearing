@@ -27,6 +27,9 @@ of the map, not the text.
 
 If only five images fit: drop 4 and 6.
 
+**Slides:** https://claude.ai/artifact/APSUpcPFEfifCXQw9cZGXj (talking points in
+`notes/talk_3min.md`).
+
 **Video:** `video/out/receipts_demo.mp4` (164 s, git-ignored, on the laptop only).
 Devpost takes a YouTube or Vimeo link, not a file, so upload it there first. Do not use
 `dashboard/tour.webm`: it is the silent tour from the morning, before the You.com and

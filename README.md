@@ -8,6 +8,8 @@ Benchmark: PJM hourly electricity load, a week ahead (168 hours), forecast every
 at midnight. The first zones were JC and DOM; the newest test adds AEP and AE.
 
 Dashboard: https://shlyakh.github.io/load-bearing/
+Slides for the three-minute talk: https://claude.ai/artifact/APSUpcPFEfifCXQw9cZGXj
+(talking points in `notes/talk_3min.md`)
 
 ## The question
 
