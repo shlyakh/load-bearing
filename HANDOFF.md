@@ -49,6 +49,19 @@ the repository, the repository wins.
    holiday terms left Vanilla within 3%. Section "protocol-v2" of `results/README.md`.
    The dashboard shows them on the "New zones" tab.
 
+## Next step (agreed Nov 14, after a break)
+
+Bring everything up to date with protocol-v2 and the new maps:
+
+1. Tour: add a "New zones" step, check every caption against the current page, re-record
+   `dashboard/tour.webm` (`tools/record_tour.mjs`).
+2. Receipt tab: decide how it tells the story now that the v2 result exists.
+3. Narrated video: talking points per tour step, then voice and mux
+   (`notes/hackathon_tools.md`, section 4).
+4. `README.md` status section and `dashboard/story.html` are out of date.
+5. Check the New zones tab at phone width (not confirmed).
+6. Saturday's hackathon work: the You.com provider (`HACKATHON.md`).
+
 ## Open decisions (Yuri)
 
 1. **protocol-v2.** Proposal: ERA5 truth, AIFS forecast weather, Vanilla with trend as
