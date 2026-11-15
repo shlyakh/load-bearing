@@ -38,7 +38,11 @@ def test_scan_and_judge_get_named_scripts_only():
         tools = rs.common_tools(skill)
         bash = [t for t in tools if t.startswith("Bash(")]
         assert bash and "Bash(uv run:*)" not in tools
-        assert all(t.startswith("Bash(uv run --project core python tools/") for t in bash)
+        scripts = [t for t in bash if t.startswith("Bash(uv ")]
+        assert all(t.startswith("Bash(uv run --project core python tools/") for t in scripts)
+        others = {t[5:].split(":")[0] for t in bash if t not in scripts}
+        assert others == set(rs.READ_ONLY)
+        assert not others & {"python", "python3", "sh", "bash", "curl", "env", "printenv", "git"}
         cmd = rs.command("claude", f"/{skill} claude", skill=skill)
         assert "Bash(uv run:*)" not in cmd
     assert "Bash(uv run --project core python tools/ledger.py:*)" in rs.common_tools("judge")

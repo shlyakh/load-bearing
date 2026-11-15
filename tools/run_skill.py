@@ -21,9 +21,10 @@ ANTHROPIC_AUTH_TOKEN, which would take precedence and bill a metered key (decisi
 Every other CLAUDE* variable is dropped, as before, so a run started from inside a
 Claude Code session does not inherit that session's settings.
 
-Shell access. A scan or judge run may start only the tool scripts its skill names
-(BASH_SCRIPTS), not any `uv run` command: the agent reads web pages, so its shell is
-kept narrow. run-candidate keeps `uv run` because a person-supervised run starts models.
+Shell access. A scan or judge run is allowed only the tool scripts its skill names
+(BASH_SCRIPTS) and a few read-only commands (READ_ONLY), not any `uv run` command: the
+agent reads web pages, so its shell is kept narrow. This is the whole shell on a CI
+runner. On a laptop the user's own Claude Code settings are added to it. run-candidate keeps `uv run` because a person-supervised run starts models.
 
 The provider decides which search tools the run may use:
   claude   WebSearch and WebFetch.
@@ -58,6 +59,10 @@ BASH_SCRIPTS = {
     "judge": ["ledger.py", "validate_scorecard.py", "registry.py"],
     "smoke": [],
 }
+# Read-only commands the skills use to look at files and saved search results. A CI
+# runner has no user settings, so what is listed here is all the shell a run gets there;
+# on a laptop the user's own settings may allow more.
+READ_ONLY = ["date", "jq", "grep", "ls", "cat", "head", "tail", "wc", "sort", "cut"]
 RUN_ID_VAR = "RECEIPTS_RUN_ID"
 KEEP_ENV = {"CLAUDE_CODE_OAUTH_TOKEN"}
 DROP_ENV = {"ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN"}
@@ -118,7 +123,8 @@ def common_tools(skill: str = "") -> list[str]:
     """File tools plus the shell commands this skill may start."""
     if skill not in BASH_SCRIPTS:
         return COMMON
-    return [*FILE_TOOLS, *(f"Bash({UV_TOOL}{s}:*)" for s in BASH_SCRIPTS[skill])]
+    scripts = [f"Bash({UV_TOOL}{s}:*)" for s in BASH_SCRIPTS[skill]]
+    return [*FILE_TOOLS, *scripts, *(f"Bash({c}:*)" for c in READ_ONLY)]
 
 
 def command(provider: str, prompt: str, model: str = "", skill: str = "") -> list[str]:
