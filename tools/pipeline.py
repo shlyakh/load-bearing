@@ -34,6 +34,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from tools.merge_candidates import scan_order  # noqa: E402
 from tools.run_skill import run, youcom_key  # noqa: E402
 
 NO_MODEL_RUNS = (
@@ -93,9 +94,7 @@ def main() -> None:
             pid = f"pipeline_{started:%Y%m%dT%H%M%S}_{a.provider}"
             (ROOT / "runs" / f"{pid}.json").write_text(json.dumps(out, indent=1) + "\n")
             sys.exit(f"{pid}: the scan FAILED ({out['scan']['failure']}); nothing was judged")
-    files = sorted(
-        (ROOT / "candidates" / source).glob("scan_*.jsonl"), key=lambda p: p.stat().st_mtime
-    )
+    files = sorted((ROOT / "candidates" / source).glob("scan_*.jsonl"), key=scan_order)
     if not files:
         sys.exit(f"no candidates file for {source}: run with --scan or --candidates-from claude")
     out["candidates_file"] = str(files[-1].relative_to(ROOT))

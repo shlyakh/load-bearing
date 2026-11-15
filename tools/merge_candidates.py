@@ -27,27 +27,27 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from tools.keys import norm_title, norm_url  # noqa: E402
+
 PROVIDERS = ("claude", "youcom")
 
 
-def norm_url(url: str) -> str:
-    u = re.sub(r"^https?://(www\.)?", "", url.strip().lower()).rstrip("/")
-    m = re.match(r"arxiv\.org/(?:abs|pdf|html)/(\d{4}\.\d{4,5})(?:v\d+)?(?:\.pdf)?$", u)
-    return f"arxiv.org/abs/{m.group(1)}" if m else u
-
-
-def norm_title(title: str) -> str:
-    return re.sub(r"\W+", " ", title.lower()).strip()
+def scan_order(path: Path) -> tuple[str, int]:
+    """Sort key for scan_<date>[_run<N>].jsonl: the date, then the run number. The file
+    time is not used: on a fresh clone every file has the same one."""
+    m = re.match(r"scan_(\d{4}-\d{2}-\d{2})(?:_run(\d+))?$", path.stem)
+    return (m.group(1), int(m.group(2) or 1)) if m else ("", 0)
 
 
 def latest(root: Path, provider: str) -> Path | None:
-    files = sorted(
-        (root / "candidates" / provider).glob("scan_*.jsonl"), key=lambda p: p.stat().st_mtime
-    )
+    files = sorted((root / "candidates" / provider).glob("scan_*.jsonl"), key=scan_order)
     return files[-1] if files else None
 
 
@@ -111,17 +111,24 @@ def possible_duplicates(rows: list[dict]) -> list[tuple[str, str]]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", default=date.today().isoformat())
+    ap.add_argument(
+        "--files", nargs="+", default=[], help="scan files to merge (candidates/<provider>/...)"
+    )
+    ap.add_argument("--out", default="", help="output path; default candidates/merged/scan_<date>")
     a = ap.parse_args()
+    given = {Path(f).resolve().parent.name: Path(f).resolve() for f in a.files}
     scans, sources = {}, {}
     for p in PROVIDERS:
-        f = latest(ROOT, p)
+        f = given.get(p) if a.files else latest(ROOT, p)
         if f:
             scans[p] = [json.loads(x) for x in f.read_text().splitlines() if x.strip()]
             sources[p] = str(f.relative_to(ROOT))
     if not scans:
         raise SystemExit("no scan files under candidates/")
     rows = merge(scans)
-    out = ROOT / "candidates" / "merged" / f"scan_{a.date}.jsonl"
+    out = (
+        Path(a.out).resolve() if a.out else ROOT / "candidates" / "merged" / f"scan_{a.date}.jsonl"
+    )
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("".join(json.dumps(r) + "\n" for r in rows))
     both = sum(1 for r in rows if len(r["found_by"]) > 1)

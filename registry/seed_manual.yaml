@@ -1,0 +1,129 @@
+# Works we already know from our own notes and code, entered by hand.
+# tools/registry.py seed reads this first, then the scans, scorecards and eval items.
+# A row with `primary_url` gets its key from the URL; a row without one names its `key`.
+# `also` lists other primary URLs the same work is found under (its paper, its announcement).
+# `leaderboard_models` are row names in results/**/leaderboard.csv (checked by the seed).
+# `status`: implemented_scored | implemented_not_scored | reference
+# `source`: where in this repo the row comes from.
+works:
+  # Foundation models (REFERENCE.md, "Candidate rows and notes"; models/pins.json)
+  - title: Chronos-2
+    kind: model
+    primary_url: https://huggingface.co/amazon/chronos-2
+    status: implemented_scored
+    leaderboard_models: [chronos2, chronos2_temperature, chronos2_temperature_gap48, chronos2_temperature_calendar]
+    source: "REFERENCE.md, model table row Chronos-2; models/chronos2.py; models/pins.json"
+  - title: Timestral-209M
+    kind: model
+    primary_url: https://huggingface.co/mistralai/Timestral-209M
+    also: [https://arxiv.org/abs/2610.37585, https://mistral.ai/news/timestral/]
+    status: implemented_scored
+    leaderboard_models: [timestral_temperature]
+    source: "REFERENCE.md, model table row Timestral; models_ff/run_ff.py SPECS; models/pins.json"
+  - title: TimesFM 2.5
+    kind: model
+    primary_url: https://huggingface.co/google/timesfm-2.5-200m-pytorch
+    status: implemented_scored
+    leaderboard_models: [timesfm25, timesfm25_temperature]
+    source: "REFERENCE.md, model table row TimesFM 2.5; models_ff/run_ff.py SPECS; models_ff/timesfm25_xreg.py"
+  - title: TimesFM 3.0
+    kind: model
+    primary_url: https://huggingface.co/google/timesfm-3.0-pytorch
+    status: implemented_scored
+    leaderboard_models: [timesfm3_temperature]
+    source: "REFERENCE.md, model table row TimesFM-3; models_ff/run_ff.py SPECS; models/pins.json"
+  - title: TabPFN v2 regressor (through TabPFN-TS)
+    kind: model
+    primary_url: https://huggingface.co/Prior-Labs/TabPFN-v2-reg
+    status: implemented_not_scored
+    note: "Gate run only (results/gate/models_v13); the scored set takes about 50 h on CPU (decision 29)."
+    source: "models_ff/tabpfn_ts_v2.py; models/pins.json; DECISIONS.md decision 29"
+  - title: t0-gamma
+    kind: model
+    primary_url: https://huggingface.co/theforecastingcompany/t0-gamma
+    status: reference
+    source: "REFERENCE.md, model table row t0-gamma"
+  - title: TiRex-2
+    kind: model
+    primary_url: https://huggingface.co/NX-AI/TiRex-2
+    status: reference
+    source: "REFERENCE.md, model table row TiRex-2"
+  - title: Kumo Forecast
+    kind: model
+    primary_url: https://huggingface.co/nvidia/Kumo-Forecast
+    status: reference
+    source: "REFERENCE.md, model table row Kumo Forecast"
+  - title: FoundationForecast (wrapper library for pretrained forecasting models)
+    kind: framework
+    primary_url: https://github.com/TimeCopilot/foundationforecast
+    status: implemented_scored
+    note: "Used at a pinned commit in models_ff/; the rows it produced are listed under each model."
+    source: "models_ff/pyproject.toml; notes/foundationforecast.md"
+
+  # Classical and machine-learning methods (notes/standard_methods.md, "Electricity load"; harness/baselines.py)
+  - key: method:seasonal-naive
+    title: Seasonal naive (same hour last week)
+    kind: method
+    status: implemented_scored
+    leaderboard_models: [seasonal_naive]
+    source: "notes/standard_methods.md, load table row 1; harness/baselines.py seasonal_naive"
+  - key: method:lag-regression
+    title: Per-hour lag regression with calendar and temperature (adapted from the GB demand study)
+    kind: method
+    status: implemented_scored
+    leaderboard_models: [lag_regression, lag_regression_temperature]
+    note: "The v1 primary baseline, named 'temperature-only regression'."
+    source: "notes/moran.md; harness/baselines.py lag_regression_temperature; DECISIONS.md decision 8"
+  - title: "Tao's Vanilla Benchmark (GEFCom2012 organisers' regression)"
+    kind: method
+    primary_url: https://doi.org/10.1016/j.ijforecast.2013.07.001
+    status: implemented_scored
+    leaderboard_models: [vanilla_benchmark, vanilla_benchmark_trend, vanilla_benchmark_trend_holiday]
+    note: "With trend it is the protocol-v2 primary baseline. Untuned; no recency terms."
+    source: "notes/hong2014_gefcom2012.md; notes/standard_methods.md, load table row 2; harness/baselines.py _vanilla"
+  - key: method:vanilla-recency
+    title: Recency-effect regression (Vanilla plus lagged and averaged temperatures; Wang, Liu, Hong 2016)
+    kind: method
+    status: reference
+    note: "Formula in REFERENCE.md; never implemented. On the v3 shortlist."
+    source: "notes/standard_methods.md, load table row 3; REFERENCE.md 'Vanilla + recency'"
+  - key: method:gam-load
+    title: Additive models (GAM) for load
+    kind: method
+    status: reference
+    note: "Summaries only; not run. On the v3 shortlist."
+    source: "notes/standard_methods.md, load table row 4; notes/classical_baselines.md"
+  - title: Boosted trees, competition grade (BigDEAL 2022 entry design)
+    kind: method
+    primary_url: https://arxiv.org/abs/2305.05575
+    status: implemented_scored
+    leaderboard_models: [lightgbm_competition]
+    note: "Our version is untuned (decision 29)."
+    source: "notes/standard_methods.md, load table row 5; harness/baselines.py lightgbm_competition"
+  - key: method:lightgbm-lag-inputs
+    title: LightGBM on the lag regression's six inputs
+    kind: method
+    status: implemented_scored
+    leaderboard_models: [lightgbm_temperature]
+    source: "harness/baselines.py lightgbm_temperature; DECISIONS.md 'Also fixed'"
+  - key: method:mstl
+    title: MSTL (multi-seasonal decomposition), univariate
+    kind: method
+    status: reference
+    note: "statsforecast needs pandas below 3.0, so it cannot go into core/ (notes/model_families.md)."
+    source: "notes/standard_methods.md, load table row 6; notes/model_families.md shortlist row 3"
+  - key: method:nhits
+    title: NHITS with future temperature (neuralforecast)
+    kind: method
+    status: reference
+    source: "notes/model_families.md shortlist row 6"
+  - key: method:tabicl-v2
+    title: TabICLv2 on the competition feature table
+    kind: model
+    status: reference
+    source: "notes/model_families.md shortlist row 4"
+  - key: method:autogluon-timeseries
+    title: AutoGluon-TimeSeries as an AutoML reference
+    kind: framework
+    status: reference
+    source: "notes/model_families.md shortlist row 8"
