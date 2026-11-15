@@ -115,5 +115,11 @@
  "label": "ACCEPT_RUN",
  "label_reason": "Relevant (hourly electric load, Chronos-2 with known-future covariates, weather taken from archived forecasts as in our forecast regime) with a full-text primary source, and its headline comparison, the same model with and without calendar and weather covariates, can be re-measured now with our Chronos-2 adapter. The evidence is weak by the spec's rule (private data, no code, one site, headline window not significant after correction) and the setup is day-ahead at building scale, so the run tests whether 'the calendar carries the gain, weather adds little' transfers to week-ahead zonal load.",
  "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, pinned revision 29ec376, Apache-2.0). Rows that already exist: chronos2 (no covariates; AEP and AE only), chronos2_temperature and chronos2_temperature_calendar (all four zones, both regimes). Missing for the paper's design: a calendar-only arm (the harness calendar as past and future covariate, no temperature), which is the paper's best set-up, and the no-covariate row on JC and DOM. With those, the 2x2 (none, temperature, calendar, both) is read per zone and regime, with holiday weeks apart from ordinary weeks and their count stated, since the paper's gain is on day-type changes. New rows are secondary and need a protocol version and a DEVIATIONS.md line; gate first, score once. Differences to keep in view: 24 hours issued daily against 168 hours once a week; two buildings against a zone; a three-state day type with site closures against hour, day of week, holiday and year-end; six weather variables against temperature only; context of 7 to 28 days against 2,048 hours, which already shows the model many weekly cycles; CV-RMSE and MAPE averaged per day against our error ratio. Expect the opposite sign on weather: zonal load is weather-driven, so 'weather adds little' is the part least likely to transfer, and the receipt should report the calendar and weather halves separately.",
- "receipt": null
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261114T185655_judge_youcom_chronos2-covariates-building-energy_f9fe",
+  "session_id": "854cc24f-8a32-4c6f-8ab9-052889fced2c",
+  "cli_version": null,
+  "backfilled": true
+ }
 }

@@ -223,5 +223,11 @@
   "label": "ACCEPT_RUN",
   "label_reason": "A covariate-aware model release with open Apache-2.0 weights, code, model cards and a technical report, already listed in our spec as runnable with temperature through FoundationForecast. Its load evidence is one day-ahead case with realized temperature in which it trails Chronos-2, and its weights date leaves 3 of 52 scored weeks after it, so the run must carry that label.",
   "implementation_hint": "Run models_ff/run_ff.py with theforecastingcompany/t0-gamma (ff_native_exog, temperature as a known-future covariate). Needed first: a SPECS entry using the library's T0 wrapper with 2,048 hours of context, and a pin in models/pins.json with the weights file's own commit date (the commit list read here shows e08aee0 on 2026-10-15 and fef67ab on 2026-11-09; check which one last changed the weights). Report n_windows_after_weights = 3 if the weights date is 2026-10-15, 0 if 2026-11-09. tfc-t0 0.6.1 is already in models_ff/uv.lock, which the gamma card requires. The library ignores cross-inference when known-future covariates are passed, so the vendor's benchmark settings do not apply to our row. t0-beta (same size) and t0-alpha (102M, the checkpoint the 6.3-point claim is about) use the same wrapper if runtime is a problem or a second row is wanted. Gate origins first, on CPU.",
-  "receipt": null
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261114T161326_judge_youcom_t0-forecasting-with-context_a43c",
+    "session_id": "4b01d852-254d-4745-b461-3085f05a46dc",
+    "cli_version": null,
+    "backfilled": true
+  }
 }

@@ -201,5 +201,11 @@
   "n_windows": 48,
   "n_windows_after_weights": 8,
   "verdict": "untestable"
+ },
+ "provenance": {
+  "run_id": "20261114T174352_judge_youcom_timesfm-3_0c48",
+  "session_id": "c2109fcb-d8c6-4dd7-b1f2-d67f5555d1e4",
+  "cli_version": null,
+  "backfilled": true
  }
 }

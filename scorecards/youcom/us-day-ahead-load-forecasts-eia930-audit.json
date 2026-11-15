@@ -145,5 +145,11 @@
   "label": "ACCEPT_STAGE3",
   "label_reason": "Sourced and on our target data (hourly EIA-930 demand, with public code and result files that support the three-quarters figure), but it is an audit of operators' own day-ahead forecasts in CAISO, not a forecasting method, so no model in runnable_models can re-measure its headline on PJM zones JC and DOM. What could carry over is a data check on whether our demand series includes storage charging, which is work outside the harness and not a receipt.",
   "implementation_hint": "No model from runnable_models is involved; nothing goes through models/chronos2.py or models_ff/run_ff.py. A stage-3 check would be on the data side: look for the EIA-930 storage-demand code (DS) and battery generation for PJM in the BALANCE files, and ask whether the sub-BA demand for JC and DOM counts storage charging, before reading any trend in our errors as a forecasting effect. The package's code/caiso_accuracy_fullhours.py shows the calculation (error against load and against load minus charging); write our own version, the licence of the code inside the archive was not read.",
-  "receipt": null
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261114T163741_judge_youcom_us-day-ahead-load-forecasts-eia930-audit_ab4a",
+    "session_id": "999b75ad-19d1-4349-855a-828cf85e6fd7",
+    "cli_version": null,
+    "backfilled": true
+  }
 }

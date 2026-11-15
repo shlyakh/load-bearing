@@ -73,5 +73,11 @@
   "label": "PARTIAL",
   "label_reason": "On target in subject (electric load, horizons that span the week ahead, a protocol-first rolling-origin design) and sourced to its own Zenodo record, but the evidence that could be read is thin: the record describes the design and states no result, the paper it accompanies was not found anywhere, and the protocol and result tables sit inside an archive the provider's tools could not open. No model in runnable_models is named, so there is nothing to re-measure on PJM zones JC and DOM as it stands.",
   "implementation_hint": "Nothing to run through models/chronos2.py or models_ff/run_ff.py: no pretrained model or weights repository is named. To take this further, download Forcasting_reproduction_pack.zip by hand and read PROTOCOL.md, README.md and results/eval/metrics_main.csv for the method list, the scored horizons and the 7-day results, then re-judge. If the idea carries over, it would be as a design check on our side (does the best model change with horizon inside the 168 hours, or with the hour of day), written as our own code.",
-  "receipt": null
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261114T174812_judge_youcom_choosing-load-methods-horizon-four-grids_daf6",
+    "session_id": "61619193-cf90-4ab2-9089-b8432565a91d",
+    "cli_version": null,
+    "backfilled": true
+  }
 }

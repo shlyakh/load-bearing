@@ -157,5 +157,11 @@
  "label": "PARTIAL",
  "label_reason": "Relevant in schedule (week-ahead electric load from weekly origins over a full year) and backed by a peer-reviewed primary source, but the evidence is thin for our purpose: no code or processed data are public, the target is daily mean load without future weather, and the paper's own result is that the ensemble is not significantly different from the best comparator in any of 12 cells. There is nothing to run now and no headline number that a run on our benchmark could confirm or fail to confirm.",
  "implementation_hint": "No model from runnable_models is involved and no weights or code exist to point at; nothing goes through models/chronos2.py or models_ff/run_ff.py. If the idea is taken up later it is a stage-3 addition to the harness, not a candidate run: blend the per-window forecasts we already store (temperature-only regression, LightGBM, Chronos-2) with one convex weight vector per lead time, fitted on windows before the scored ones and updated only from losses of earlier origins. That would be secondary work under a new protocol version, and the paper itself reports no significant gain over a fixed convex blend.",
- "receipt": null
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261114T174907_judge_youcom_ltcc-weekly-ahead-load-ensemble_f6ab",
+  "session_id": "d28614cf-04fe-491f-a6a4-a9bfa9b63c26",
+  "cli_version": null,
+  "backfilled": true
+ }
 }

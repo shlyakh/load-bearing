@@ -193,5 +193,11 @@
  "label": "PARTIAL",
  "label_reason": "Closely on target (hourly load driven by archived weather forecasts, scored over two years) and backed by its own preprint, but the evidence is thin: no code or data, no intervals or significance tests, comparators that are all the same model, and a 24-hour horizon rather than a week. There are no weights or code to run, and our benchmark holds one weather forecast source per zone, so the headline comparison (several providers against one) cannot be re-measured now.",
  "implementation_hint": "No model from runnable_models is involved; nothing goes through models/chronos2.py or models_ff/run_ff.py. If the idea is taken up it is a stage-3 addition, not a candidate run: fetch a second and third archived temperature forecast for JC and DOM (lead-matched, as weather_forecast is now), fit the temperature-only regression once per source, and compare the uniform average of the three forecasts with the single-source rows in the forecast regime. The paper itself finds a uniform average gets most of the gain. That needs new raw data and a new protocol version with a line in DEVIATIONS.md, and would be a secondary result.",
- "receipt": null
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261114T175438_judge_youcom_weather-forecast-aggregation-gam-load_ab9a",
+  "session_id": "a516d25c-73d5-4bb2-9d98-160e6f94f569",
+  "cli_version": null,
+  "backfilled": true
+ }
 }

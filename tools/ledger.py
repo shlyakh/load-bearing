@@ -9,6 +9,8 @@ A note is at most 400 characters. A page with more to record gets several rows: 
 `add` again with the same URL and a different note. `--published` is the date the page
 was first published (YYYY-MM-DD), or `unknown`. A search that found nothing is recorded
 with `--url` set to the search engine's address and the query and outcome in the note.
+Each row carries the id of the run that added it (`run_id`, from RECEIPTS_RUN_ID), so a
+verdict can be traced to its run with tools/trace.py; rows from before Nov 15 2026 have none.
 """
 
 from __future__ import annotations
@@ -16,6 +18,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -45,6 +48,8 @@ def add(a: argparse.Namespace) -> None:
         "note": a.note,
         "provider": a.provider,
         "retrieved_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        # set by tools/run_skill.py for a headless run; a row added by hand says so
+        "run_id": os.environ.get("RECEIPTS_RUN_ID") or "interactive",
     }
     p = path(a.provider, a.candidate)
     p.parent.mkdir(parents=True, exist_ok=True)

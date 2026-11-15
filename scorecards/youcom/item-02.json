@@ -183,5 +183,11 @@
   "label": "ACCEPT_RUN",
   "label_reason": "On target (electric load with forecast weather as a known-future input, against a lag regression given the same weather), with a public record, plan, code and results, and its headline comparison can be re-measured now with Chronos-2, which is in runnable_models. Evidence is moderate rather than strong because the tie with the regression is a descriptive estimate, not the confirmatory test, and the regression had calendar terms the models did not.",
   "implementation_hint": "Chronos-2 with temperature through models/chronos2.py (weights amazon/chronos-2, direct_adapter) against the temperature-only regression, forecast regime, per zone: this is the protocol's primary comparison. Secondary rows for the study's other models: mistralai/Timestral-209M with temperature and google/timesfm-2.5-200m-pytorch univariate, both through models_ff/run_ff.py. The study used revision 29ec376 of amazon/chronos-2, half-hourly data, an eight-week context and three weather variables; ours is hourly, 168 h ahead, temperature only.",
-  "receipt": null
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261114T160617_judge_youcom_item-02_8c42",
+    "session_id": "78e27b71-0df5-4650-ade3-a2f6e181844a",
+    "cli_version": null,
+    "backfilled": true
+  }
 }

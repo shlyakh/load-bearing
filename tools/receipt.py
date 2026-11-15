@@ -85,6 +85,8 @@ def main() -> None:
         "n_windows": int(lrow["n_windows"]),
         "n_windows_after_weights": None if pd.isna(n_after) else int(n_after),
         "verdict": overall,
+        "model": a.model,
+        "protocol_version": str(proto.get("version", "")),
     }
     errs = errors(card)
     if errs:

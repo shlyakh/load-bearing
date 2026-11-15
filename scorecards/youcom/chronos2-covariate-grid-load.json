@@ -165,5 +165,11 @@
   "label": "ACCEPT_STAGE3",
   "label_reason": "Relevant and sourced: Chronos-2 with temperature as a known-future covariate on US ISO zonal load, from a paper with full tables. Its headline comparison (fine-tuned Chronos-2 against task-specific deep learning models) cannot be re-measured now: our adapter runs Chronos-2 zero-shot only, fine-tuning needs a training pipeline beyond an adapter, and the baselines have no public code. Only the secondary zero-shot finding overlaps with what we already run.",
   "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, weights pinned at 29ec376). Runnable today: zero-shot Chronos-2 with temperature against the temperature-only regression, which is the protocol's primary comparison and speaks only to the paper's zero-shot finding, against a different baseline. To test the headline: add a fine-tuning step (the paper used 20 epochs, full fine-tune, learning rate 1e-6, on a GPU; whether the installed chronos-forecasting exposes fine-tuning was not checked) trained only on load before each cutoff, record the new weights' date, and check it fits the 60-minute CPU limit. The paper's baselines (MMMF TCN, LSTM, Transformer) have no public code. The paper is daily with 30 to 90 steps; ours is hourly with 168.",
-  "receipt": null
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261114T160950_judge_youcom_chronos2-covariate-grid-load_a2de",
+    "session_id": "6aa1d0df-55cd-43f5-a5b3-ce24439cb5c0",
+    "cli_version": null,
+    "backfilled": true
+  }
 }

@@ -210,5 +210,11 @@
  "label": "ACCEPT_STAGE3",
  "label_reason": "On target (hourly load including regional series, a 96-hour horizon) with a primary source giving per-level numbers, but its headline is the gain from LoRA adaptation of MOIRAI 1.0 Large, and re-measuring that needs a fine-tuning pipeline on a GPU, not an adapter: every model we run is used as released. The evidence is thin (no code, seeds or intervals, test-selected ranks for Chronos-2) and the central model's weights are non-commercial.",
  "implementation_hint": "Central model: Salesforce/moirai-1.0-R-large (cc-by-nc-4.0, flagged non-commercial; weights from Feb to Aug 2024). spec.yaml lists Moirai among the FoundationForecast wrappers as ff_univariate (models_ff/run_ff.py), which would cover the pretrained row only, on load history, after checking that the wrapper loads the 1.0 Large checkpoint and fits the CPU limit. The headline needs stage-3 work: a LoRA trainer (uni2ts for MOIRAI, or the chronos-forecasting fit method with a LoRA config for amazon/chronos-2, Apache-2.0, which our models/chronos2.py adapter runs pretrained only), trained on load before each cutoff or once on data before the scored window, rank fixed in advance (16) so no rank is picked on scored weeks, then the adapted and pretrained models scored against the temperature-only regression. The paper trained on a V100 or A100, so this does not fit the 60-minute CPU limit as described. Runnable today as a secondary reading only: the existing pretrained Chronos-2 rows against the LightGBM and temperature-only regression rows speak to 'pretrained beats tree baselines', with a much stronger baseline than the paper's XGBoost. Differences to keep in view: 96 hours every 96 hours against 168 hours once a week; no temperature at region level against temperature in both regimes; NMAE normalised by the series maximum against our error ratio.",
- "receipt": null
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261114T185249_judge_youcom_peft-tsfm-electrical-load_3f3f",
+  "session_id": "4a8af6a6-bd28-4221-a55b-618eeb15a9a1",
+  "cli_version": null,
+  "backfilled": true
+ }
 }

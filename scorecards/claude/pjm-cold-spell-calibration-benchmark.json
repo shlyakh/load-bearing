@@ -169,5 +169,11 @@
   "label": "ACCEPT_STAGE3",
   "label_reason": "Relevant and sourced: hourly PJM load with temperature-driven extremes, public MIT code, derived data and a written protocol. It cannot be re-measured on our benchmark with a model in runnable_models: the headline is interval coverage inside cold events from 2014 to 2022 for quantile models trained from scratch, which needs quantile outputs, coverage metrics and event windows our point-forecast harness does not have.",
   "implementation_hint": "No model in runnable_models is involved, so there is no script or weights repository to point at. A stage-3 version would add quantile outputs and 90% coverage scoring to the harness and compare coverage in cold weeks of the scored window against all weeks, per zone and regime; Chronos-2 (models/chronos2.py, amazon/chronos-2) already produces quantiles and could serve as the forecaster. The candidate's own pipeline is code/run_seq.sh in its repository (Python 3.11, scikit-learn, LightGBM).",
-  "receipt": null
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261113T161014_judge_claude",
+    "session_id": "09d79fe6-d62b-4ed1-9cd4-fde6d1c1299b",
+    "cli_version": null,
+    "backfilled": true
+  }
 }

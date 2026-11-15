@@ -197,5 +197,11 @@
  "label": "ACCEPT_STAGE3",
  "label_reason": "On target (hourly control-area load, weather as a known-future input, a 96-hour horizon) and well sourced, with public code, data and predictions, but its headline is about a Transformer trained from scratch with hyperparameter search and monthly retraining, which is not in runnable_models and needs a training pipeline, not an adapter. Its secondary finding, zero-shot Chronos-2 with covariates level with LightGBM and well behind trained models on the control-area series because of holidays, can be read against rows we already have, but that is not the headline comparison.",
  "implementation_hint": "Central model: the plain encoder-decoder Transformer from the authors' repository (KIT-IAI/load-forecasting-benchmark, MIT; main.py with config files), not in runnable_models. A stage-3 test would write our own trainer in harness/ for JC and DOM: train on load and temperature before each cutoff (the paper retrains monthly, context 168 to 720 hours, 100 HPO trials on a GPU), forecast 168 hours, score against the temperature-only regression; hyperparameters would have to be fixed before the scored weeks, and the run does not fit the 60-minute CPU limit as the paper describes it. Runnable today without new code, as a secondary reading only: compare the existing amazon/chronos-2 rows with temperature (direct_adapter, models/chronos2.py, pinned revision) with the LightGBM and temperature-only regression rows per zone and regime, and split the errors by weeks that contain a US holiday to see whether the paper's holiday weakness shows up at PJM. Differences to keep in view: 96 hours every hour against 168 hours once a week; reanalysis weather (our oracle regime) with irradiance, precipitation, wind and a holiday flag against temperature only.",
- "receipt": null
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261114T163741_judge_youcom_load-benchmark-across-grid-levels_90ae",
+  "session_id": "613f4ef9-3981-47f1-82e5-d445f0e3a3a0",
+  "cli_version": null,
+  "backfilled": true
+ }
 }

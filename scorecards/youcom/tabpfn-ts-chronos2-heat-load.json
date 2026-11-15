@@ -191,5 +191,11 @@
   "n_windows": 48,
   "n_windows_after_weights": 48,
   "verdict": "partially"
+ },
+ "provenance": {
+  "run_id": "20261114T175927_judge_youcom_tabpfn-ts-chronos2-heat-load_7d26",
+  "session_id": "313bce07-b520-44fa-9751-8695578b7fc1",
+  "cli_version": null,
+  "backfilled": true
  }
 }

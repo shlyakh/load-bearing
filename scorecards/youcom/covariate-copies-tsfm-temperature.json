@@ -156,5 +156,11 @@
  "label": "ACCEPT_RUN",
  "label_reason": "On target on all three scales (hourly zonal load, 168 hours, temperature as a known-future covariate) with a full-text primary source, and its headline comparison, the same model given the temperature four times against once, can be re-measured now with Chronos-2 on our frozen windows. The evidence is weak by the spec's rule (preprint, code on request, no results files, one dataset under 90 days), and for Chronos-2 on load the paper's own intervals include no change, so the run tests whether 'the forecast depends on the copy count' transfers, not an accuracy gain.",
  "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, weights at the pinned revision 29ec376, the same revision the paper uses). Add an arm that passes the temperature column four times (identical values under four names, past and future) and compare with the existing one-temperature rows per zone and regime: ratio of errors and the shift of the median forecast. The paper's arm is oracle weather only; our forecast regime is an extension and must be reported separately. The paper scores WQL; our metrics are point errors, so the ratio is on MAE, with WQL only if the quantiles are already stored. Other models: TiRex-2 (largest effect in the paper) and t0-beta have FoundationForecast wrappers with native covariates (ff_native_exog, models_ff/run_ff.py) but are not run here yet; mistralai/Timestral-209M (ff_native_exog) is not in the paper and would be a secondary row. The source-bias correction changes the model's attention code and is not runnable through our adapters; only the uncorrected copy effect can be measured.",
- "receipt": null
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261114T163741_judge_youcom_covariate-copies-tsfm-temperature_fc56",
+  "session_id": "139a7c5e-5edb-4404-89f4-bf8328876535",
+  "cli_version": null,
+  "backfilled": true
+ }
 }

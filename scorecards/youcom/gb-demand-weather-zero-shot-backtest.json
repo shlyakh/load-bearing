@@ -257,5 +257,11 @@
   "n_windows": 48,
   "n_windows_after_weights": 48,
   "verdict": "partially"
+ },
+ "provenance": {
+  "run_id": "20261114T160950_judge_youcom_gb-demand-weather-zero-shot-backtest_d534",
+  "session_id": "223455c5-c1f8-427a-8eb0-5a5359ca5f21",
+  "cli_version": null,
+  "backfilled": true
  }
 }

@@ -199,5 +199,11 @@
  "label": "ACCEPT_STAGE3",
  "label_reason": "Relevant (hourly load, day-ahead, real weather forecasts as known-future inputs) and well sourced: the paper, a frozen public leaderboard with per-day scores, the scoring repository and the library are all readable. Its headline comparison, a retrained LightGBM pipeline against the grid operators' own day-ahead forecast, cannot be re-measured with a model in runnable_models: it needs an operator forecast for JC and DOM that we do not hold and a daily day-ahead protocol, which is work beyond an adapter; the evidence is also weak by the spec's rule (41 summer days), and the organiser's later board shows the margin halving and the Chronos-2 tie not holding.",
  "implementation_hint": "Central model: the recursive LightGBM pipeline of spotforecast2-safe (AGPL-3.0-or-later, public code, no pretrained weights). It is not in runnable_models; running it would need its own adapter in a separate environment, and whether daily surrogate tuning fits the 60-minute CPU limit was not checked. The headline cannot be re-measured as it stands: there is no operator day-ahead forecast for JC and DOM in data/raw (finding and archiving one would be a new raw source with its own hashes), and the paper scores daily origins at 24 hours where protocol.yaml has weekly origins at 168 hours, so it would be a new protocol version with a dated line in DEVIATIONS.md, gate origins first, and a secondary result. What can be read today without a new run, as a secondary note and not a receipt for this candidate: the paper's second finding, univariate Chronos-2 against a tree model that has weather forecasts, is the ratio of the existing chronos2 row (amazon/chronos-2 at 29ec376, models/chronos2.py, weights dated 2025-10-30, all 48 windows after them) to the lightgbm_temperature row in the forecast regime, per zone, with the mae_day1 columns as the nearest thing to day-ahead (day 1 of a Monday-issued week, not a daily forecast). Differences to state if that is done: our LightGBM is not retuned daily and sees temperature only, where theirs has twelve weather variables plus calendar, solar and holiday columns; 168 hours against 24; two zones against a national aggregate; 48 weekly windows over a year against 39 summer days. MACL2L: not runnable, no public weights or code found.",
- "receipt": null
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261114T185854_judge_youcom_german-stlf-live-challenge_bb53",
+  "session_id": "22753e8d-8887-4f8f-bcbe-5da91e70b3c0",
+  "cli_version": null,
+  "backfilled": true
+ }
 }

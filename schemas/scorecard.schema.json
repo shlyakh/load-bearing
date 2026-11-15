@@ -379,6 +379,48 @@
             "does_not_transfer",
             "untestable"
           ]
+        },
+        "model": {
+          "type": "string",
+          "description": "The leaderboard row the receipt was read from."
+        },
+        "protocol_version": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "description": "Which run wrote this scorecard. Stamped by tools/run_skill.py after the judge finishes, never by the judge. Absent on scorecards from before Nov 15 2026 that no run record maps to.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "session_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cli_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "registry_key": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "backfilled": {
+          "type": "boolean",
+          "description": "true when the run was matched afterwards from runs/*.meta.json"
         }
       }
     }

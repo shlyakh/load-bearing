@@ -267,5 +267,11 @@
   "n_windows": 48,
   "n_windows_after_weights": 1,
   "verdict": "untestable"
+ },
+ "provenance": {
+  "run_id": "20261114T185249_judge_youcom_timestral_3787",
+  "session_id": "c7f3bc46-db11-4246-991a-5abd2adbcce2",
+  "cli_version": null,
+  "backfilled": true
  }
 }

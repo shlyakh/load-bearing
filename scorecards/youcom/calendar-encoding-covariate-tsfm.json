@@ -132,5 +132,11 @@
  "label": "ACCEPT_RUN",
  "label_reason": "Relevant (hourly electric load is four of its nine series, day-ahead, calendar covariates on the model of our primary comparison) with a full-text primary source, and its comparison, the same model given the same calendar in different encodings, can be re-measured now with Chronos-2 on our frozen windows. The evidence is weak by the spec's rule (preprint, code not yet released, no intervals, few holiday windows) and the setup differs from ours in horizon and in having no temperature, so the run tests whether 'the encoding matters, mostly on holidays' transfers to week-ahead load with temperature already supplied.",
  "implementation_hint": "Central model amazon/chronos-2 (direct_adapter, models/chronos2.py, pinned revision 29ec376). The existing secondary row chronos2_temperature_calendar already passes hour and day of week as strings, holiday and year-end as 0/1. Add arms that keep the temperature and the same harness calendar values and change only the encoding: ordinal numbers; sin/cos; one target-encoding column (mean load per hour and day type over the 2,048-hour context, holiday treated as Sunday); and two columns (hour-weekday profile plus hour-holiday profile). Compute target encodings from the context up to the cutoff only (rule 2). Compare per zone and regime against chronos2_temperature and chronos2_temperature_calendar, with holiday weeks reported apart from ordinary weeks; with 52 weekly windows the holiday subset is small, so say how many. All new rows are secondary and need a protocol version and a DEVIATIONS.md line. The paper's context is 8192 h and horizon 24 h; ours are 2,048 h and 168 h (its context-2048 rerun shows the same pattern, with weaker holiday gains for the richer target encodings). Other models: TiRex-2 and TimesFM 3.0 have FoundationForecast wrappers with native covariates (ff_native_exog, models_ff/run_ff.py) but are not run here yet; TabPFN-TS is wrapped as ff_univariate only; mistralai/Timestral-209M (ff_native_exog) is not in the paper and would be a further secondary row.",
- "receipt": null
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261114T174352_judge_youcom_calendar-encoding-covariate-tsfm_2107",
+  "session_id": "09bd4c0c-8c51-471e-ac92-43065ebc8849",
+  "cli_version": null,
+  "backfilled": true
+ }
 }
