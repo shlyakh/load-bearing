@@ -24,7 +24,8 @@ Claude Code session does not inherit that session's settings.
 Shell access. A scan or judge run is allowed only the tool scripts its skill names
 (BASH_SCRIPTS) and a few read-only commands (READ_ONLY), not any `uv run` command: the
 agent reads web pages, so its shell is kept narrow. This is the whole shell on a CI
-runner. On a laptop the user's own Claude Code settings are added to it. run-candidate keeps `uv run` because a person-supervised run starts models.
+runner. On a laptop the user's own Claude Code settings are added to it.
+run-candidate keeps `uv run` because a person-supervised run starts models.
 
 The provider decides which search tools the run may use:
   claude   WebSearch and WebFetch.
