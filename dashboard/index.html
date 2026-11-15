@@ -176,6 +176,18 @@ a { color: var(--model); }
 .duo > * { min-width: 0; }
 @media (max-width: 640px) { .duo { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
 @media (max-width: 760px) { .split { grid-template-columns: minmax(0, 1fr); } .wrap { gap: 40px; } }
+.revs { display: grid; gap: 10px; }
+.rev { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.rev summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+.rev summary b { font-weight: 600; color: var(--ink); flex: 1 1 320px; min-width: 0; }
+.rev .tag { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; color: var(--ink-2); white-space: nowrap; }
+.rev .tag.todo { background: var(--flag-bg); }
+.rev .tag.no { border-color: var(--ink); color: var(--ink); font-weight: 600; }
+.rev dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 12px 0 0; font-size: 14px; }
+.rev dt { color: var(--ink-3); }
+.rev dd { margin: 0; color: var(--ink-2); min-width: 0; overflow-wrap: anywhere; }
+#reg td, #reg th { font-size: 13px; text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+#reg td.key { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; overflow-wrap: anywhere; }
 </style>
 
 <div class="wrap">
@@ -195,6 +207,7 @@ a { color: var(--model); }
   <a href="#leaderboard" data-tab="leaderboard">Leaderboard</a>
   <a href="#weather" data-tab="weather">Weather</a>
   <a href="#candidates" data-tab="candidates">New claims <span class="count" id="tab-count"></span></a>
+  <a href="#review" data-tab="review">Review <span class="count" id="review-count"></span></a>
   <a href="#providers" data-tab="providers">You.com</a>
   <a href="#opencrawl" data-tab="opencrawl">Open Crawl</a>
   <a href="#agents" data-tab="agents">How it works</a>
@@ -422,6 +435,31 @@ a { color: var(--model); }
     </ul>
   </div>
   <div class="panel scroll"><table id="wx-table"></table></div>
+</section>
+
+<section data-tab="review">
+  <span class="eyebrow">Human review</span>
+  <h2>What the judge decided, and whether Yuri agrees</h2>
+  <p>Every scorecard the judge writes waits here for a review: a verdict on the label and four checks on the parts of the scorecard. The reviews are plain sheets in the repository (<code>reviews/</code>), so each one travels with the pull request of the weekly run that produced the scorecard.</p>
+  <div class="facts" id="rev-facts"></div>
+  <div class="controls">
+    <div class="seg" id="rev-filter" role="group" aria-label="Show"></div>
+    <div class="seg" id="rev-prov" role="group" aria-label="Judged with"></div>
+    <span class="note" id="rev-count"></span>
+  </div>
+  <div class="revs" id="revs"></div>
+</section>
+
+<section data-tab="review">
+  <span class="eyebrow">Registry</span>
+  <h2>Every work the project knows</h2>
+  <p>Papers, models, frameworks and methods, each under an identifier that does not change between scans (an arXiv number, a Zenodo record, a repository). A weekly scan skips what is already judged or implemented here.</p>
+  <div class="controls">
+    <div class="seg" id="reg-status" role="group" aria-label="Status"></div>
+    <label class="ctl" for="reg-q">Filter <input id="reg-q" type="search" placeholder="e.g. TimesFM, arxiv, GAM"></label>
+    <span class="note" id="reg-count"></span>
+  </div>
+  <div class="panel"><div class="scroll"><table id="reg"></table></div></div>
 </section>
 
 <section data-tab="providers">
@@ -692,6 +730,7 @@ a { color: var(--model); }
 <script src="us.js"></script>
 <script src="zones.js"></script>
 <script src="data.js"></script>
+<script src="reviews.js"></script>
 <script>
 (function () {
   const D = window.DATA, US = window.US;
@@ -732,6 +771,77 @@ a { color: var(--model); }
   window.addEventListener("hashchange", () => { showTab(); window.scrollTo(0, 0); });
   showTab();
   if (D.scan && D.scan.claude) document.getElementById("tab-count").textContent = (D.scan.merged || D.scan.claude).candidates.length;
+
+  // ---------- review: the judge's scorecards next to Yuri's verdicts, and the registry
+  (function () {
+    const R = window.REVIEWS;
+    if (!R) { document.querySelectorAll("section[data-tab='review']").forEach(el => { el.innerHTML = "<p class='note'>No review data: run dashboard/build_reviews.py.</p>"; }); return; }
+    const c = R.counts, todo = c.judge[1] - c.judge[0];
+    document.getElementById("review-count").textContent = todo || "";
+    const facts = [[c.judge[0] + " of " + c.judge[1], "scorecards reviewed"], [c.disagree, "labels Yuri disagreed with"],
+      [c.scan[0] + " of " + c.scan[1], "scanned works marked relevant or not"], [c.receipt[0] + " of " + c.receipt[1], "receipts reviewed"], [c.works, "works in the registry"]];
+    if (c.stale) facts.push([c.stale, "reviewed scorecards changed since the review"]);
+    d3.select("#rev-facts").selectAll("div").data(facts).join("div").attr("class", "fact").html("").each(function (d) {
+      d3.select(this).append("b").text(d[0]); d3.select(this).append("span").text(d[1]); });
+    let show = "todo", prov = "all";
+    const checks = [["claim_ok", "claim"], ["sources_ok", "sources"], ["relevance_ok", "relevance"], ["runnable_ok", "runnable class"]];
+    function drawRevs() {
+      const rows = R.judge.filter(r => (prov === "all" || r.provider === prov) &&
+        (show === "all" || (show === "todo" && !r.reviewed) || (show === "done" && r.reviewed) || (show === "disagree" && r.verdict === "disagree")));
+      document.getElementById("rev-count").textContent = rows.length + " of " + R.judge.length + " scorecards";
+      const card = d3.select("#revs").selectAll("details").data(rows, r => r.scorecard).join("details").attr("class", "rev");
+      card.html("");
+      const sum = card.append("summary");
+      sum.append("b").text(r => r.title);
+      sum.append("span").attr("class", "tag").text(r => r.provider);
+      sum.append("span").attr("class", "tag").text(r => "judge: " + r.label);
+      sum.append("span").attr("class", r => "tag " + (!r.reviewed ? "todo" : r.verdict === "disagree" ? "no" : ""))
+        .text(r => !r.reviewed ? "not reviewed" : r.verdict === "disagree" ? "Yuri: " + (r.corrected_label || "disagrees") : r.verdict === "agree" ? "Yuri agrees" : "Yuri: " + (r.verdict || "checks only"));
+      sum.filter(r => r.stale === "yes").append("span").attr("class", "tag no").text("changed since review");
+      const dl = card.append("dl");
+      function row(sel, term, text) { sel.append("dt").text(term); return sel.append("dd").text(text); }
+      dl.each(function (r) {
+        const d = d3.select(this);
+        row(d, "Why", r.label_reason || "");
+        row(d, "Claims", r.claims.join(" / ") || "none recorded");
+        row(d, "Scores", r.relevance + "; evidence " + r.evidence_strength + "; class " + r.runnable_class + (r.receipt_verdict ? "; receipt: " + r.receipt_verdict : ""));
+        const src = row(d, "Sources", "");
+        r.sources.forEach((s, i) => { if (i) src.append("span").text(", "); src.append("a").attr("href", s.url).attr("rel", "noopener").text(s.kind + " " + (i + 1)); });
+        if (!r.sources.length) src.text("none");
+        if (r.reviewed) {
+          row(d, "Review", checks.map(([k, n]) => n + ": " + (r[k] === "y" ? "ok" : r[k] === "n" ? "wrong" : "not checked")).join("; ") + (r.reviewed_at ? " (" + r.reviewed_at + ")" : ""));
+          if (r.reason || r.note_public) row(d, "Yuri's reason", [r.reason, r.note_public].filter(Boolean).join(" "));
+        }
+        row(d, "Trace", "tools/trace.py " + r.candidate_id + (r.run_id ? "  (run " + r.run_id + ")" : "  (no run record)"));
+        row(d, "Work", r.key);
+      });
+    }
+    seg("rev-filter", [{ label: "To review", value: "todo" }, { label: "Reviewed", value: "done" }, { label: "Disagreed", value: "disagree" }, { label: "All", value: "all" }], show, v => { show = v; drawRevs(); });
+    seg("rev-prov", [{ label: "Both", value: "all" }, { label: "Claude search", value: "claude" }, { label: "You.com", value: "youcom" }], prov, v => { prov = v; drawRevs(); });
+    drawRevs();
+
+    const names = { implemented_scored: "Scored", implemented_not_scored: "Implemented", judged: "Judged", rejected: "Rejected", seen_not_judged: "Seen, not judged", reference: "Reference" };
+    let status = "all", q = "";
+    function drawReg() {
+      const rows = R.registry.filter(e => (status === "all" || e.status === status) &&
+        (!q || (e.title + " " + e.key + " " + e.kind).toLowerCase().includes(q)));
+      document.getElementById("reg-count").textContent = rows.length + " of " + R.registry.length + " works";
+      const t = d3.select("#reg"); t.html("");
+      t.append("thead").append("tr").selectAll("th").data(["Work", "Kind", "Status", "Detail", "Last seen", "Identifier"]).join("th").text(d => d);
+      const tr = t.append("tbody").selectAll("tr").data(rows).join("tr");
+      tr.append("td").each(function (e) { const td = d3.select(this);
+        if (e.url) td.append("a").attr("href", e.url).attr("rel", "noopener").text(e.title); else td.text(e.title); });
+      tr.append("td").text(e => e.kind);
+      tr.append("td").text(e => names[e.status] || e.status);
+      tr.append("td").text(e => [e.models.length ? "rows: " + e.models.join(", ") : "", Object.entries(e.labels).map(([p, l]) => p + ": " + l).join(", "),
+        e.queue ? "queued (" + e.queue + ")" : "", e.relations.map(x => x.type.replace(/_/g, " ") + " " + x.target).join("; "), e.note].filter(Boolean).join(". "));
+      tr.append("td").text(e => e.last_seen || "");
+      tr.append("td").attr("class", "key").text(e => e.key);
+    }
+    seg("reg-status", [{ label: "All", value: "all" }].concat(Object.entries(names).map(([value, label]) => ({ label, value }))), status, v => { status = v; drawReg(); });
+    document.getElementById("reg-q").addEventListener("input", ev => { q = ev.target.value.trim().toLowerCase(); drawReg(); });
+    drawReg();
+  })();
 
   // ---------- tour: walks the tabs with captions. body.dataset.demo is "running" then "done" (read by the recorder).
   // Tour captions read their numbers from data.js.
