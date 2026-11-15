@@ -85,6 +85,10 @@ notes/                 moran.md and other reading notes
 schemas/               scorecard JSON schema (Friday)
 scorecards/ evidence/ candidates/   agent output, kept per provider (claude, youcom)
 tools/                 ledger.py, validate_scorecard.py, receipt.py
+                       weekly.py (the scheduled run), registry.py, reviews.py, trace.py, guard_paths.py
+registry/              entries.jsonl: every known work under a stable key; seed_manual.yaml
+reviews/               scan.csv, judge.csv, receipt.csv: Yuri's reviews (never read by /judge)
+runs/                  one record per headless run (transcripts are git-ignored, archived privately)
 dashboard/            static web page: index.html, build_data.py -> data.js, us.js (state outlines)
 .claude/skills/        scan, judge, run-candidate; providers.md maps them to search tools
 ```
