@@ -11,6 +11,7 @@ Provider is `claude` unless given (see `.claude/skills/providers.md`).
    `eval/items.yaml` (use only `title`, `claim`, `discovered_via`, `primary_sources`;
    never read `label_proposed`, `label_yuri`, `reason`, `verified` or `unverified`), an id from a
    `candidates/` file, or a URL.
+   Never read `reviews/`: it holds Yuri's verdicts on earlier scorecards.
 2. Gather evidence with the provider's `search` and `fetch`. Look for the primary
    source first: model card, repository, paper, data record. For each page used, add a
    ledger row with `tools/ledger.py add` (URL, title, published date, a short
