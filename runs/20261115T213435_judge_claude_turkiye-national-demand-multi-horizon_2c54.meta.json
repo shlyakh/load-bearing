@@ -1,0 +1,159 @@
+{
+ "run_id": "20261115T213435_judge_claude_turkiye-national-demand-multi-horizon_2c54",
+ "skill": "judge",
+ "provider": "claude",
+ "args": [
+  "turkiye-national-demand-multi-horizon"
+ ],
+ "note": "",
+ "model_requested": null,
+ "provider_tools_allowed": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "provider_tools_denied": [],
+ "mcp_server": null,
+ "mcp_servers": [
+  {
+   "name": "claude.ai Claude Docs",
+   "status": "connected"
+  },
+  {
+   "name": "claude.ai Canva",
+   "status": "needs-auth"
+  },
+  {
+   "name": "claude.ai Atlassian Rovo",
+   "status": "needs-auth"
+  },
+  {
+   "name": "claude.ai Google Drive",
+   "status": "connected"
+  },
+  {
+   "name": "claude.ai Gmail",
+   "status": "needs-auth"
+  },
+  {
+   "name": "claude.ai Google Calendar",
+   "status": "needs-auth"
+  }
+ ],
+ "search_tools_present": [
+  "WebFetch",
+  "WebSearch",
+  "mcp__claude_ai_Claude_Docs__batch",
+  "mcp__claude_ai_Claude_Docs__create",
+  "mcp__claude_ai_Claude_Docs__delete",
+  "mcp__claude_ai_Claude_Docs__export",
+  "mcp__claude_ai_Claude_Docs__guide",
+  "mcp__claude_ai_Claude_Docs__query",
+  "mcp__claude_ai_Claude_Docs__read",
+  "mcp__claude_ai_Claude_Docs__update",
+  "mcp__claude_ai_Google_Drive__copy_file",
+  "mcp__claude_ai_Google_Drive__create_file",
+  "mcp__claude_ai_Google_Drive__download_file_content",
+  "mcp__claude_ai_Google_Drive__get_file_metadata",
+  "mcp__claude_ai_Google_Drive__get_file_permissions",
+  "mcp__claude_ai_Google_Drive__get_shared_drive_metadata",
+  "mcp__claude_ai_Google_Drive__list_file_revisions",
+  "mcp__claude_ai_Google_Drive__list_recent_files",
+  "mcp__claude_ai_Google_Drive__list_shared_drives",
+  "mcp__claude_ai_Google_Drive__read_file_content",
+  "mcp__claude_ai_Google_Drive__search_files",
+  "mcp__claude_ai_Google_Drive__share_file",
+  "mcp__claude_ai_Google_Drive__trash_file",
+  "mcp__claude_ai_Google_Drive__update_file"
+ ],
+ "git_commit": "592e1de",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-15T21:34:35+00:00",
+ "wall_seconds": 520.1,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "e5059d30-24ba-4285-8c5e-627c5cd6a5ad",
+ "is_error": false,
+ "num_turns": 35,
+ "total_cost_usd": 3.2728264,
+ "usage": {
+  "input_tokens": 38,
+  "cache_creation_input_tokens": 103863,
+  "cache_read_input_tokens": 1245353,
+  "output_tokens": 31623,
+  "output_tokens_details": {
+   "thinking_tokens": 4176
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 103863,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1513,
+    "cache_read_input_tokens": 116795,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 38,
+   "outputTokens": 31623,
+   "cacheReadInputTokens": 1245353,
+   "cacheCreationInputTokens": 103863,
+   "webSearchRequests": 0,
+   "costUSD": 3.1761026000000006,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 4176,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 103863,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 322298,
+   "outputTokens": 88988,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.0967238,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 56677,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 0,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Read": 3,
+  "Grep": 2,
+  "ToolSearch": 1,
+  "Bash": 8,
+  "WebFetch": 16,
+  "WebSearch": 2,
+  "Write": 1
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/claude/turkiye-national-demand-multi-horizon.json"
+ ]
+}

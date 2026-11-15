@@ -1,0 +1,232 @@
+{
+  "candidate_id": "turkiye-national-demand-multi-horizon",
+  "title": "Multi-horizon forecasting of national electricity demand in Türkiye: run records, forecasts and trained models",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://zenodo.org/records/23143335",
+    "provider": "claude",
+    "retrieved_at": "2026-11-15T21:41:00Z"
+  },
+  "candidate_type": "practitioner_backtest",
+  "primary_sources": [
+    {
+      "url": "https://zenodo.org/api/records/23143335",
+      "kind": "zenodo",
+      "paraphrase": "Zenodo dataset v1.0 by Abdulhalik Oguz, DOI 10.5281/zenodo.23143335, published 2026-10-04, CC-BY-4.0. Holds 759 training runs with sealed test forecasts and trained models, per-origin loss series, bootstrap draws and raw weather downloads. The description states no models, horizons, dates or accuracy numbers.",
+      "evidence_id": "25843e990484"
+    },
+    {
+      "url": "https://github.com/ahalikoguz/turkiye-electricity-demand-forecasting",
+      "kind": "github",
+      "paraphrase": "MIT-licensed code and data for an unpublished paper by Cetin, Saglam and Oguz. National hourly consumption from EPIAS, 2016-2025; forecasts 1, 24, 168 and 720 h ahead from every hour of 2025; trained on 2016-2023, models selected on 2024. The README reports no accuracy figure and links no preprint.",
+      "evidence_id": "b2df90fffa8f"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ahalikoguz/turkiye-electricity-demand-forecasting/HEAD/configs/analysis_plan.json",
+      "kind": "github",
+      "paraphrase": "Analysis plan stamped 2026-09-30, said to be written on the 2024 validation year before the test was evaluated. Primary comparisons centre the authors' TCN: at H=168, LightTCN_large against Chronos-2 with LoRA, both with calendar inputs. Temperature contrasts (past, forecast, observed, oracle) on zero-shot models are secondary. Paired block bootstrap, 95% intervals, Holm; no threshold.",
+      "evidence_id": "35d671fba4bc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ahalikoguz/turkiye-electricity-demand-forecasting/HEAD/configs/frozen.json",
+      "kind": "github",
+      "paraphrase": "Freeze record stamped 2026-09-30 15:13 UTC with SHA-256 hashes of the configuration, the three scripts, the load and weather data and about 500 runs. It carries no git commit, no test period and no model revisions; the timestamp is recorded by the file itself.",
+      "evidence_id": "fd7ca6848261"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ahalikoguz/turkiye-electricity-demand-forecasting/HEAD/results/runs.csv",
+      "kind": "github",
+      "paraphrase": "Validation and test metrics (MAE, RMSE, MAPE, MASE) of each run, by horizon, model, information set, window and seed. At H=168 it has rows for zero-shot Chronos-2, TimesFM 3 and TiRex-2 with and without temperature, Chronos-2 with LoRA, the TCNs, LightGBM, a temperature regression without load lags and naive baselines. No intervals.",
+      "evidence_id": "e6fb5cbc2343"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ahalikoguz/turkiye-electricity-demand-forecasting/HEAD/data/SOURCES.md",
+      "kind": "github",
+      "paraphrase": "Load is EPIAS real-time consumption, hourly, 2016 to 2025. Temperature is ERA5 through Open-Meteo for 81 province capitals, population-weighted; forecast temperature is archived ECMWF IFS runs from the Open-Meteo Previous Runs API, issued 1 to 7 days before valid time, 2024-2025 only, stored per lead and bias-corrected per province.",
+      "evidence_id": "26e259f277c7"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ahalikoguz/turkiye-electricity-demand-forecasting/HEAD/configs/experiments.yaml",
+      "kind": "github",
+      "paraphrase": "Experiment grid: TCN variants, recurrent models, four NeuralForecast models, zero-shot Chronos-2, TimesFM 3 and TiRex-2, Chronos-2 with LoRA fine-tuned on 2016-2023, LightGBM, naive baselines and a Hong-style regression without load lags (with and without a holiday dummy). Horizons 1, 24, 168, 720 h. No Hugging Face ids or revisions.",
+      "evidence_id": "cb43d9067d75"
+    },
+    {
+      "url": "https://api.github.com/repos/ahalikoguz/turkiye-electricity-demand-forecasting/commits",
+      "kind": "github",
+      "paraphrase": "The repository has two commits: 2026-10-04 (code, data and results together) and 2026-10-26 (README only). Nothing public is dated before the results.",
+      "evidence_id": "5fbb43ebc3c6"
+    }
+  ],
+  "claims": [
+    {
+      "text": "The record archives 759 training runs, sealed test forecasts and trained models of a study that forecasts Türkiye's national hourly demand 1, 24, 168 and 720 hours ahead with calendar, holiday and temperature information. The record and the README state no result; the paper is not published.",
+      "metric": null,
+      "value": null,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "1, 24, 168 and 720 h, an origin every hour",
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": 365,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Planned primary comparison at 168 h: the authors' LightTCN_large with calendar inputs has test MAPE 3.740 (mean of five seeds, 3.649 to 3.849), behind Chronos-2 with LoRA on the same inputs. The mean is the judge's arithmetic on the per-run rows.",
+      "metric": "MAPE (%)",
+      "value": 3.74,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "Chronos-2 with LoRA, calendar inputs (3.181)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "Chronos-2 fine-tuned with LoRA on 2016-2023, calendar inputs, 720 h context: test MAPE 3.181 at 168 h (mean of three seeds, 3.174 to 3.191).",
+      "metric": "MAPE (%)",
+      "value": 3.181,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "LightTCN_large, calendar inputs (3.740)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "Zero-shot Chronos-2 given bias-corrected forecast temperature for the target hours (F3), 720 h context, one seed: test MAPE 2.856 at 168 h.",
+      "metric": "MAPE (%)",
+      "value": 2.856,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "Hong-style temperature regression without load lags, same forecast temperature (5.050)",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "Zero-shot Chronos-2 with past temperature only (F2): test MAPE 3.424 at 168 h, so forecast temperature of the target hours takes it from 3.424 to 2.856.",
+      "metric": "MAPE (%)",
+      "value": 3.424,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "the same model with forecast temperature (2.856)",
+      "baseline_same_inputs": "no",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "Zero-shot Chronos-2 under the oracle weather scenario (F4): test MAPE 2.753 at 168 h, against 2.856 with forecast temperature.",
+      "metric": "MAPE (%)",
+      "value": 2.753,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "the same model with forecast temperature (2.856)",
+      "baseline_same_inputs": "no",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "Zero-shot Chronos-2 on load history only, 720 h context: test MAPE 3.766 at 168 h.",
+      "metric": "MAPE (%)",
+      "value": 3.766,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "seasonal naive (5.250)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "The temperature regression without load lags (Vanilla), given forecast temperature: test MAPE 5.050 at 168 h.",
+      "metric": "MAPE (%)",
+      "value": 5.05,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "seasonal naive (5.250)",
+      "baseline_same_inputs": "no",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "The same regression with a holiday dummy (Vanilla_holiday), given forecast temperature: test MAPE 4.367 at 168 h.",
+      "metric": "MAPE (%)",
+      "value": 4.367,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "seasonal naive (5.250)",
+      "baseline_same_inputs": "no",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "The authors' known-future TCN (LightTCN_F_medium) given forecast temperature: test MAPE 2.857 at 168 h (mean of three seeds, 2.847 to 2.866), level with zero-shot Chronos-2 on the same information set.",
+      "metric": "MAPE (%)",
+      "value": 2.857,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "zero-shot Chronos-2 with forecast temperature (2.856)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "Zero-shot TimesFM 3 given forecast temperature: test MAPE 2.972 at 168 h (one seed).",
+      "metric": "MAPE (%)",
+      "value": 2.972,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "zero-shot Chronos-2 with forecast temperature (2.856)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    },
+    {
+      "text": "LightGBM given forecast temperature: test MAPE 3.963 at 168 h (one seed).",
+      "metric": "MAPE (%)",
+      "value": 3.963,
+      "dataset": "Türkiye national hourly consumption (EPIAS), test year 2025",
+      "horizon": "168 h, an origin every hour",
+      "baseline": "zero-shot Chronos-2 with forecast temperature (2.856)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 365,
+      "citation_idx": 4,
+      "ci90": null
+    }
+  ],
+  "relevance": {
+    "target_match": 3,
+    "horizon_match": 3,
+    "covariates_match": 3,
+    "rationale": "National hourly electric load, the same kind of series as our zonal load (3). One of its four horizons is 168 h, our horizon, though from an origin every hour of 2025 rather than once a week on Monday 00:00 (3). Temperature for the target hours is a known-future input, from lead-matched archived ECMWF forecasts with a separate oracle arm, which are our two weather regimes (3)."
+  },
+  "checks": {
+    "pre_registered": "unknown",
+    "training_overlap_risk": "unknown",
+    "independent_replication": "unknown",
+    "notes": "pre_registered: an analysis plan and a freeze record are both stamped 2026-09-30 and say they precede the test evaluation, but the stamps are written by the files themselves and the repository's first commit (2026-10-04) holds plan, code and results together, so nothing public predates the results. The README adds that comments were edited after the freeze, and the Zenodo note that some manifests were. Central model: LightTCN_large, the authors' own TCN, which is the subject of every planned primary comparison; the record and README make no headline claim in words, so this is read from the plan. training_overlap_risk is unknown because that model has no pretrained weights we would load: it would be trained on our own data. For the secondary Chronos-2 rows the amazon/chronos-2 weights were committed on 2025-10-30 (ledger d67e199eeeac, inferred from the commit title), before our first scored week, so low; licence apache-2.0 (ledger d33d62d68de3). independent_replication: two searches found no preprint, replication or discussion. evidence_strength is moderate: public and reproducible with a 365-day test year and same-input comparisons within an information set, but no verifiable pre-registration, no replication, no intervals read, and no result stated by the authors. In the study's own test, most of 2025 precedes Chronos-2's release, and the release dates of TimesFM 3 and TiRex-2 were not checked. Judge's arithmetic, not the authors' claim: Chronos-2 with forecast temperature against the lag-free regression is 2.856 / 5.050 = 0.565, against the holiday version 0.654, and against itself with past temperature only 0.834. That regression has no load lags, unlike our temperature-only regression. Unverified: every number was read through fetch summaries of runs.csv in four chunks, not from the raw file; multi-seed means are mine; the Zenodo archives (forecasts, bootstrap draws, per-origin losses) were not opened, so no interval is reported; the difference between F3_diag (observed future temperature) and F4 (oracle scenario) is not defined in what was read; foundation-model ids and revisions are not in the config files read; the 168 h forecasts use archived forecasts of 1 to 7 days lead, and how the vintage is matched to each origin was not checked in the code; selected.yaml, prepare_data.py and run_experiments.py were not read."
+  },
+  "evidence_strength": "moderate",
+  "license": "MIT",
+  "license_ok_for_commercial": true,
+  "runnable_class": "not_runnable",
+  "label": "ACCEPT_STAGE3",
+  "label_reason": "On target on all three axes (hourly national load, a 168 h horizon, forecast and oracle temperature as known-future inputs) and backed by a public repository with a frozen plan, data and per-run test metrics for 2025. Its planned primary comparison is the authors' own trained TCN against a LoRA-fine-tuned Chronos-2, which cannot be re-measured with a model we run today, and the authors state no result yet (the paper is unpublished), so it is staged rather than run.",
+  "implementation_hint": "Central model LightTCN_large is defined in models.py of the repository (MIT) and trained from scratch with a GPU budget (up to 90 epochs); the archived weights on Zenodo are fitted to Türkiye and are no use on PJM. Running it means a training adapter in models/ plus a check that training fits the 60-minute CPU limit; Chronos-2 with LoRA likewise needs fine-tuning. Already covered by existing rows, as a secondary reading only: zero-shot Chronos-2 with temperature (models/chronos2.py, amazon/chronos-2, weights commit 95a9710e, 2025-10-30) in the forecast and oracle regimes, where the study has MAPE 2.856 and 2.753 at 168 h against 3.424 with past temperature only. TimesFM 3.0 (ff_native_exog, models_ff/run_ff.py) is the other zero-shot model with a temperature row (2.972). The study's regression has no load lags, so its 5.050 is not comparable with lag_regression_temperature.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261115T213435_judge_claude_turkiye-national-demand-multi-horizon_2c54",
+    "session_id": "e5059d30-24ba-4285-8c5e-627c5cd6a5ad",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}
