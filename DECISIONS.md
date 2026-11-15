@@ -47,6 +47,28 @@ Settled Thu Nov 12, 2026.
 | 36 | Our temperature inputs are called "weather points", never "weather stations": each is an ERA5 grid cell, and from `protocol-v2` the points are chosen as grid cells. "Station" is kept for PJM's real stations. The frozen files keep the key `stations` (Yuri, Nov 13 2026) | We query a weather model's grid at a latitude and longitude; no station readings are used |
 | 37 | `protocol-v2` weather points for the primary zones are the ERA5 grid cells that hold PJM's own stations for the zone, averaged with PJM's weights: AEP Columbus 0.234, Fort Wayne 0.227, Charleston WV 0.226, Roanoke 0.162, Akron-Canton 0.151; AE the inland Atlantic City cell, 1.0. Requests are made at the cell centre. DOM and JC keep their v1 points and unweighted mean (Yuri, Nov 13 2026) | The mapping is PJM's (2026 Load Forecast Supplement, Table 3), not our judgement; DOM's points already match PJM's; JC is a development zone whose existing numbers all used the current points |
 
+## Settled after the hackathon, Sun Nov 15 (rebaseline)
+
+Plan: `notes/rebaseline_plan.md`.
+
+| # | Decision | Why |
+|---|----------|-----|
+| 38 | The scheduled weekly run does scan and judge only. `run-candidate` stays manual until the baseline is settled | Receipts measured against a baseline we may replace would need re-running |
+| 39 | A stronger baseline becomes the primary comparator under a new `protocol-v3`. The v1 and v2 results stay as history | A receipt against a weak baseline is the thing to avoid; frozen protocols are not edited (rule 5) |
+| 40 | The v3 primary baseline is the contender with the lowest validation error among a shortlist tuned with an equal budget. The research report also names the most widely used baseline and what a utility would run; each is kept as a secondary row if it differs from the winner | One written selection rule, fixed before tuning; the other two answers keep the result comparable with papers and with practice |
+| 41 | Tuning and the choice of winner use only the development zones DOM and JC and data before the first scored week. The winner is scored once on the existing AEP and AE weeks, with the disclosure that those weeks were already seen with untuned models | The baseline must not be picked on the weeks it is scored on |
+| 42 | The baseline research is staged: a survey with logged queries, a shortlist and a written tuning protocol; Yuri signs off; only then are contenders implemented and tuned | Decision 26; the earlier search was a single pass with unlogged queries |
+| 43 | Scheduled runs are billed to Yuri's Claude subscription, not a metered API key | A weekly run is small enough to learn its cost without a new bill |
+| 44 | Both providers (Claude search and You.com) scan and judge every week. The provider layer stays swappable; You.com may be replaced by another search service | Coverage and a continuing provider comparison |
+| 45 | Every new candidate is judged by both providers, capped at 60 candidates a week by fit to the spec. Candidates over the cap are recorded as seen, not judged, and go first the next week | Full coverage with a bound on usage and on review load |
+| 46 | Each scheduled run ends in one pull request. A check fails the pull request if it touches anything outside the agent's output paths | Nothing the agent wrote becomes public before Yuri merges it |
+| 47 | Yuri's reviews are CSV files in the repo, one per stage (scan, judge, receipt). A judge review is a verdict, a corrected label, a reason and four yes/no checks: claim, sources, relevance, runnable class | They open as a sheet, travel with the pull request, and need no extra service; the checks say which part of the judge was wrong |
+| 48 | Telemetry: a run id on every scorecard, evidence row and review row; full run transcripts archived in a private GitHub repo; Langfuse Cloud (free tier) as a viewer for recent runs | Transcripts hold page text and cannot be public (rule 9); the archive is the permanent record |
+| 49 | A registry of relevant papers, models, frameworks and methods, keyed by a stable identifier (arXiv id, DOI, repository), is kept in the repo and consulted by every scan. The registry and the review verdicts are public; private notes live in the private repo under the same keys | Useful by itself; lets a weekly run say "already considered" or "improves on a known result"; candidate ids proved unstable across scans |
+| 50 | The first scheduled run waits for the registry and the run ids and is started by hand in GitHub Actions. The weekly timer is switched on after one clean run | Without the registry the 120-day window would re-judge hackathon work |
+| 51 | A private repo is created now, for transcripts and private notes only. The project is split after `protocol-v3` is scored: the week-ahead benchmark stays public; long-term (1 to 6 month) forecasting starts in the private repo, with PJM first, and installs the public harness as a package | The archive needs a private home now; the split should not compete with the baseline work |
+| 52 | The Codex port (`AGENTS.md`, `.agents/`) is fixed and committed, pointing at the shared skill files, not a copy | A second copy of the skills would drift |
+
 Also fixed: `spec.yaml` names the lag regression with temperature as the baseline
 to beat; the LightGBM row uses exactly the lag regression's input columns.
 
