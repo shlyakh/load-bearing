@@ -1,0 +1,33 @@
+name: Guard agent pull requests
+
+# A pull request from the weekly run may change only the agent's output paths (decision 46).
+# Runs for branches named agent/*; pull requests written by a person are not checked here.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    if: ${{ startsWith(github.head_ref, 'agent/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Only output paths were changed
+        env:
+          BASE: ${{ github.base_ref }}
+        run: python3 tools/guard_paths.py --base "origin/$BASE"
+      - uses: astral-sh/setup-uv@v6
+      - name: Scorecards are valid and the pipeline tests pass
+        run: |
+          uv sync --project core --frozen
+          uv run --project core python tools/validate_scorecard.py scorecards/*/*.json
+          uv run --project core pytest -q tests/test_registry.py tests/test_weekly.py tests/test_run_ids.py \
+            tests/test_merge_candidates.py tests/test_pipeline_failures.py tests/test_youcom_provider.py

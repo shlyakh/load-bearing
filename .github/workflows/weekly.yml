@@ -1,0 +1,196 @@
+name: Weekly scan and judge
+
+# Scan with every provider, judge what is new, open one pull request (decisions 38, 43 to 46, 48, 50).
+# Started by hand until one run is clean; then add under `on:`
+#   schedule:
+#     - cron: "17 9 * * 1"   # Mondays 09:17 UTC
+#
+# Secrets: CLAUDE_CODE_OAUTH_TOKEN (from `claude setup-token`; bills the subscription),
+#          YDC_API_KEY, ARCHIVE_DEPLOY_KEY (write deploy key of the private archive repo),
+#          ARCHIVE_ARTIFACT_KEY (any long random string; encrypts transcripts between jobs),
+#          HEARTBEAT_URL (optional).
+# Variables: ARCHIVE_REPO (owner/name of the private archive repo).
+# Never add ANTHROPIC_API_KEY here: it would take precedence and bill a metered key.
+#
+# Transcripts hold page text (CLAUDE.md rule 9). This repository is public, so its logs and
+# artifacts are readable by anyone: transcripts leave the agent job only encrypted, and
+# nothing prints them.
+
+on:
+  workflow_dispatch:
+    inputs:
+      cap:
+        description: Most candidates judged in this run
+        default: "3"
+      providers:
+        description: Search providers, space separated
+        default: "claude youcom"
+      queue_only:
+        description: Show the queue from the latest scans and stop (no paid runs, no pull request)
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: weekly
+  cancel-in-progress: false
+
+env:
+  CLAUDE_CLI_VERSION: "2.1.323"
+
+jobs:
+  agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+    outputs:
+      has_output: ${{ steps.collect.outputs.has_output }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install the Claude Code CLI at a pinned version
+        run: npm install -g "@anthropic-ai/claude-code@${CLAUDE_CLI_VERSION}"
+      - name: Install the core environment
+        run: uv sync --project core --frozen
+      - name: Show the queue only
+        if: ${{ inputs.queue_only }}
+        env:
+          CAP: ${{ inputs.cap }}
+          PROVIDERS: ${{ inputs.providers }}
+        run: uv run --project core python tools/weekly.py --skip-scan --dry-run --cap "$CAP" --providers $PROVIDERS
+      - name: Scan and judge
+        if: ${{ !inputs.queue_only }}
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          YDC_API_KEY: ${{ secrets.YDC_API_KEY }}
+          CAP: ${{ inputs.cap || '60' }}
+          PROVIDERS: ${{ inputs.providers || 'claude youcom' }}
+        run: uv run --project core python tools/weekly.py --cap "$CAP" --providers $PROVIDERS
+      - name: Guard, only output paths were changed
+        if: ${{ always() && !inputs.queue_only }}
+        run: python3 tools/guard_paths.py
+      - name: Collect the public output
+        id: collect
+        if: ${{ always() && !inputs.queue_only }}
+        run: |
+          { git diff --name-only HEAD; git ls-files --others --exclude-standard; } | sort -u > changed.txt
+          if [ -s changed.txt ]; then
+            tar czf public-output.tgz -T changed.txt
+            echo "has_output=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_output=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.collect.outputs.has_output == 'true' }}
+        with:
+          name: public-output
+          path: public-output.tgz
+          retention-days: 3
+      - name: Encrypt the transcripts
+        id: encrypt
+        if: ${{ always() && !inputs.queue_only }}
+        env:
+          ARCHIVE_ARTIFACT_KEY: ${{ secrets.ARCHIVE_ARTIFACT_KEY }}
+        run: |
+          if ls runs/*.jsonl >/dev/null 2>&1 && [ -n "$ARCHIVE_ARTIFACT_KEY" ]; then
+            tar czf - runs/*.jsonl | gpg --batch --yes --symmetric --cipher-algo AES256 \
+              --passphrase-fd 3 -o transcripts.tgz.gpg 3<<<"$ARCHIVE_ARTIFACT_KEY"
+            echo "made=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::no transcripts were archived (none written, or ARCHIVE_ARTIFACT_KEY is not set)"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.encrypt.outputs.made == 'true' }}
+        with:
+          name: transcripts-encrypted
+          path: transcripts.tgz.gpg
+          retention-days: 1
+
+  archive:
+    # Transcripts go to the private repo even when the agent job failed part-way.
+    needs: agent
+    if: ${{ always() && !inputs.queue_only }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions: {}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: transcripts-encrypted
+      - name: Push the transcripts to the private archive
+        env:
+          ARCHIVE_ARTIFACT_KEY: ${{ secrets.ARCHIVE_ARTIFACT_KEY }}
+          ARCHIVE_DEPLOY_KEY: ${{ secrets.ARCHIVE_DEPLOY_KEY }}
+          ARCHIVE_REPO: ${{ vars.ARCHIVE_REPO }}
+        run: |
+          set -euo pipefail
+          test -n "$ARCHIVE_REPO" || { echo "::error::set the repository variable ARCHIVE_REPO"; exit 1; }
+          gpg --batch --yes --decrypt --passphrase-fd 3 transcripts.tgz.gpg 3<<<"$ARCHIVE_ARTIFACT_KEY" | tar xzf -
+          install -m 700 -d ~/.ssh
+          install -m 600 /dev/null ~/.ssh/archive_key
+          printf '%s\n' "$ARCHIVE_DEPLOY_KEY" > ~/.ssh/archive_key
+          ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts 2>/dev/null
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/archive_key -o IdentitiesOnly=yes"
+          git clone --quiet --depth 1 "git@github.com:${ARCHIVE_REPO}.git" archive
+          year=$(date -u +%Y)
+          mkdir -p "archive/transcripts/$year"
+          for f in runs/*.jsonl; do gzip -c "$f" > "archive/transcripts/$year/$(basename "$f").gz"; done
+          cd archive
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add transcripts
+          git commit --quiet -m "Transcripts of weekly run ${GITHUB_RUN_ID}"
+          git push --quiet
+          echo "archived $(ls ../runs/*.jsonl | wc -l) transcripts at $(git rev-parse --short HEAD)"
+
+  pull-request:
+    needs: agent
+    if: ${{ always() && needs.agent.outputs.has_output == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: public-output
+      - name: Apply the output and check it again
+        run: |
+          tar xzf public-output.tgz && rm public-output.tgz
+          python3 tools/guard_paths.py
+      - name: Open the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          branch="agent/weekly-$(date -u +%F)-${GITHUB_RUN_NUMBER}"
+          report=$(ls -t runs/weekly_*.md 2>/dev/null | head -1 || true)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add -A
+          git commit --quiet -m "Weekly scan and judge, $(date -u +%F)"
+          git push --quiet origin "$branch"
+          if [ -n "$report" ]; then
+            gh pr create --base main --head "$branch" --title "Weekly scan and judge, $(date -u +%F)" --body-file "$report"
+          else
+            gh pr create --base main --head "$branch" --title "Weekly scan and judge, $(date -u +%F) (no report)" \
+              --body "The run wrote no report. See the workflow run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}."
+          fi
+      - name: Fail the run if the report says it did not finish cleanly
+        run: |
+          report=$(ls -t runs/weekly_*.json | head -1)
+          python3 -c "import json,sys; sys.exit(0 if json.load(open('$report')).get('ok') else 1)"
+      - name: Heartbeat
+        env:
+          HEARTBEAT_URL: ${{ secrets.HEARTBEAT_URL }}
+        run: if [ -n "$HEARTBEAT_URL" ]; then curl -fsS -m 10 --retry 3 "$HEARTBEAT_URL" >/dev/null; fi
