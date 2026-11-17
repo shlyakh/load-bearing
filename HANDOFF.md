@@ -6,7 +6,7 @@ Yuri switched to another project for a day or more. The first weekly run is no l
 tied to Monday Nov 16: it happens on the first day Yuri is back, and the weekly timer
 is set from that day (Yuri, Nov 15). The sections below this one are the Nov 13 snapshot.
 
-**Where everything is.** Branch `rebaseline`, 14 commits on top of `main`, working tree
+**Where everything is.** Branch `rebaseline`, 14 commits on top of `main` (this handoff included), working tree
 clean, **not pushed** (it exists only on the laptop). Nothing is merged, so GitHub has
 none of it and no workflow can run yet. Plan: `notes/rebaseline_plan.md`. Decisions:
 `DECISIONS.md` 38 to 52. Setup steps: `notes/weekly_run_setup.md`.
