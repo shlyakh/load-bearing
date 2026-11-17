@@ -7,8 +7,8 @@ tied to Monday Nov 16: it happens on the first day Yuri is back, and the weekly 
 is set from that day (Yuri, Nov 15). The sections below this one are the Nov 13 snapshot.
 
 **Where everything is.** Branch `rebaseline`, 14 commits on top of `main` (this handoff included), working tree
-clean, **not pushed** (it exists only on the laptop). Nothing is merged, so GitHub has
-none of it and no workflow can run yet. Plan: `notes/rebaseline_plan.md`. Decisions:
+clean, pushed to `origin/rebaseline` on Nov 16 as a backup. It is **not merged**, so
+no workflow can run yet. Plan: `notes/rebaseline_plan.md`. Decisions:
 `DECISIONS.md` 38 to 52. Setup steps: `notes/weekly_run_setup.md`.
 
 **Built and tested** (116 tests pass; one real judge run confirmed the run ids):
@@ -28,7 +28,7 @@ none of it and no workflow can run yet. Plan: `notes/rebaseline_plan.md`. Decisi
 
 **Next steps, in order.**
 
-1. Yuri: push `rebaseline` and merge it into `main` (a workflow can only be started by
+1. Yuri: merge `rebaseline` into `main` (a workflow can only be started by
    hand once its file is on the default branch; the merge also redeploys the dashboard
    with the Review tab).
 2. Yuri: the one-time setup in `notes/weekly_run_setup.md`: private archive repo,
