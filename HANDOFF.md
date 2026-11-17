@@ -1,4 +1,90 @@
-# Handoff: where things stand (Fri Nov 13, 2026, evening)
+# Handoff: where things stand
+
+## RESUME HERE: the rebaseline, paused Sun Nov 15, 2026 (evening)
+
+Yuri switched to another project for a day or more. The first weekly run is no longer
+tied to Monday Nov 16: it happens on the first day Yuri is back, and the weekly timer
+is set from that day (Yuri, Nov 15). The sections below this one are the Nov 13 snapshot.
+
+**Where everything is.** Branch `rebaseline`, 14 commits on top of `main`, working tree
+clean, **not pushed** (it exists only on the laptop). Nothing is merged, so GitHub has
+none of it and no workflow can run yet. Plan: `notes/rebaseline_plan.md`. Decisions:
+`DECISIONS.md` 38 to 52. Setup steps: `notes/weekly_run_setup.md`.
+
+**Built and tested** (116 tests pass; one real judge run confirmed the run ids):
+
+| Piece | Where |
+|---|---|
+| Subscription login survives in headless runs; run id on ledger rows and scorecards | `tools/run_skill.py`, `tools/ledger.py`, `schemas/scorecard.schema.json` |
+| Registry of 93 known works under stable keys; weekly queue with a cap | `tools/keys.py`, `tools/registry.py`, `registry/` |
+| Weekly orchestrator (both providers, stops cleanly at a usage limit) | `tools/weekly.py` |
+| Guard: an agent pull request may change only output paths | `tools/guard_paths.py`, `.github/workflows/guard.yml` |
+| Weekly workflow, started by hand, no timer yet | `.github/workflows/weekly.yml` |
+| Review sheets, backlog filled, Yuri's columns blank | `reviews/*.csv`, `tools/reviews.py` |
+| "How was this verdict reached" | `tools/trace.py` |
+| Dashboard Review tab and registry table | `dashboard/build_reviews.py`, `dashboard/reviews.js`, `dashboard/index.html` |
+| Baseline survey, shortlist of six, tuning protocol draft (nothing tuned) | `notes/baseline_research_v3.md` |
+| Notes for the later public/private split | `notes/split_plan.md` |
+
+**Next steps, in order.**
+
+1. Yuri: push `rebaseline` and merge it into `main` (a workflow can only be started by
+   hand once its file is on the default branch; the merge also redeploys the dashboard
+   with the Review tab).
+2. Yuri: the one-time setup in `notes/weekly_run_setup.md`: private archive repo,
+   deploy key, `claude setup-token`, four secrets, the `ARCHIVE_REPO` variable, allow
+   Actions to open pull requests.
+3. Start "Weekly scan and judge" with `queue_only` ticked (free), then with `cap` = 3.
+   Check the pull request, the private archive and the public artifacts as listed in
+   the setup note. This is the first time the workflows run and the first test of the
+   skills under the narrower CI shell.
+4. If clean: run with `cap` = 60, then add the `schedule` block (written as a comment
+   at the top of `weekly.yml`) for the weekday Yuri picks.
+5. Yuri: sign off the baseline survey (section 5 of `notes/baseline_research_v3.md`).
+   The main choices: tune on IFS forecasts for all 52 development weeks (AIFS covers
+   only 32); list the 52 development Mondays 2024-09-30 to 2025-09-22 in `protocol-v3`
+   (hard rule 12); one configuration for both zones; reuse the scored AEP/AE weeks or
+   tie the primary to the prospective panel.
+6. After sign-off, stage 2: contenders in `harness/baselines.py`, `harness/tune.py`
+   that refuses scored origins and zones outside DOM and JC, gate, tag `protocol-v3`,
+   score once, `spec-v2`, then `run-candidate` goes back on.
+7. Yuri: start reviewing. Fill `label_yuri` in `eval/items.yaml` from
+   `eval/label_sheet.md` first (the judge sheet is not blind), then `reviews/judge.csv`.
+
+**Open questions for Yuri.**
+
+- The first run queues the 36 hackathon candidates that were never judged; with both
+  providers that is up to 72 judge runs. Exclude them, or let them be judged?
+- `CLAUDE.md` still describes protocol-v1 in its benchmark line, rule 11 and the
+  baseline name; it needs Yuri's edit once v3 lands.
+
+**Not built yet.**
+
+- `tools/langfuse_upload.py` (decision 48): needs Yuri's Langfuse Cloud project and
+  keys. The archive job in `weekly.yml` has no Langfuse step yet.
+- Registry-aware `/scan` and `/judge` (call `registry.py check` and `related`, record
+  `improves_on`): planned for the second weekly run. Today de-duplication happens in
+  code after the scan.
+- The heartbeat service is not chosen (`HEARTBEAT_URL` is optional in the workflow).
+- A licence, and `harness/` as an installable package (both before the split).
+
+**Known limits.**
+
+- Three older scorecards have no run record (`claude/item-02`, `claude/timestral`,
+  `claude/tsfm-load-covariate-uncertainty`), so `trace.py` cannot replay them.
+- `statsforecast` needs pandas below 3 and cannot go into `core/`; use statsmodels'
+  MSTL if that contender stays on the shortlist.
+- Not confirmed: the consumer terms on unattended use of a subscription token; whether
+  GitHub starts `guard.yml` on a pull request opened by the workflow's own token (the
+  guard also runs twice inside the weekly run); whether Codex resolves the linked
+  skills in `.agents/skills` (Codex was not run).
+- The survey's 32 search queries are in section 7 of the note; only the 29 pages are
+  in the evidence ledger.
+- The dashboard's tab row now wraps onto a second line.
+- At the cap, a week is roughly $300 to $400 of API-equivalent usage against the
+  subscription limits; most weeks after the first should be far smaller.
+
+# Snapshot of Fri Nov 13, 2026, evening
 
 Read this first when starting a new session, then `CLAUDE.md` (rules), `DECISIONS.md`
 and `results/README.md` (all numbers). This file is a snapshot; when it disagrees with
