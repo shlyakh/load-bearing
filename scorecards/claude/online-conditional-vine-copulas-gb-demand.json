@@ -1,0 +1,41 @@
+{
+ "candidate_id": "online-conditional-vine-copulas-gb-demand",
+ "title": "Online Conditional Vine Copulas: Forecasting Electricity Demand",
+ "spec_version": "spec-v1",
+ "discovered_via": {"url": "https://arxiv.org/abs/2610.23119", "provider": "claude", "retrieved_at": "2026-11-19T22:45:00Z"},
+ "candidate_type": "paper",
+ "primary_sources": [
+  {"url": "https://arxiv.org/abs/2610.23119", "kind": "arxiv", "paraphrase": "arXiv abstract (16 Oct 2026): online covariate-conditioned vine copula for multivariate distributional forecasts; on net demand in five GB regions it beats unconditional Gaussian and vine copula benchmarks; algorithm is in the ondil package.", "evidence_id": "413fa701e884"},
+  {"url": "https://arxiv.org/html/2610.23119", "kind": "arxiv", "paraphrase": "Full text: half-hourly GB net demand 2014-2018 (data from Gioia et al. replication material), five macro-regions, test year 2018 in monthly blocks, one-step-ahead, weather covariates of unstated provenance; scores are averages with model confidence set p-values, no intervals.", "evidence_id": "a9267556332d"},
+  {"url": "https://github.com/simon-hirsch/ondil", "kind": "github", "paraphrase": "ondil: Python package for online distributional regression, GPL-3.0, no releases listed, no pretrained weights; fits models on user data.", "evidence_id": "f8c33b0678e3"}
+ ],
+ "claims": [
+  {"text": "Conditional vine copula with online updating gives the best log score among nine copula/updating combinations on GB regional net demand (3.8028 vs 3.8358 for the best unconditional vine copula, lower is better).", "metric": "log score", "value": 3.8028, "dataset": "GB net demand, 5 regions, half-hourly, test year 2018", "horizon": "one step ahead (30 min)", "baseline": "unconditional vine copula (same marginal model)", "baseline_same_inputs": "no", "test_window_days": 365, "citation_idx": 1, "ci90": null},
+  {"text": "Conditional vine copula outperforms unconditional Gaussian and vine copula benchmarks on net demand across five GB regions.", "metric": null, "value": null, "dataset": "GB net demand, 5 regions", "horizon": "one step ahead (30 min)", "baseline": "unconditional Gaussian and vine copulas", "baseline_same_inputs": "no", "test_window_days": 365, "citation_idx": 0, "ci90": null}
+ ],
+ "relevance": {
+  "target_match": 2,
+  "horizon_match": 1,
+  "covariates_match": 2,
+  "rationale": "Regional GB net demand is electricity load but half-hourly and net of embedded generation, not hourly PJM zonal load (2). Horizon is one step ahead (30 min), not a week (1). Weather covariates are used but the paper does not say whether they are actuals or issued forecasts (2, not 3)."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "Pre-registration: not mentioned in the full text read (first ~100k of 135k characters; the tail was not read). Replication: search found no third-party replication; the authors' own package is named at github.com/chrischu12/online-vine-copulas, listed in the ledger but not opened. Training overlap: no weights exist (model is fitted on user data), so unknown/not applicable. Unverified: weather input type, exact training period, and anything in the unread tail of the HTML. The comparison is between copula structures with the same marginal model, not against a regression or foundation model. ondil is GPL-3.0; its page did not mention vine copulas, so where the conditional vine copula code lives (ondil release vs the replication repo) is unconfirmed. Evidence strength moderate: public code and a full-year test, but no intervals and no replication; the headline is a probabilistic multivariate score comparison."
+ },
+ "evidence_strength": "moderate",
+ "license": "GPL-3.0 (ondil package; no model weights)",
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "REJECT",
+ "label_reason": "The headline claim compares conditional with unconditional vine copulas on one-step-ahead, half-hourly probabilistic forecasts of GB net demand, which does not bear on a week-ahead hourly point forecast against a temperature-only regression. There are no pretrained weights and no model in runnable_models to re-measure it, and running it would need a new probabilistic multi-region pipeline.",
+ "implementation_hint": "Not runnable through our adapters. Only route: fit ondil's conditional vine copula on PJM zone load plus temperature, which is new work, outputs joint distributions, and has no week-ahead claim to test.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261119T224138_judge_claude_online-conditional-vine-copulas-gb-deman_b804",
+  "session_id": "4bd703b3-bb9f-4eec-b511-dfdf888df9d8",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

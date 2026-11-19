@@ -1,0 +1,42 @@
+{
+  "candidate_id": "prereg-causal-audit-covariate-tsfm",
+  "title": "Forecasting Associations, Not Interventions: A Preregistered Causal Audit of Covariate-Aware Time Series Foundation Models",
+  "spec_version": "spec-v1",
+  "discovered_via": {"url": "https://arxiv.org/abs/2610.31869", "provider": "youcom", "retrieved_at": "2026-11-19T22:50:00Z"},
+  "candidate_type": "paper",
+  "primary_sources": [
+    {"url": "https://arxiv.org/abs/2610.31869", "kind": "arxiv", "paraphrase": "Single-author arXiv v1, 22 Oct 2026. Abstract reports that four covariate-aware TSFMs answer what-if queries like observational regression, on synthetic structural models and two physical systems.", "evidence_id": "194764bc77a9"},
+    {"url": "https://arxiv.org/html/2610.31869", "kind": "arxiv", "paraphrase": "Full text: slope table per model with bootstrap intervals, preregistration described (preregister.yaml, tag prereg-freeze, three amendments), and Appendix C saying code and prereg file come with the final version.", "evidence_id": "47dcc8c4b12f"}
+  ],
+  "claims": [
+    {"text": "Chronos-2, TiRex-2 and TimesFM-2.5 (with XReg) respond more confounded than regression; impact-coefficient slopes 1.3-1.8 on synthetic structural models.", "metric": "confounding-gap slope vs reference line", "value": 1.78, "dataset": "synthetic structural grid (not load)", "horizon": "first intervened step (impact coefficient)", "baseline": "in-context least squares", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 1, "ci90": null},
+    {"text": "TabPFN-TS tracks the reference line with slope about 1.00 (95% CI 0.85-1.13), so it is associational but not more confounded than regression.", "metric": "confounding-gap slope", "value": 1.0, "dataset": "synthetic structural grid (not load)", "horizon": "first intervened step", "baseline": "in-context least squares", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 1, "ci90": null},
+    {"text": "When the effect is identifiable, least squares recovers 100% of the true effect difference, Chronos-2 75%, TiRex-2 34%.", "metric": "share of effect difference recovered", "value": 0.75, "dataset": "synthetic matched-observational-law pairs", "horizon": null, "baseline": "in-context least squares", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0, "ci90": null},
+    {"text": "A short interventional post-training with pretraining-prior replay cuts the gap by 52-61% at +1-3% MASE.", "metric": "gap reduction", "value": 0.565, "dataset": "synthetic series plus DoTime benchmark", "horizon": null, "baseline": null, "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0, "ci90": null}
+  ],
+  "relevance": {
+    "target_match": 1,
+    "horizon_match": 1,
+    "covariates_match": 2,
+    "rationale": "Targets are synthetic series and two physical rigs, not electric load; the readout is the response at the first intervened step, not a 168 h forecast. Covariates are control variables in what-if queries, not known-future weather used to improve accuracy. It bears on how to read the covariate response of Chronos-2, which we run, but does not test forecast accuracy."
+  },
+  "checks": {
+    "pre_registered": "unknown",
+    "training_overlap_risk": "unknown",
+    "independent_replication": "no",
+    "notes": "Pre-registration is described in the paper (preregister.yaml, tag prereg-freeze, three amendments), but Appendix C says the file, amendment log and code will be released with the final version; no public record was found, so I did not mark it yes. Independent replication: none found. Won (arXiv:2610.08118, forced engineering systems, H=128) and a Zenodo record on synthetic generators are related but test different questions; they are in the ledger but not cited as replication. 'no' rests on one You.com research call plus those two sources, not an exhaustive search. Central model: Chronos-2 (first in the headline list); its weights commit date was not fetched, so training_overlap_risk is unknown, and its licence was not verified from the model card. The headline comparison (confounding gap on synthetic what-if queries) is not what our benchmark measures, so ACCEPT_RUN does not apply. Evidence strength weak: numbers with intervals but no released code or data at this version, and the test unit is synthetic cells, not a test window of at least 90 days."
+  },
+  "evidence_strength": "weak",
+  "license": null,
+  "license_ok_for_commercial": null,
+  "runnable_class": "direct_adapter",
+  "label": "PARTIAL",
+  "label_reason": "Sourced and about the covariate behaviour of a model we run (Chronos-2), but evidence is weak (no released code or preregistration record yet, one author, synthetic data) and its headline measure is a confounding gap, not week-ahead load error. It cannot be re-measured on our benchmark as a transfer test; use it as context for reading the Chronos-2 temperature result.",
+  "implementation_hint": "Chronos-2 runs via models/chronos2.py (amazon/chronos-2). The paper's TiRex-2, TabPFN-TS and TimesFM-2.5 XReg setups are not needed for our primary comparison. Reproducing the confounding gap would need the authors' unreleased code.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261119T224130_judge_youcom_prereg-causal-audit-covariate-tsfm_ca0d",
+    "session_id": "76ec14eb-bd85-44e4-9c5f-48cdc0d31dc9",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}
