@@ -25,6 +25,9 @@ on:
       providers:
         description: Search providers, space separated
         default: "claude youcom"
+      model:
+        description: Model for every scan and judge run (the hackathon scorecards used claude-fable-5-2)
+        default: "claude-fable-5-2"
       queue_only:
         description: Show the queue from the latest scans and stop (no paid runs, no pull request)
         type: boolean
@@ -72,7 +75,8 @@ jobs:
           YDC_API_KEY: ${{ secrets.YDC_API_KEY }}
           CAP: ${{ inputs.cap || '60' }}
           PROVIDERS: ${{ inputs.providers || 'claude youcom' }}
-        run: uv run --project core python tools/weekly.py --cap "$CAP" --providers $PROVIDERS
+          MODEL: ${{ inputs.model || 'claude-fable-5-2' }}
+        run: uv run --project core python tools/weekly.py --cap "$CAP" --providers $PROVIDERS --model "$MODEL"
       - name: Guard, only output paths were changed
         if: ${{ always() && !inputs.queue_only }}
         run: python3 tools/guard_paths.py
