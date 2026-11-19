@@ -1,0 +1,178 @@
+{
+ "candidate_id": "tabby",
+ "title": "Tabby: An Open Pretraining Recipe for Time Series Foundation Models",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2609.13956",
+  "provider": "claude",
+  "retrieved_at": "2026-11-19T23:34:41Z"
+ },
+ "candidate_type": "model_release",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2609.13956v2",
+   "kind": "arxiv",
+   "paraphrase": "Technical report, v2 of 29 Sep 2026. A 145M-parameter encoder-only patch transformer for univariate quantile forecasting, trained on GIFT-Eval-Pretrain+, BLAST and two synthetic generators. Says it beats Sundial, TimesFM 2.5 and Chronos-Bolt on GIFT-Eval and those plus Moirai-2.0 on TIME; the scores are in a figure only. States that it does not model external covariates.",
+   "evidence_id": "9b6ae4ff4b9c"
+  },
+  {
+   "url": "https://arxiv.org/abs/2609.13956",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page: v1 submitted 12 Sep 2026, v2 29 Sep 2026. Releases the model and the full recipe used to build it; contexts up to 8,192 points; describes zero-shot accuracy as competitive on GIFT-Eval and on the out-of-distribution TIME benchmark. Code at huawei-noah/trustworthyAI.",
+   "evidence_id": "05c07ed2df2b"
+  },
+  {
+   "url": "https://huggingface.co/paris-noah/Tabby",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the weights we would run: frozen backbone plus a prompt trained on 48 GIFT-Eval training tasks, 146.7M parameters, 99 quantiles, one series at a time. GIFT-Eval over 97 configurations: 0.6880 MASE and 0.4758 CRPS prompted, 0.7040 and 0.4827 for the backbone alone. A 168-step forecast can use up to 8,024 history points. Licence CC BY-NC 4.0.",
+   "evidence_id": "bfcce1bfaba9"
+  },
+  {
+   "url": "https://huggingface.co/paris-noah/Tabby-Pretrain",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the frozen backbone, the zero-shot model: 145.84M parameters, 20 layers, 16-step patches. Zero-shot GIFT-Eval reference of 0.7040 MASE and 0.4827 CRPS at 8,096 context with a 128-step minimum forecast span. Says no TIME aggregate is claimed yet. Licence CC BY-NC 4.0.",
+   "evidence_id": "6e42bf44b455"
+  },
+  {
+   "url": "https://github.com/huawei-noah/trustworthyAI/tree/master/TabbyTSFM",
+   "kind": "github",
+   "paraphrase": "Authors' code: pretraining and prompt-training recipes, a predictor class, and evaluation scripts for GIFT-Eval, TIME, UCR and TSB-AD. Added 11 Sep 2026, last changed 19 Sep 2026. Examples use a GPU; no checkpoints or data are bundled.",
+   "evidence_id": "924f6792793a"
+  },
+  {
+   "url": "https://huggingface.co/api/models/paris-noah/Tabby/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit list of the weights repository: first upload on 2026-09-10; the current model (seed-42 prompt merged into the backbone) was released in commit 3e56595 on 2026-09-28 at 19:38 UTC, with a step-count correction 50 minutes later; README updates after that, the last on 2026-11-06. No per-file dates.",
+   "evidence_id": "e11a674cec35"
+  },
+  {
+   "url": "https://huggingface.co/api/models/paris-noah/Tabby",
+   "kind": "hf_card",
+   "paraphrase": "Hub record: created 2026-09-10, head 6c60343 (2026-11-06), licence cc-by-nc-4.0, not gated, custom code, 146,695,591 float32 parameters.",
+   "evidence_id": "1f559e9189bf"
+  }
+ ],
+ "claims": [
+  {
+   "text": "The frozen backbone, Tabby-Pretrain, scores a seasonal-naive-normalised MASE of 0.7040 on GIFT-Eval zero-shot (geometric mean over 97 configurations, 8,096-point context, 128-step minimum forecast span).",
+   "metric": "MASE relative to seasonal naive (geometric mean)",
+   "value": 0.704,
+   "dataset": "GIFT-Eval, 97 configurations",
+   "horizon": "mixed (short to long, per benchmark task)",
+   "baseline": "seasonal naive (= 1.0)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 3,
+   "ci90": null
+  },
+  {
+   "text": "Tabby-Pretrain scores a seasonal-naive-normalised CRPS of 0.4827 on GIFT-Eval zero-shot, same setup.",
+   "metric": "CRPS relative to seasonal naive (geometric mean)",
+   "value": 0.4827,
+   "dataset": "GIFT-Eval, 97 configurations",
+   "horizon": "mixed (short to long, per benchmark task)",
+   "baseline": "seasonal naive (= 1.0)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 3,
+   "ci90": null
+  },
+  {
+   "text": "The full Tabby model (backbone plus a prompt trained on 48 GIFT-Eval training tasks, seed 42) scores a normalised MASE of 0.6880 on GIFT-Eval; this is not zero-shot on that benchmark, and the card says the leaderboard entry is marked as having test-data leakage.",
+   "metric": "MASE relative to seasonal naive (geometric mean)",
+   "value": 0.688,
+   "dataset": "GIFT-Eval, 97 configurations",
+   "horizon": "mixed (short to long, per benchmark task)",
+   "baseline": "Tabby-Pretrain zero-shot, 0.7040",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 2,
+   "ci90": null
+  },
+  {
+   "text": "The full Tabby model scores a normalised CRPS of 0.4758 on GIFT-Eval, same setup and same caveat.",
+   "metric": "CRPS relative to seasonal naive (geometric mean)",
+   "value": 0.4758,
+   "dataset": "GIFT-Eval, 97 configurations",
+   "horizon": "mixed (short to long, per benchmark task)",
+   "baseline": "Tabby-Pretrain zero-shot, 0.4827",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 2,
+   "ci90": null
+  },
+  {
+   "text": "On GIFT-Eval, which the authors call in-distribution, Tabby is ahead of Sundial, TimesFM 2.5 and Chronos-Bolt on MASE and CRPS; on the out-of-distribution TIME benchmark (98 tasks) it is ahead of those three and Moirai-2.0. The paper gives the scores in a figure only, and the model cards claim no TIME aggregate.",
+   "metric": "rank among compared models (MASE, CRPS)",
+   "value": null,
+   "dataset": "GIFT-Eval; TIME",
+   "horizon": "mixed (per benchmark task)",
+   "baseline": "Sundial, TimesFM 2.5, Chronos-Bolt; Moirai-2.0 on TIME",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Tabby is channel-independent: it forecasts each series from its own history and does not model other variables or external covariates (the authors' first stated limitation).",
+   "metric": null,
+   "value": null,
+   "dataset": null,
+   "horizon": null,
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "The model works in a fixed 8,192-position window and returns 99 quantiles (0.01 to 0.99) in one pass; a 168-step forecast masks 168 future positions and can use at most 8,024 history points.",
+   "metric": "maximum history points at a 168-step horizon",
+   "value": 8024,
+   "dataset": null,
+   "horizon": "168 steps",
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 2,
+   "ci90": null
+  },
+  {
+   "text": "The weights are released under CC BY-NC 4.0 (non-commercial); the training pipeline, prompt-training recipe and evaluation scripts are public.",
+   "metric": null,
+   "value": null,
+   "dataset": null,
+   "horizon": null,
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 2,
+   "ci90": null
+  }
+ ],
+ "relevance": {
+  "target_match": 1,
+  "horizon_match": 1,
+  "covariates_match": 1,
+  "rationale": "A general-purpose model release. Its own sources report only aggregate scores on mixed-domain benchmarks (GIFT-Eval, TIME), with no electric load case, so the target is scored 1; hourly load series appear only in its pretraining inventory. The benchmark tasks mix horizons and none is singled out; the model card does spell out the 168-step case (up to 8,024 history points), so our horizon is reachable but untested by the publisher, scored 1. The model is univariate by design and the authors list the lack of external covariates as a limitation, so covariates are scored 1: it cannot take the temperature input our spec requires and would be a row labelled univariate."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "high",
+  "independent_replication": "yes",
+  "notes": "Central model: paris-noah/Tabby, the full release (backbone plus prompt), which is what the FoundationForecast wrapper loads according to the library's pull request 76. pre_registered: no source read names a plan or registration. independent_replication: yes, for the GIFT-Eval scores only. (a) The FoundationForecast maintainers' harness reproduces the prompted entry (MASE 0.688, CRPS 0.4758; pull request 76, fetched). (b) An outside article reran Tabby-Pretrain with the authors' script and matched 0.7040 MASE and 0.4827 CRPS, but only with the model card's 128-step minimum forecast span; the script default gave 0.7192 and 0.4923, with 15 tasks more than 5% worse (Towards Data Science, fetched; its date is not on the page as fetched, and its code repository was not fetched). Both are reruns of the authors' benchmark with the authors' weights, not a test on new data; no Tabby result on electric load was found by the research call. evidence_strength is moderate: public weights and code and a replicated benchmark score, but the headline claim is descriptive ('competitive'), GIFT-Eval is in-distribution by the authors' own account, the prompted model was tuned on GIFT-Eval training tasks, and the TIME scores could not be read (figure only). The leak flag is disputed: the model card says the prompted entry is marked as leaking; the article reports a 29 Oct 2026 commit by the lead author setting both entries to No; a third-party leaderboard mirror shows No (snippet only). The research answer's TIME figures (0.668 MASE, 0.553 CRPS) trace to a machine-written summary on a third-party page and are not used. training_overlap_risk is about our run: the model file was last replaced on 2026-09-28 at 19:38 UTC (commit 3e56595, by its title; the listing has no per-file dates), inside our scored window, so 5 of 52 scored weeks start after it (5 Oct to 2 Nov 2026); with the first upload of 2026-09-10 it would be 8 of 52. Either way fewer than half, hence high. Separately, the pretraining inventory lists hourly load sets (gfc12_load, gfc14_load, gfc17_load and others); no PJM or EIA-930 name was found by keyword in the paper, but BLAST's contents are not itemised, so overlap with our series cannot be ruled out. Licence: CC BY-NC 4.0 on both weight repositories (cards and Hub record); the code repository is labelled Apache-2.0 per a research snippet (licence file not fetched). Not verified: the paper was read by section and keyword, not all 43 pages; the reference list was not read; whether the pinned FoundationForecast commit (cd67b608) contains the merged Tabby wrapper (notes/foundationforecast.md lists a Tabby class; the models_ff environment is not installed on this machine, so it was not checked here); whether the wrapper applies the 128-step minimum span; CPU runtime for 52 windows (the authors' examples use a GPU with bf16); research sources 3, 5, 7, 8, 10, 12 and 13 (in the ledger as not fetched, not used as evidence). The model loads through remote code from the weights repository, which a pinned revision also fixes."
+ },
+ "evidence_strength": "moderate",
+ "license": "CC BY-NC 4.0 (weights); code repository labelled Apache-2.0",
+ "license_ok_for_commercial": false,
+ "runnable_class": "ff_univariate",
+ "label": "ACCEPT_RUN",
+ "label_reason": "A runnable model release with public weights, code, model cards and a technical report, whose GIFT-Eval scores were reproduced by two outside parties and which spec.yaml already lists as a FoundationForecast wrapper. It is univariate, so it cannot use temperature and would be a secondary row labelled univariate; the weights are non-commercial and only 5 of 52 scored weeks start after the weights date, so the run must carry those labels.",
+ "implementation_hint": "Run models_ff/run_ff.py with paris-noah/Tabby (ff_univariate: load history only, no temperature; spec.yaml lists Tabby among the other FoundationForecast wrappers). Needed first: a SPECS entry built with the library's Tabby wrapper, and a pin in models/pins.json at a recorded revision (head read here: 6c60343; the model file was last replaced in 3e56595 on 2026-09-28 19:38 UTC) with the weights file's own date; expect n_windows_after_weights = 5 of 52. Check that the pinned library commit has the wrapper (it was merged in pull request 76, commit cb63ddc, in late October 2026) and that it loads from a local snapshot path, since the model needs the remote code files in that snapshot. At 168 hours the 128-step minimum span does not bind, and the 8,192 window leaves 8,024 history points, above our 2,048 hours. The authors evaluate in bf16 on a GPU; on CPU use float32 and time one gate window before anything else, since runtime on a laptop is unknown. paris-noah/Tabby-Pretrain is the zero-shot backbone (no GIFT-Eval-trained prompt) and would be a cleaner second row if the wrapper accepts it. The licence allows non-commercial use only, so flag the row. Gate origins first, on CPU.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261119T233110_judge_youcom_tabby_2dde",
+  "session_id": "71a0d4c2-39fb-47fb-a53d-10f6e549745a",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

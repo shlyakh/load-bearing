@@ -1,0 +1,69 @@
+{
+ "run_id": "20261119T233940_judge_youcom_medium-term-load-economic-fm_5f05",
+ "skill": "judge",
+ "provider": "youcom",
+ "args": [
+  "medium-term-load-economic-fm"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-19_run2.jsonl. Write the scorecard to scorecards/youcom/medium-term-load-economic-fm.json.",
+ "model_requested": "claude-fable-5-2",
+ "provider_tools_allowed": [
+  "mcp__you-com__you-search",
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research"
+ ],
+ "provider_tools_denied": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "mcp_server": {
+  "name": "you-com",
+  "url": "https://api.you.com/mcp?tools=you-search,you-contents,you-research"
+ },
+ "mcp_servers": [
+  {
+   "name": "you-com",
+   "status": "connected"
+  }
+ ],
+ "search_tools_present": [
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research",
+  "mcp__you-com__you-search"
+ ],
+ "git_commit": "22562b6-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-19T23:39:40+00:00",
+ "wall_seconds": 1.4,
+ "exit_code": 1,
+ "timed_out": false,
+ "session_id": "e71b9446-3036-48db-9cab-db345f245cee",
+ "is_error": true,
+ "num_turns": 1,
+ "total_cost_usd": 0,
+ "usage": {
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "input_tokens": 0,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 0,
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "",
+  "iterations": [],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {},
+ "tool_calls": {},
+ "failure": "the CLI exited with status 1"
+}

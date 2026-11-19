@@ -1,0 +1,169 @@
+{
+ "candidate_id": "fm-electricity-price-arbitrage",
+ "title": "Foundation models for electricity price forecasting and battery arbitrage: Can they replace market-specific forecasting models?",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2609.00089",
+  "provider": "claude",
+  "retrieved_at": "2026-11-19T23:30:00Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/html/2609.00089",
+   "kind": "arxiv",
+   "paraphrase": "Full text, v1. Nine zero-shot foundation model variants against LEAR+CP and DDNN-JSU on hourly day-ahead prices in Germany, Poland and Spain; 24 prices for the next day, tested daily from 1 Jan 2021 to 31 Dec 2025. Inputs are day-ahead load and wind plus solar forecasts and lagged fuel and carbon prices. Scores: MAE, RMSE, CRPS, CPA tests, and profit of a 1 MWh battery.",
+   "evidence_id": "361ff66a8fa9"
+  },
+  {
+   "url": "https://arxiv.org/abs/2609.00089",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page, submitted 31 Aug 2026. Headline: only the TabPFN models beat both market-specific benchmarks consistently and significantly on every statistical measure in all three markets; in battery arbitrage they lead under unlimited bids and riskier quantile strategies, while the DDNN benchmark earns more when risk tolerance is lower.",
+   "evidence_id": "3df029623eab"
+  },
+  {
+   "url": "https://huggingface.co/api/models/Prior-Labs/tabpfn_3",
+   "kind": "hf_card",
+   "paraphrase": "Hub record of the central model's weights: created 2026-05-05, head 24a16a8 (2026-07-04), licence tabpfn-3-license-v1.0. Files include the default regressor checkpoint and the time-series regressor checkpoint.",
+   "evidence_id": "ca49526b8769"
+  },
+  {
+   "url": "https://huggingface.co/api/models/Prior-Labs/tabpfn_3/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the weights repository: checkpoints were first uploaded on 5 and 6 May 2026, re-uploaded under new names on 10 May, with further uploads on 11 May 2026 (the time-series regressor at 15:42 UTC). Later commits are README or tag edits by their titles.",
+   "evidence_id": "1c4dc50d5cea"
+  },
+  {
+   "url": "https://huggingface.co/Prior-Labs/tabpfn_3",
+   "kind": "hf_card",
+   "paraphrase": "Model card: TabPFN-3 is trained on synthetic tabular tasks only. The licence allows research, testing and internal benchmarking and forbids commercial or production use of the model and its outputs. The time-series checkpoint is the TabPFN-TS-3 default.",
+   "evidence_id": "5ca64186435e"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Germany, 2021 to 2025: zero-shot TabPFN-3 has the lowest CRPS, 9.15, against 10.70 for DDNN-JSU, the stronger market-specific benchmark (about 14.5% lower, significant at the 1% level).",
+   "metric": "CRPS (EUR/MWh)",
+   "value": 9.15,
+   "dataset": "Day-ahead prices, DE-LU bidding zone (ENTSO-E), hourly",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, CRPS 10.70",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  },
+  {
+   "text": "Poland, 2021 to 2025: TabPFN-3 has the lowest CRPS, 9.61, against 10.96 for DDNN-JSU (about 12.3% lower, significant at the 1% level).",
+   "metric": "CRPS (EUR/MWh)",
+   "value": 9.61,
+   "dataset": "Day-ahead prices, PL bidding zone (ENTSO-E), hourly",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, CRPS 10.96",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  },
+  {
+   "text": "Spain, 2021 to 2025: TabPFN-3 has the lowest CRPS, 8.15, against 9.30 for DDNN-JSU (about 12.4% lower, significant at the 1% level).",
+   "metric": "CRPS (EUR/MWh)",
+   "value": 8.15,
+   "dataset": "Day-ahead prices, ES bidding zone (ENTSO-E), hourly",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, CRPS 9.30",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  },
+  {
+   "text": "Germany: TabPFN-3 MAE 12.59 against 14.58 for DDNN-JSU (median of the predictive distribution as the point forecast; significant at the 1% level).",
+   "metric": "MAE (EUR/MWh)",
+   "value": 12.59,
+   "dataset": "Day-ahead prices, DE-LU bidding zone (ENTSO-E), hourly",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, MAE 14.58",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  },
+  {
+   "text": "Poland: TabPFN-3 MAE 13.25 against 14.97 for DDNN-JSU (significant at the 1% level).",
+   "metric": "MAE (EUR/MWh)",
+   "value": 13.25,
+   "dataset": "Day-ahead prices, PL bidding zone (ENTSO-E), hourly",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, MAE 14.97",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  },
+  {
+   "text": "Spain: TabPFN-3 MAE 11.18 against 12.66 for DDNN-JSU (significant at the 1% level); TabPFN-2 is slightly lower still at 11.01.",
+   "metric": "MAE (EUR/MWh)",
+   "value": 11.18,
+   "dataset": "Day-ahead prices, ES bidding zone (ENTSO-E), hourly",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, MAE 12.66",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  },
+  {
+   "text": "Germany: zero-shot Chronos-2 with the same covariates has CRPS 11.80, worse than DDNN-JSU (10.70); it beats DDNN-JSU significantly only in Poland (10.74 against 10.96).",
+   "metric": "CRPS (EUR/MWh)",
+   "value": 11.8,
+   "dataset": "Day-ahead prices, DE-LU bidding zone (ENTSO-E), hourly",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, CRPS 10.70",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  },
+  {
+   "text": "Battery arbitrage, Germany, unlimited bids: TabPFN-TS-3 earns the most, 132,716 EUR over five years with a 1 MWh battery, against 130,434 EUR for DDNN-JSU (perfect foresight: 143,474 EUR).",
+   "metric": "total profit (EUR)",
+   "value": 132716,
+   "dataset": "Day-ahead prices, DE-LU bidding zone; 1 MWh battery, efficiency 0.95, 25 EUR per cycle",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, 130,434 EUR",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  },
+  {
+   "text": "Battery arbitrage, Germany, quantile strategy at the 50% level (the most risk-averse): DDNN-JSU earns 86,123 EUR, more than TabPFN-3 (80,768 EUR); DDNN-JSU also leads at the 60% and 50% levels in Poland and Spain.",
+   "metric": "total profit (EUR)",
+   "value": 80768,
+   "dataset": "Day-ahead prices, DE-LU bidding zone; 1 MWh battery, efficiency 0.95, 25 EUR per cycle",
+   "horizon": "24 hours (next day's 24 hourly prices)",
+   "baseline": "DDNN-JSU, 86,123 EUR",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1826,
+   "citation_idx": 0
+  }
+ ],
+ "relevance": {
+  "target_match": 2,
+  "horizon_match": 2,
+  "covariates_match": 2,
+  "rationale": "Hourly day-ahead electricity prices in three European markets, not load: another hourly energy series, so target_match is 2. Every forecast is the next day's 24 hourly prices; nothing is tested at a week ahead, so horizon_match is 2. Covariates are known for the forecast day (day-ahead load forecasts, wind plus solar generation forecasts) together with lagged carbon and fuel prices; there is no weather series, so covariates_match is 2. The overlap with our benchmark is the question itself (a zero-shot model with known-future inputs against a purpose-built model given the same inputs) and one shared model, Chronos-2, which is not the paper's winner."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "high",
+  "independent_replication": "unknown",
+  "notes": "Central model: TabPFN-3, the model with the best CRPS in every market in the headline claim; TabPFN-2 and TabPFN-TS-3 are the other two variants of the winning family. pre_registered: the full text names no plan or registration. independent_replication: one research call and one search found none; arXiv 2609.23223 (19 Sep 2026) reuses TabPFN on German and Spanish prices but shares two authors, so it does not count (search snippet only, not fetched). evidence_strength is moderate: a 1,826-day test, significance tests, and benchmarks that received the same lagged feature set and context as the tabular TabPFN models (DDNN-JSU and LEAR one-hot encode the day of week; LEAR and Mitra use a 1,085-day context), from public data sources (ENTSO-E, Investing.com); but no code, forecast archive, pre-registration or replication was found, so the result is reproducible only by re-implementing it. For Chronos-2, TimesFM-2.5 and TabPFN-TS-3 the inputs were arranged differently (full series without a fixed lag structure) and Moirai-2 got no covariates, hence 'partly' on those rows. The paper gives no intervals, only CPA significance stars, so ci90 is absent. training_overlap_risk is about our run: the TabPFN-3 checkpoints were uploaded between 5 and 11 May 2026, inside our scored window. The commit titles do not show which commit added the default regressor file: if 10 May, 26 of 52 scored weeks start after it (med); if 11 May, as for the time-series checkpoint (15:42 UTC), 25 of 52 (high). The research answer gives 12 May from the technical report (not fetched). The later reading was used. TabPFN-3 is trained on synthetic data only (model card), so the usual leakage concern is weaker than the label suggests; the label follows the date rule. Licence: tabpfn-3-license-v1.0, non-commercial and non-production (model card; the licence file itself was not fetched). Not verified: which TabPFN-3 checkpoint and package versions the authors used (not stated in the text read); whether a FoundationForecast TabPFN wrapper loads TabPFN-3 or an earlier version; whether TabPFN-3 runs on a CPU laptop within 60 minutes for our 52 windows; the reference list of the paper (not read); research sources 2 to 9 other than the model card (listed in the ledger as not fetched and not used as evidence). The Hub API reports the repository as not gated, while the card asks for an access form; not tested."
+ },
+ "evidence_strength": "moderate",
+ "license": "tabpfn-3-license-v1.0 (non-commercial)",
+ "license_ok_for_commercial": false,
+ "runnable_class": "ff_univariate",
+ "label": "ACCEPT_STAGE3",
+ "label_reason": "Relevant and sourced: a five-year study with same-input benchmarks in which only the zero-shot TabPFN models beat purpose-built forecasters on an hourly energy series with known-future covariates, though on prices a day ahead rather than load a week ahead. Its headline comparison cannot be re-measured today: spec.yaml lists TabPFN only as a univariate FoundationForecast wrapper, while the result depends on covariates and on TabPFN-3 weights that are non-commercial and were released inside our scored window, so a faithful run needs a new adapter and a protocol decision.",
+ "implementation_hint": "Central model TabPFN-3 (weights repository Prior-Labs/tabpfn_3, head 24a16a8, non-commercial licence). In spec.yaml runnable_models TabPFN appears only among the other FoundationForecast wrappers, as ff_univariate (models_ff/run_ff.py): that run would use load history without temperature and would not test the paper's claim, which rests on known-future covariates. A faithful run needs either a tabular adapter (lagged load, temperature for the target hours, day of week; TabPFN-3 default regressor) or TabPFN-TS-3 with temperature (checkpoint tabpfn-v3-regressor-v3_20260506_timeseries.ckpt), plus a new protocol version and the weights-inside-window label (about 25 of 52 weeks after the weights). Nearest existing piece: models_ff/tabpfn_ts_v2.py (TabPFN-TS with TabPFN v2 weights and temperature, a secondary row in protocol-v1.3 whose scored run is deferred); the paper's TabPFN-2 is the same weights family but used as a tabular regressor, not through TabPFN-TS. Other models in the paper that we already run: Chronos-2 (models/chronos2.py, with temperature) and TimesFM-2.5 (univariate here, XReg covariates in the paper); neither is the paper's winner. The paper's benchmarks (LEAR+CP, DDNN-JSU) are price-specific and we do not run them; ours is the temperature-only regression.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261119T232640_judge_youcom_fm-electricity-price-arbitrage_94ba",
+  "session_id": "5082ae83-cdfc-43ea-abd7-c9c8ccb53e2a",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

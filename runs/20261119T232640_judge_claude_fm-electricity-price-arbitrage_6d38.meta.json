@@ -1,0 +1,112 @@
+{
+ "run_id": "20261119T232640_judge_claude_fm-electricity-price-arbitrage_6d38",
+ "skill": "judge",
+ "provider": "claude",
+ "args": [
+  "fm-electricity-price-arbitrage"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-19_run2.jsonl. Write the scorecard to scorecards/claude/fm-electricity-price-arbitrage.json.",
+ "model_requested": "claude-fable-5-2",
+ "provider_tools_allowed": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "provider_tools_denied": [],
+ "mcp_server": null,
+ "mcp_servers": [],
+ "search_tools_present": [
+  "WebFetch",
+  "WebSearch"
+ ],
+ "git_commit": "22562b6-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-19T23:26:40+00:00",
+ "wall_seconds": 239.2,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "20843a81-6f66-448d-9b80-da564409612e",
+ "is_error": false,
+ "num_turns": 38,
+ "total_cost_usd": 2.1370920000000004,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 63735,
+  "cache_read_input_tokens": 834066,
+  "output_tokens": 22648,
+  "output_tokens_details": {
+   "thinking_tokens": 3997
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 63735,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1332,
+    "cache_read_input_tokens": 79426,
+    "cache_creation_input_tokens": 453,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 453
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 30,
+   "outputTokens": 22648,
+   "cacheReadInputTokens": 834066,
+   "cacheCreationInputTokens": 63735,
+   "webSearchRequests": 0,
+   "costUSD": 2.0927332000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 3997,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 63735,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 148958,
+   "outputTokens": 18926,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.0443588,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 9664,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 0,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Bash": 20,
+  "ToolSearch": 1,
+  "WebFetch": 8,
+  "WebSearch": 2,
+  "Grep": 2,
+  "Write": 3,
+  "Edit": 1
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/claude/fm-electricity-price-arbitrage.json"
+ ]
+}
