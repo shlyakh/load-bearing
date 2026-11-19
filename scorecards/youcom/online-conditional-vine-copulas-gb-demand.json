@@ -1,0 +1,41 @@
+{
+  "candidate_id": "online-conditional-vine-copulas-gb-demand",
+  "title": "Online Conditional Vine Copulas: Forecasting Electricity Demand",
+  "spec_version": "spec-v1",
+  "discovered_via": {"url": "https://arxiv.org/abs/2610.23119", "provider": "claude", "retrieved_at": "2026-11-19T22:50:00Z"},
+  "candidate_type": "paper",
+  "primary_sources": [
+    {"url": "https://arxiv.org/abs/2610.23119", "kind": "arxiv", "paraphrase": "Abstract: online covariate-conditioned vine copula for multivariate distributional forecasts; GB regional net-demand application beats unconditional Gaussian and vine benchmarks; code in ondil.", "evidence_id": "413fa701e884"},
+    {"url": "https://arxiv.org/html/2610.23119", "kind": "arxiv", "paraphrase": "Full text: one-step-ahead joint forecasts of five GB net-demand regions, test set is the year 2018 with monthly refits; gains come mostly from conditioning dependence on covariates.", "evidence_id": "a9267556332d"},
+    {"url": "https://github.com/chrischu12/online-vine-copulas", "kind": "github", "paraphrase": "Authors' replication scripts for simulations and application; GPL-3.0; input data from a Zenodo record not redistributed.", "evidence_id": "1e1fd97e0c88"}
+  ],
+  "claims": [
+    {"text": "Conditional vine copula outperforms unconditional Gaussian and vine copula benchmarks for GB regional net-demand (five regions).", "metric": "log score / energy score (lower is better; no value extracted from full text)", "value": null, "dataset": "GB grid supply point net-demand aggregated to five regions", "horizon": "one step ahead (half-hourly data)", "baseline": "unconditional Gaussian copula and unconditional vine copula", "baseline_same_inputs": "partly", "test_window_days": 365, "citation_idx": 1, "ci90": null},
+    {"text": "Online estimation reaches forecast quality comparable to batch re-estimation in simulations at much lower computation time.", "metric": null, "value": null, "dataset": "simulated data", "horizon": null, "baseline": "batch estimator", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0, "ci90": null}
+  ],
+  "relevance": {
+    "target_match": 2,
+    "horizon_match": 1,
+    "covariates_match": 2,
+    "rationale": "Regional GB electricity net-demand at half-hourly resolution (not PJM hourly load). The forecast is one step ahead, not 168 h. Weather covariates drive the dependence parameters, but the retrieved sources do not document forecast vintage, so known-future use is unclear. The output is a joint probabilistic forecast, not a point forecast."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "unknown",
+    "independent_replication": "unknown",
+    "notes": "No pre-registration found. The replication repo is the authors' own, so it is not independent replication; a search found no independent one. Test window is the whole of 2018 (over 90 days) and the benchmarks use the same data, but covariate inputs differ across model parts, so baseline_same_inputs is partly. Not verified: the exact score tables (taken from the You.com research summary, not read in the full text) and the weather forecast vintage. The model is statistical (ondil, GPL-3.0, no pretrained weights), so training overlap with our scored window does not apply and is recorded as unknown. The paper's own conclusion is that online updating complements periodic refitting; pure online was worse than repeated online."
+  },
+  "evidence_strength": "moderate",
+  "license": "GPL-3.0",
+  "license_ok_for_commercial": null,
+  "runnable_class": "not_runnable",
+  "implementation_hint": "ondil (GPL-3.0) is a statistical package, not in runnable_models. Running it would need a new adapter, a point-forecast conversion for a one-step probabilistic model, and a 168 h multi-step design.",
+  "label": "REJECT",
+  "label_reason": "The headline claim is about one-step-ahead probabilistic dependence modelling of GB net-demand, which does not map to our 168 h point-forecast benchmark on PJM JC and DOM. The method is not a model in runnable_models, so its comparison cannot be re-measured with one; the paper is sourced and reproducible but off our target.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261119T224250_judge_youcom_online-conditional-vine-copulas-gb-deman_1d58",
+    "session_id": "13026fa4-83b6-49ef-8c0b-81b976c6eb31",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}

@@ -1,0 +1,251 @@
+{
+ "weekly_id": "weekly_20261119T223527",
+ "date": "2026-11-19",
+ "started_at": "2026-11-19T22:35:27+00:00",
+ "providers": [
+  "claude",
+  "youcom"
+ ],
+ "cap": 3,
+ "git_commit": "edc2980",
+ "scans": [
+  {
+   "run_id": "20261119T223527_scan_claude_all_7f97",
+   "wall_seconds": 256.8,
+   "num_turns": 103,
+   "total_cost_usd": 1.3614241999999996,
+   "failure": null,
+   "session_id": "ab7a59b6-5288-45cd-b3c2-fe316a1f209f",
+   "provider": "claude",
+   "file": "candidates/claude/scan_2026-11-19.jsonl",
+   "limit": false
+  },
+  {
+   "run_id": "20261119T223527_scan_youcom_all_12d0",
+   "wall_seconds": 304.1,
+   "num_turns": 105,
+   "total_cost_usd": 2.0677791,
+   "failure": null,
+   "session_id": "f7c9da9f-892f-40c5-bf0b-428fbf506b7a",
+   "provider": "youcom",
+   "file": "candidates/youcom/scan_2026-11-19.jsonl",
+   "limit": false
+  }
+ ],
+ "judges": [
+  {
+   "candidate_id": "timesfm-3",
+   "provider": "claude",
+   "run_id": "20261119T224031_judge_claude_timesfm-3_a681",
+   "wall_seconds": 66.7,
+   "num_turns": 17,
+   "total_cost_usd": 0.2567017,
+   "failure": null,
+   "session_id": "7b7741ef-f31f-4aba-8014-286343589acf",
+   "label": "ACCEPT_RUN",
+   "runnable_class": "ff_native_exog"
+  },
+  {
+   "candidate_id": "prereg-causal-audit-covariate-tsfm",
+   "provider": "claude",
+   "run_id": "20261119T224031_judge_claude_prereg-causal-audit-covariate-tsfm_e685",
+   "wall_seconds": 58.9,
+   "num_turns": 16,
+   "total_cost_usd": 0.23602350000000002,
+   "failure": null,
+   "session_id": "a7b15d32-2d25-4776-bf48-c0781b0c4c00",
+   "label": "PARTIAL",
+   "runnable_class": "direct_adapter"
+  },
+  {
+   "candidate_id": "prereg-causal-audit-covariate-tsfm",
+   "provider": "youcom",
+   "run_id": "20261119T224130_judge_youcom_prereg-causal-audit-covariate-tsfm_ca0d",
+   "wall_seconds": 102.5,
+   "num_turns": 32,
+   "total_cost_usd": 0.4262627,
+   "failure": null,
+   "session_id": "76ec14eb-bd85-44e4-9c5f-48cdc0d31dc9",
+   "label": "PARTIAL",
+   "runnable_class": "direct_adapter"
+  },
+  {
+   "candidate_id": "online-conditional-vine-copulas-gb-demand",
+   "provider": "claude",
+   "run_id": "20261119T224138_judge_claude_online-conditional-vine-copulas-gb-deman_b804",
+   "wall_seconds": 72.1,
+   "num_turns": 18,
+   "total_cost_usd": 0.27717130000000006,
+   "failure": null,
+   "session_id": "4bd703b3-bb9f-4eec-b511-dfdf888df9d8",
+   "label": "REJECT",
+   "runnable_class": "not_runnable"
+  },
+  {
+   "candidate_id": "online-conditional-vine-copulas-gb-demand",
+   "provider": "youcom",
+   "run_id": "20261119T224250_judge_youcom_online-conditional-vine-copulas-gb-deman_1d58",
+   "wall_seconds": 106.3,
+   "num_turns": 35,
+   "total_cost_usd": 0.3681002,
+   "failure": null,
+   "session_id": "13026fa4-83b6-49ef-8c0b-81b976c6eb31",
+   "label": "REJECT",
+   "runnable_class": "not_runnable"
+  }
+ ],
+ "stopped": null,
+ "tool_errors": [],
+ "cli_version": "2.1.323 (Claude Code)",
+ "registry": {
+  "new": [
+   "gh:google-research/timesfm@v3.0.0"
+  ],
+  "known": [
+   "arxiv:2610.07232",
+   "zenodo:24161799",
+   "arxiv:2611.07784",
+   "zenodo:24010850",
+   "arxiv:2609.06656",
+   "arxiv:2610.28200",
+   "arxiv:2609.24559",
+   "hf:mistralai/timestral-209m",
+   "zenodo:24194671",
+   "arxiv:2609.18588",
+   "arxiv:2609.17000",
+   "arxiv:2610.12638",
+   "arxiv:2608.05018",
+   "zenodo:23481889",
+   "zenodo:23143335",
+   "zenodo:23003932",
+   "arxiv:2608.20024",
+   "arxiv:2610.13676"
+  ],
+  "unjudged_seen_before": [
+   "arxiv:2610.31869",
+   "arxiv:2610.23119",
+   "arxiv:2611.02895",
+   "arxiv:2609.17895",
+   "arxiv:2609.31806",
+   "arxiv:2611.14535",
+   "url:huggingface.co/blog/ibm-research/ibm-releases-sota-granite-time-series",
+   "arxiv:2609.13956",
+   "arxiv:2609.00089",
+   "arxiv:2610.00589"
+  ],
+  "possible_new_version": [],
+  "shares_url_with_known": [
+   "gh:google-research/timesfm@v3.0.0 ~ hf:google/timesfm-3.0-pytorch"
+  ],
+  "carried_over": [],
+  "queued": [
+   "gh:google-research/timesfm@v3.0.0",
+   "arxiv:2610.31869",
+   "arxiv:2610.23119"
+  ],
+  "deferred_by_cap": [
+   "arxiv:2611.02895",
+   "arxiv:2609.17895",
+   "arxiv:2609.31806",
+   "arxiv:2611.14535",
+   "url:huggingface.co/blog/ibm-research/ibm-releases-sota-granite-time-series",
+   "arxiv:2609.13956",
+   "arxiv:2609.00089",
+   "arxiv:2610.00589"
+  ]
+ },
+ "queue": [
+  {
+   "candidate_id": "timesfm-3",
+   "title": "TimesFM 3.0 (Google Research)",
+   "primary_url": "https://github.com/google-research/timesfm/releases/tag/v3.0.0",
+   "other_urls": [
+    "https://huggingface.co/google/timesfm-3.0-pytorch",
+    "https://research.google/blog/timesfm-3-a-zero-shot-foundation-model-for-multivariate-forecasting/"
+   ],
+   "published_at": "2026-08-28",
+   "candidate_type": "model_release",
+   "claim": "A 330M-parameter zero-shot model natively trained for multivariate forecasting with past and known-future covariates such as weather forecasts.",
+   "why_relevant": "Covariate-capable foundation model released inside our scored window, so weeks-after-weights matters.",
+   "query": "feed:github",
+   "claim_basis": "page",
+   "found_by": [
+    "claude",
+    "youcom"
+   ],
+   "ranks": {
+    "claude": 7,
+    "youcom": 7
+   },
+   "ids": {
+    "claude": "timesfm-3",
+    "youcom": "timesfm-3"
+   },
+   "from_listing": true,
+   "registry_key": "gh:google-research/timesfm@v3.0.0",
+   "carried_over": false
+  },
+  {
+   "candidate_id": "prereg-causal-audit-covariate-tsfm",
+   "title": "Forecasting Associations, Not Interventions: A Preregistered Causal Audit of Covariate-Aware Time Series Foundation Models",
+   "primary_url": "https://arxiv.org/abs/2610.31869",
+   "other_urls": [],
+   "published_at": "2026-10-22",
+   "candidate_type": "paper",
+   "claim": "Chronos-2, TiRex-2, TabPFN-TS and TimesFM-2.5 respond to a covariate like an observational regression, so their what-if answers are confounded.",
+   "why_relevant": "Bears on how far to trust the covariate response of the models we run; synthetic and physical systems, not load.",
+   "query": "feed:arxiv",
+   "claim_basis": "abstract",
+   "found_by": [
+    "claude",
+    "youcom"
+   ],
+   "ranks": {
+    "claude": 22,
+    "youcom": 13
+   },
+   "ids": {
+    "claude": "causal-audit-covariate-tsfm",
+    "youcom": "preregistered-covariate-causal-audit"
+   },
+   "from_listing": true,
+   "registry_key": "arxiv:2610.31869",
+   "carried_over": false
+  },
+  {
+   "candidate_id": "online-conditional-vine-copulas-gb-demand",
+   "title": "Online Conditional Vine Copulas: Forecasting Electricity Demand",
+   "primary_url": "https://arxiv.org/abs/2610.23119",
+   "other_urls": [],
+   "published_at": "2026-10-16",
+   "candidate_type": "paper",
+   "claim": "An online covariate-conditioned vine copula model beats unconditional benchmarks on GB net-demand across five regions and updates cheaply.",
+   "why_relevant": "Probabilistic regional demand with covariates; horizon and weather use not stated.",
+   "query": "feed:arxiv",
+   "claim_basis": "abstract",
+   "found_by": [
+    "claude"
+   ],
+   "ranks": {
+    "claude": 14
+   },
+   "ids": {
+    "claude": "online-vine-copulas-gb-demand"
+   },
+   "from_listing": true,
+   "registry_key": "arxiv:2610.23119",
+   "carried_over": false
+  }
+ ],
+ "sync": {
+  "judged": [
+   "arxiv:2610.23119",
+   "arxiv:2610.31869",
+   "gh:google-research/timesfm@v3.0.0"
+  ],
+  "unfinished": []
+ },
+ "total_cost_usd": 4.99,
+ "wall_minutes": 9.2,
+ "ok": true
+}

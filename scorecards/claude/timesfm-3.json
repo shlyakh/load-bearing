@@ -1,0 +1,43 @@
+{
+  "candidate_id": "timesfm-3",
+  "title": "TimesFM 3.0 (Google Research)",
+  "spec_version": "spec-v1",
+  "discovered_via": {"url": "https://github.com/google-research/timesfm/releases/tag/v3.0.0", "provider": "claude", "retrieved_at": "2026-11-19T23:00:00Z"},
+  "candidate_type": "model_release",
+  "primary_sources": [
+    {"url": "https://github.com/google-research/timesfm/releases/tag/v3.0.0", "kind": "github", "paraphrase": "Release v3.0.0 of google-research/timesfm announces new TimesFM-3.0 weights and code; the page gives no benchmarks, licence or covariate details.", "evidence_id": "76267dd2096a"},
+    {"url": "https://huggingface.co/google/timesfm-3.0-pytorch", "kind": "hf_card", "paraphrase": "Model card: about 0.3B parameters, TimesFM Non-Commercial License v1.0, no benchmark numbers; pretraining excludes data overlapping fev-bench.", "evidence_id": "3d72f61333f5"},
+    {"url": "https://huggingface.co/api/models/google/timesfm-3.0-pytorch", "kind": "hf_card", "paraphrase": "Hub record: revision 43046b85, repository created 2026-08-24, last modified 2026-09-02, non-commercial licence, model.safetensors present.", "evidence_id": "520ebc8a1b39"},
+    {"url": "https://research.google/blog/timesfm-3-a-zero-shot-foundation-model-for-multivariate-forecasting/", "kind": "blog", "paraphrase": "Google blog (2026-08-31): 330M zero-shot multivariate model with past and known-future covariates (e.g. weather forecasts); claims top average rank on Gift-Eval, FEV-Bench and Time versus Chronos-2, Toto 2.0 and TimesFM-2.5, shown as rank charts only.", "evidence_id": "e61516fc5f0a"}
+  ],
+  "claims": [
+    {"text": "330M-parameter zero-shot model natively handling multivariate forecasting with past and known-future covariates such as weather forecasts.", "metric": null, "value": null, "dataset": null, "horizon": null, "baseline": null, "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 3},
+    {"text": "Top average rank among pre-trained foundation models on Gift-Eval, FEV-Bench and Time (rank charts; no numeric scores, no electricity-load result).", "metric": "average rank", "value": null, "dataset": "Gift-Eval, FEV-Bench, Time", "horizon": null, "baseline": "Chronos-2, Toto 2.0, TimesFM-2.5", "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 3},
+    {"text": "Model is about 0.3B parameters under a non-commercial licence.", "metric": null, "value": null, "dataset": null, "horizon": null, "baseline": null, "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 1}
+  ],
+  "relevance": {
+    "target_match": 1,
+    "horizon_match": 0,
+    "covariates_match": 3,
+    "rationale": "General-purpose model: its benchmarks are not load-specific (target 1). No horizon is stated (0). It takes known-future covariates such as weather forecasts (3), which fits our forecast-regime primary comparison."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "high",
+    "independent_replication": "unknown",
+    "notes": "Overlap: Hub repository created 2026-08-24 (used as the weights date; the file's own commit date was not read, the GitHub release is 2026-08-28 and the blog 2026-08-31). The scored window runs 2025-11-10 to 2026-11-02 (52 weeks); about 10 weeks start after the weights date, fewer than half, so high. Pin revision 43046b85ec22d584a13f8098c2ed39c889e129c2 at run time. Evidence is vendor-published average-rank charts with no numeric scores or window lengths, so it is weak by the spec's definition, but a runnable model release is its own evidence. Independent replication: one search found only a single-building day-ahead study (arXiv 2610.12638, seen as a snippet, not fetched) that self-describes as exploratory; no independent grid-level evaluation found. Not verified: the pretraining data in full, whether a 168 h horizon fits in one pass, and the GitHub release's licence and asset list. Licence is non-commercial, so it is flagged under license_policy."
+  },
+  "evidence_strength": "weak",
+  "license": "TimesFM Non-Commercial License v1.0",
+  "license_ok_for_commercial": false,
+  "runnable_class": "ff_native_exog",
+  "label": "ACCEPT_RUN",
+  "label_reason": "TimesFM 3.0 is a public model release with weights on Hugging Face and native known-future covariate support, so it can be run on our benchmark through FoundationForecast with temperature in both regimes. Its published evidence is vendor rank charts on general benchmarks, not load, so only our measurement tests the claim; only about 10 of 52 scored weeks start after the weights date, and the licence is non-commercial.",
+  "implementation_hint": "models_ff/run_ff.py (FoundationForecast TimesFM 3.0 wrapper) with temperature_2m as a known-future covariate; weights google/timesfm-3.0-pytorch at revision 43046b85ec22d584a13f8098c2ed39c889e129c2. Confirm the wrapper exists in the pinned FoundationForecast commit before running.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261119T224031_judge_claude_timesfm-3_a681",
+    "session_id": "7b7741ef-f31f-4aba-8014-286343589acf",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}

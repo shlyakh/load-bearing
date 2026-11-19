@@ -1,0 +1,112 @@
+{
+ "run_id": "20261119T224138_judge_claude_online-conditional-vine-copulas-gb-deman_b804",
+ "skill": "judge",
+ "provider": "claude",
+ "args": [
+  "online-conditional-vine-copulas-gb-demand"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-19.jsonl. Write the scorecard to scorecards/claude/online-conditional-vine-copulas-gb-demand.json.",
+ "model_requested": null,
+ "provider_tools_allowed": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "provider_tools_denied": [],
+ "mcp_server": null,
+ "mcp_servers": [],
+ "search_tools_present": [
+  "WebFetch",
+  "WebSearch"
+ ],
+ "git_commit": "edc2980-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-19T22:41:38+00:00",
+ "wall_seconds": 72.1,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "4bd703b3-bb9f-4eec-b511-dfdf888df9d8",
+ "is_error": false,
+ "num_turns": 18,
+ "total_cost_usd": 0.27717130000000006,
+ "usage": {
+  "input_tokens": 24,
+  "cache_creation_input_tokens": 32396,
+  "cache_read_input_tokens": 393513,
+  "output_tokens": 8837,
+  "output_tokens_details": {
+   "thinking_tokens": 659
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 32396,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 814,
+    "cache_read_input_tokens": 46956,
+    "cache_creation_input_tokens": 150,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 150
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 24,
+   "outputTokens": 8837,
+   "cacheReadInputTokens": 393513,
+   "cacheCreationInputTokens": 32396,
+   "webSearchRequests": 0,
+   "costUSD": 0.25735330000000006,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 659,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 32396,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 76360,
+   "outputTokens": 4364,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.019818000000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2129,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 0,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Read": 3,
+  "Grep": 1,
+  "Bash": 7,
+  "ToolSearch": 1,
+  "WebFetch": 3,
+  "WebSearch": 1,
+  "Write": 1
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/claude/online-conditional-vine-copulas-gb-demand.json"
+ ]
+}

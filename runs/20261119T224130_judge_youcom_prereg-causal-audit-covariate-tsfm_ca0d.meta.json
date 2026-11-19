@@ -1,0 +1,109 @@
+{
+ "run_id": "20261119T224130_judge_youcom_prereg-causal-audit-covariate-tsfm_ca0d",
+ "skill": "judge",
+ "provider": "youcom",
+ "args": [
+  "prereg-causal-audit-covariate-tsfm"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-19.jsonl. Write the scorecard to scorecards/youcom/prereg-causal-audit-covariate-tsfm.json.",
+ "model_requested": null,
+ "provider_tools_allowed": [
+  "mcp__you-com__you-search",
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research"
+ ],
+ "provider_tools_denied": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "mcp_server": {
+  "name": "you-com",
+  "url": "https://api.you.com/mcp?tools=you-search,you-contents,you-research"
+ },
+ "mcp_servers": [
+  {
+   "name": "you-com",
+   "status": "connected"
+  }
+ ],
+ "search_tools_present": [
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research",
+  "mcp__you-com__you-search"
+ ],
+ "git_commit": "edc2980-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-19T22:41:30+00:00",
+ "wall_seconds": 102.5,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "76ec14eb-bd85-44e4-9c5f-48cdc0d31dc9",
+ "is_error": false,
+ "num_turns": 32,
+ "total_cost_usd": 0.4262627,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 56169,
+  "cache_read_input_tokens": 1002047,
+  "output_tokens": 10129,
+  "output_tokens_details": {
+   "thinking_tokens": 526
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 56169,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 670,
+    "cache_read_input_tokens": 70592,
+    "cache_creation_input_tokens": 152,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 152
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 46,
+   "outputTokens": 10129,
+   "cacheReadInputTokens": 1002047,
+   "cacheCreationInputTokens": 56169,
+   "webSearchRequests": 0,
+   "costUSD": 0.4262627,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 526,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 56169,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Read": 3,
+  "Grep": 1,
+  "ToolSearch": 1,
+  "Bash": 13,
+  "mcp__you-com__you-contents": 2,
+  "mcp__you-com__you-research": 10,
+  "Write": 1
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/youcom/prereg-causal-audit-covariate-tsfm.json"
+ ]
+}

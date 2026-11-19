@@ -1,0 +1,42 @@
+{
+  "candidate_id": "prereg-causal-audit-covariate-tsfm",
+  "title": "Forecasting Associations, Not Interventions: A Preregistered Causal Audit of Covariate-Aware Time Series Foundation Models",
+  "spec_version": "spec-v1",
+  "discovered_via": {"url": "https://arxiv.org/abs/2610.31869", "provider": "claude", "retrieved_at": "2026-11-19T12:00:00Z"},
+  "candidate_type": "paper",
+  "primary_sources": [
+    {"url": "https://arxiv.org/abs/2610.31869", "kind": "arxiv", "paraphrase": "Single-author preregistered audit of Chronos-2, TiRex-2, TabPFN-TS and TimesFM-2.5 against OLS on synthetic causal systems and two physical systems; finds covariate responses match confounded observational association.", "evidence_id": "194764bc77a9"},
+    {"url": "https://huggingface.co/amazon/chronos-2", "kind": "hf_card", "paraphrase": "Chronos-2 model card: Apache-2.0, native past and known-future covariate support. No commit date shown on the page.", "evidence_id": "f090fb358b2c"}
+  ],
+  "claims": [
+    {"text": "The four covariate-aware models respond to a control covariate with slopes 1.3 to 1.8 times that of regression, tracking the theoretical confounding line (R2 0.90 to 1.00).", "metric": "slope ratio vs OLS", "value": null, "dataset": "synthetic structural causal models", "horizon": null, "baseline": "OLS regression", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0},
+    {"text": "When the effect is identifiable, OLS recovers 100% of the true effect difference, Chronos-2 75%, TiRex-2 34%.", "metric": "share of true effect difference recovered", "value": 75, "dataset": "synthetic structural causal models", "horizon": null, "baseline": "OLS regression", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0},
+    {"text": "Pretrained models underreact by 2 to 5 times on two physical systems with randomized actuators.", "metric": "underreaction factor", "value": null, "dataset": "two physical systems (unnamed on abstract page)", "horizon": null, "baseline": null, "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0},
+    {"text": "Interventional post-training cuts the gap by up to 83%; LoRA recipe cuts it 52 to 61% at +1 to 3% MASE cost.", "metric": "gap reduction", "value": 83, "dataset": "3,000 synthetic series for post-training; DoTime benchmark", "horizon": null, "baseline": null, "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0}
+  ],
+  "relevance": {
+    "target_match": 1,
+    "horizon_match": 0,
+    "covariates_match": 2,
+    "rationale": "Target is synthetic and physical-system series, not electric load (1). No forecast horizon stated on the abstract page (0). It studies covariate response of models that take known-future covariates, but the covariate is a control/actuator, not weather (2)."
+  },
+  "checks": {
+    "pre_registered": "yes",
+    "training_overlap_risk": "unknown",
+    "independent_replication": "unknown",
+    "notes": "Preregistration is stated in the abstract; no registry link or identifier was seen. Only the arXiv abstract page was read, not the full PDF, so test window, horizons, code and data availability are unverified. A search for code or replication found none (not ledgered). Central model: Chronos-2 (the paper names four). Chronos-2 weights commit date was not shown on the model card, so training overlap is unknown; not inferred from memory. Evidence strength moderate: preregistered, but the claim is descriptive (what-if response) and no load data, so it does not bear on our week-ahead accuracy comparison. Re-measuring its headline would need a causal what-if harness, not our forecast backtest."
+  },
+  "evidence_strength": "moderate",
+  "license": "Apache-2.0",
+  "license_ok_for_commercial": true,
+  "runnable_class": "direct_adapter",
+  "label": "PARTIAL",
+  "label_reason": "The paper is preregistered and names models we run (Chronos-2, TimesFM-2.5), but it measures causal what-if response on synthetic and physical systems, not load forecast error. Its headline cannot be re-measured on our benchmark, so it is context for interpreting covariate use rather than a runnable claim.",
+  "implementation_hint": "Chronos-2 via models/chronos2.py (amazon/chronos-2, Apache-2.0). TimesFM-2.5 is google/timesfm-2.5-200m-pytorch via models_ff/run_ff.py (univariate there). No paper code found; a replication would need a new intervention-response test.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261119T224031_judge_claude_prereg-causal-audit-covariate-tsfm_e685",
+    "session_id": "a7b15d32-2d25-4776-bf48-c0781b0c4c00",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}
