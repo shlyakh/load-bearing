@@ -80,9 +80,10 @@ jobs:
         id: collect
         if: ${{ always() && !inputs.queue_only }}
         run: |
-          { git diff --name-only HEAD; git ls-files --others --exclude-standard; } | sort -u > changed.txt
-          if [ -s changed.txt ]; then
-            tar czf public-output.tgz -T changed.txt
+          # The list lives outside the checkout, or it would list itself and fail the guard.
+          { git diff --name-only HEAD; git ls-files --others --exclude-standard; } | sort -u > "$RUNNER_TEMP/changed.txt"
+          if [ -s "$RUNNER_TEMP/changed.txt" ]; then
+            tar czf public-output.tgz -T "$RUNNER_TEMP/changed.txt"
             echo "has_output=true" >> "$GITHUB_OUTPUT"
           else
             echo "has_output=false" >> "$GITHUB_OUTPUT"
