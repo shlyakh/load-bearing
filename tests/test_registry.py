@@ -131,3 +131,9 @@ def test_same_repository_with_a_new_title_is_queued_as_a_possible_new_version(tm
     new = reg.entries[res["report"]["possible_new_version"][0]]
     assert new["relations"][0]["type"] == "new_version_of"
     assert new["relations"][0]["target"] == "gh:lab/model"
+    # the same row in a later run finds that entry again (it crashed here on 2026-11-19)
+    n = len(reg.entries)
+    res = rg.ingest(reg, [v2], "2027-01-18", "w3", cap=60)
+    assert len(reg.entries) == n and res["report"]["possible_new_version"] == []
+    assert [q["candidate_id"] for q in res["queue"]] == ["model-2"]
+    assert len(new["relations"]) == 1

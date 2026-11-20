@@ -130,6 +130,9 @@ def add_unique(items: list, *new) -> None:
             items.append(x)
 
 
+SAME_REPO = "Found at the same repository under a different title; not checked."
+
+
 class Registry:
     """The entries plus lookups by alias and by candidate id."""
 
@@ -207,20 +210,23 @@ class Registry:
             and title_key(row["title"]) not in e["aliases"]
         ):
             slug = re.sub(r"\W+", "-", row["title"].lower()).strip("-")[:60]
-            old = e
-            e = self.new(
-                f"{url_key(row['primary_url'])}#{slug}", row["title"], kind, row["primary_url"]
-            )
-            e["relations"].append(
-                {
-                    "type": "new_version_of",
-                    "target": old["key"],
-                    "claim": "Found at the same repository under a different title; not checked.",
-                    "evidence_id": None,
-                    "asserted_by": "registry.ingest",
-                }
-            )
-            how = "version"
+            old, key = e, f"{url_key(row['primary_url'])}#{slug}"
+            if key in self.entries:
+                # Seen in an earlier run: the URL still leads to the older work first, so
+                # the entry made then is found here by its key, not made a second time.
+                e, how = self.entries[key], "title"
+            else:
+                e = self.new(key, row["title"], kind, row["primary_url"])
+                e["relations"].append(
+                    {
+                        "type": "new_version_of",
+                        "target": old["key"],
+                        "claim": SAME_REPO,
+                        "evidence_id": None,
+                        "asserted_by": "registry.ingest",
+                    }
+                )
+                how = "version"
         self.see(e, row, when, source)
         return e, how
 

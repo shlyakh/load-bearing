@@ -28,6 +28,10 @@ on:
       model:
         description: Model for every scan and judge run (the hackathon scorecards used claude-fable-5-2)
         default: "claude-fable-5-2"
+      skip_scan:
+        description: Judge from the latest scans already on main, without scanning again (a later chunk of the same week)
+        type: boolean
+        default: false
       queue_only:
         description: Show the queue from the latest scans and stop (no paid runs, no pull request)
         type: boolean
@@ -76,7 +80,8 @@ jobs:
           CAP: ${{ inputs.cap || '60' }}
           PROVIDERS: ${{ inputs.providers || 'claude youcom' }}
           MODEL: ${{ inputs.model || 'claude-fable-5-2' }}
-        run: uv run --project core python tools/weekly.py --cap "$CAP" --providers $PROVIDERS --model "$MODEL"
+          SKIP_SCAN: ${{ inputs.skip_scan && '--skip-scan' || '' }}
+        run: uv run --project core python tools/weekly.py --cap "$CAP" --providers $PROVIDERS --model "$MODEL" $SKIP_SCAN
       - name: Guard, only output paths were changed
         if: ${{ always() && !inputs.queue_only }}
         run: python3 tools/guard_paths.py
