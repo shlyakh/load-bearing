@@ -51,7 +51,9 @@ from tools.run_skill import cli_version, git, run, youcom_key  # noqa: E402
 from tools.validate_scorecard import errors  # noqa: E402
 
 PROVIDERS = ("claude", "youcom")
-LIMIT = re.compile(r"usage limit|rate.?limit|limit reached|out of (extra )?usage|quota", re.I)
+LIMIT = re.compile(
+    r"usage limit|rate.?limit|limit reached|hit your .{0,20}limit|out of (extra )?usage|quota", re.I
+)
 STOP_AFTER = 3  # judge failures in a row
 
 
@@ -74,7 +76,11 @@ def step(meta: dict) -> dict:
 
 
 def hit_limit(meta: dict) -> bool:
-    return bool(meta.get("failure")) and bool(LIMIT.search(str(meta.get("result") or "")))
+    """A failed run whose error is the subscription's limit: status 429, or the CLI's
+    message ("You've hit your 5-hour limit")."""
+    text = f"{meta.get('error_text') or ''} {meta.get('result') or ''}"
+    limited = str(meta.get("api_error_status")) == "429" or bool(LIMIT.search(text))
+    return bool(meta.get("failure")) and limited
 
 
 def scan(provider: str, day: str, tag: str, model: str) -> dict:

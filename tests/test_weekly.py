@@ -165,3 +165,13 @@ def test_guard_allows_outputs_and_refuses_everything_else():
         "CLAUDE.md",
     ]
     assert not any(guard.allowed(p) for p in bad)
+
+
+def test_the_cli_five_hour_limit_counts_as_a_usage_limit():
+    """What a CI run records when the subscription's limit is hit (run of 2026-11-19)."""
+    text = "You've hit your 5-hour limit · resets 3:10am (UTC)"
+    failed = {"failure": "the CLI exited with status 1"}
+    assert wk.hit_limit(failed | {"error_text": text})
+    assert wk.hit_limit(failed | {"api_error_status": "429"})
+    assert not wk.hit_limit(failed | {"error_text": "Failed to authenticate"})
+    assert not wk.hit_limit({"failure": None, "error_text": text})

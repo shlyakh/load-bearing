@@ -318,6 +318,9 @@ def run(
         "timed_out": timed_out,
         "session_id": result.get("session_id"),
         "is_error": result.get("is_error"),
+        # Only for a failed run, where the result is the CLI's own message (never page text).
+        "api_error_status": result.get("api_error_status"),
+        "error_text": str(result.get("result") or "")[:200] if result.get("is_error") else None,
         "num_turns": result.get("num_turns"),
         "total_cost_usd": result.get("total_cost_usd"),  # the client's estimate; no You.com charges
         "usage": result.get("usage"),

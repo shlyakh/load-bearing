@@ -178,7 +178,8 @@ jobs:
         run: |
           set -euo pipefail
           branch="agent/weekly-$(date -u +%F)-${GITHUB_RUN_NUMBER}"
-          report=$(ls -t runs/weekly_*.md 2>/dev/null | head -1 || true)
+          # By name, not by time: a checkout gives the older reports a newer timestamp.
+          report=$(ls runs/weekly_*.md 2>/dev/null | sort | tail -1 || true)
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
@@ -193,7 +194,7 @@ jobs:
           fi
       - name: Fail the run if the report says it did not finish cleanly
         run: |
-          report=$(ls -t runs/weekly_*.json | head -1)
+          report=$(ls runs/weekly_*.json | sort | tail -1)
           python3 -c "import json,sys; sys.exit(0 if json.load(open('$report')).get('ok') else 1)"
       - name: Heartbeat
         env:
