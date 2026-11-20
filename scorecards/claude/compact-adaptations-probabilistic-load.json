@@ -1,0 +1,45 @@
+{
+ "candidate_id": "compact-adaptations-probabilistic-load",
+ "title": "From Shared Demand Patterns to Local Uncertainty: Probabilistic Load Forecasting by Mixing Compact Adaptations",
+ "spec_version": "spec-v1",
+ "discovered_via": {"url": "https://arxiv.org/abs/2610.08538", "provider": "claude", "retrieved_at": "2026-11-20T11:13:08Z"},
+ "candidate_type": "paper",
+ "primary_sources": [
+  {"url": "https://arxiv.org/abs/2610.08538", "kind": "arxiv", "paraphrase": "arXiv abstract (v1, 6 Oct 2026): a shared forecasting model plus a small bank of low-dimensional adaptations mixed per load; on 590 SMART-DS load profiles it reports better deterministic and probabilistic scores than statistical, neural, Transformer and pretrained baselines at low storage and inference cost. No numbers in the abstract.", "evidence_id": "3288d0611714"},
+  {"url": "https://arxiv.org/html/2610.08538v1", "kind": "arxiv", "paraphrase": "Full text: SMART-DS synthetic profiles (three US cities, 2018, hourly), 24 h ahead issued daily from 168 h of load history, test 1-30 Dec 2018. M2oE2 is a variational GRU trained from scratch; mLoRA mixes LoRA adapters on its output heads over 15 clusters. Table II compares it with eleven baselines including Chronos-2 and TimesFM-2.5 zero-shot.", "evidence_id": "a7af610195fb"},
+  {"url": "https://github.com/haorandd/M2oE2_load_forecast", "kind": "github", "paraphrase": "Repository the paper names for code and data pipeline: public, MIT licence, last commit 24 Sep 2026. README covers the M2oE2 forecaster on other datasets (solar, building, GEFCom2014) with load, temperature and calendar inputs. Nothing on the front page or in the code listing is named for mLoRA or SMART-DS.", "evidence_id": "c4cf85382595"}
+ ],
+ "claims": [
+  {"text": "A shared model with a small bank of low-dimensional adaptations mixed per load beats statistical, neural, Transformer and pretrained baselines on deterministic and probabilistic accuracy across 590 load profiles.", "metric": null, "value": null, "dataset": "SMART-DS synthetic load profiles, 590 profiles, hourly, 2018", "horizon": "24 h (day-ahead, issued daily at midnight)", "baseline": "ARIMA+Fourier, GRU, LSTM, CNN-GRU, DeepAR, iTransformer, PatchTST, Chronos-2 zero-shot, TimesFM-2.5 zero-shot, TimesFM-2.5+LoRA, M2oE2", "baseline_same_inputs": "unknown", "test_window_days": 30, "citation_idx": 0, "ci90": null},
+  {"text": "M2oE2-mLoRA range-normalised MSE is 2.72e-3, which the paper states is 8.72% below plain M2oE2 (2.98e-3).", "metric": "MSE (normalised by each profile's training load range)", "value": 0.00272, "dataset": "SMART-DS, 590 profiles, hourly, test Dec 2018", "horizon": "24 h", "baseline": "M2oE2 without mLoRA (MSE 2.98e-3)", "baseline_same_inputs": "unknown", "test_window_days": 30, "citation_idx": 1, "ci90": null},
+  {"text": "M2oE2-mLoRA range-normalised MSE is 13.65% below TimesFM-2.5 fine-tuned with LoRA (3.15e-3).", "metric": "MSE reduction vs TimesFM-2.5+LoRA (%)", "value": 13.65, "dataset": "SMART-DS, 590 profiles, hourly, test Dec 2018", "horizon": "24 h", "baseline": "TimesFM-2.5 + LoRA (MSE 3.15e-3)", "baseline_same_inputs": "unknown", "test_window_days": 30, "citation_idx": 1, "ci90": null},
+  {"text": "M2oE2-mLoRA MAE is 1.60 kW, against 1.79 kW for plain M2oE2 and 2.02 kW for Chronos-2 zero-shot.", "metric": "MAE (kW)", "value": 1.60, "dataset": "SMART-DS, 590 profiles, hourly, test Dec 2018", "horizon": "24 h", "baseline": "M2oE2 (MAE 1.79 kW); Chronos-2 zero-shot (MAE 2.02 kW)", "baseline_same_inputs": "unknown", "test_window_days": 30, "citation_idx": 1, "ci90": null},
+  {"text": "M2oE2-mLoRA CRPS is 1.18, against 1.32 for plain M2oE2 and 1.48 for Chronos-2 zero-shot.", "metric": "CRPS (kW)", "value": 1.18, "dataset": "SMART-DS, 590 profiles, hourly, test Dec 2018", "horizon": "24 h", "baseline": "M2oE2 (CRPS 1.32); Chronos-2 zero-shot (CRPS 1.48)", "baseline_same_inputs": "unknown", "test_window_days": 30, "citation_idx": 1, "ci90": null},
+  {"text": "The adapted model takes 0.58 MiB of storage including routing data, and 0.11 ms per forecast on a T4 GPU.", "metric": "storage (MiB)", "value": 0.58, "dataset": "SMART-DS, 590 profiles", "horizon": "24 h", "baseline": "TimesFM-2.5 zero-shot (882.30 MiB); M2oE2 (0.40 MiB)", "baseline_same_inputs": "unknown", "test_window_days": 30, "citation_idx": 1, "ci90": null}
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 1,
+  "rationale": "Hourly electric load (3), but for single customers and transformers in a synthetic dataset, with mean errors of a few kW, far below a PJM zone. Forecasts are 24 hours ahead issued daily (2). The experiments name only 168 hours of load history as input; weather appears as an optional input in the problem formulation and the authors' repository uses temperature on other datasets, but the paper does not say it was used here, so it is scored as univariate (1) rather than not stated."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "Central model: M2oE2-mLoRA, trained from scratch on the study's own profiles. No pretrained weights for it were found (the repository's one visible checkpoint is for GEFCom2014), so there is no weights date and training_overlap_risk is unknown. Pre-registration: none mentioned in the full text. Replication: one search found no third-party rerun, so unknown. Evidence strength is weak under spec.yaml because the test window is 30 days (1-30 Dec 2018), under the 90-day minimum; it is also a single winter month on synthetic data, with no seeds, intervals or significance tests, and K was picked on a validation difference of 2.96 vs 2.97. baseline_same_inputs is unknown: the paper does not state which inputs each baseline received or whether the zero-shot models got any covariates. The method's gain comes from sharing adaptations across hundreds of heterogeneous loads; our benchmark has two zones, so the mechanism has little to act on. Unverified: (1) whether the repository actually contains the mLoRA code and the SMART-DS pipeline; the paper says so, but the listing shows only a LoRA utility file and nothing named for either, the last commit predates the paper by twelve days, and file contents were not read; (2) whether weather was an input in the experiments; (3) how many of the 590 profiles are transformers; (4) the LoRA rank. Percentages in the claims are the two the paper states; other differences are left as raw table values. The full text and repository pages were read through a summarising fetch, so table values are as that fetch reported them (the two stated percentages do agree with the table). Other models in the study: Chronos-2 and TimesFM-2.5 zero-shot are in runnable_models, but they are baselines here, not the headline. Licence: MIT is the repository's code licence; the paper text is CC BY 4.0."
+ },
+ "evidence_strength": "weak",
+ "license": "MIT",
+ "license_ok_for_commercial": true,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "The target is hourly electric load and the paper is a primary source with a public repository, but the evidence is thin: a 30-day test window on synthetic customer-level profiles, no intervals or seeds, inputs per baseline not stated, and the released code could not be confirmed to contain the mLoRA method. The headline comparison (M2oE2-mLoRA against its own base model and TimesFM-2.5+LoRA) cannot be re-measured with any model in runnable_models, and the method's premise of sharing adaptations across hundreds of loads does not carry to two zones.",
+ "implementation_hint": "Not runnable through our adapters: M2oE2-mLoRA is not in runnable_models and has no published weights. Running it would mean training the authors' code (github.com/haorandd/M2oE2_load_forecast, MIT) from scratch per cutoff under protocol.yaml, after confirming the mLoRA code is in the repository; with only JC and DOM the per-load mixing reduces to nearly the base model. The study's Chronos-2 and TimesFM-2.5 zero-shot baselines are already on our leaderboard (models/chronos2.py, models_ff/run_ff.py) but are not its headline.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261120T111114_judge_claude_compact-adaptations-probabilistic-load_9e00",
+  "session_id": "f133d0e6-5bd4-4e9d-9f71-e12f83f5fd30",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

@@ -1,0 +1,172 @@
+{
+ "candidate_id": "compact-adaptations-probabilistic-load",
+ "title": "From Shared Demand Patterns to Local Uncertainty: Probabilistic Load Forecasting by Mixing Compact Adaptations",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2610.08538",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-20T11:15:39Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/abs/2610.08538",
+   "kind": "arxiv",
+   "paraphrase": "Abstract, v1 of 6 Oct 2026, cs.LG, the only version. A shared probabilistic load forecaster plus a small bank of low-rank adaptations that each customer or transformer load mixes. Reports better deterministic and probabilistic scores on 590 SMART-DS profiles than statistical, neural, Transformer and pretrained baselines, at low storage and inference cost.",
+   "evidence_id": "3288d0611714"
+  },
+  {
+   "url": "https://arxiv.org/html/2610.08538v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text. 590 synthetic SMART-DS 2018 profiles at hourly resolution; train Jan-Oct, validate Nov, test Dec; a 24-hour forecast each midnight from 168 h of history, 30 origins per profile. Table II gives eight accuracy scores, time and storage for the proposed model, its unadapted backbone and ten baselines including Chronos-2 and TimesFM-2.5. The inputs fed in the experiment are not listed.",
+   "evidence_id": "a7af610195fb"
+  },
+  {
+   "url": "https://github.com/haorandd/M2oE2_load_forecast",
+   "kind": "github",
+   "paraphrase": "The repository the paper links as its code. MIT, 91 commits, the latest on 24 Sep 2026, before the preprint; no releases. Its README describes the earlier M2oE2 backbone with temperature, workday and season as context and a GEFCom2014 day-ahead table; it does not mention SMART-DS or a mixture of adapters.",
+   "evidence_id": "c4cf85382595"
+  },
+  {
+   "url": "https://github.com/haorandd/M2oE2_load_forecast/tree/main/code",
+   "kind": "github",
+   "paraphrase": "Code folder and its README: backbone scripts, a single-adapter LoRA utility from Nov 2025, recurrent, iTransformer and ARIMA baselines, one GEFCom2014 checkpoint. The README covers earlier work on Oncor transformer data and a base-only variant with a 24-hour future temperature block. No listed file names SMART-DS, clustering, mixed adapters, Chronos-2 or TimesFM.",
+   "evidence_id": "4a540c1b6107"
+  }
+ ],
+ "claims": [
+  {
+   "text": "On the December 2018 test month, the proposed model (M2oE2-mLoRA) has a profile-normalised MSE of 2.72e-3, the lowest of the twelve configurations in the paper's Table II.",
+   "metric": "MSE (x1e-3, normalised by each profile's training load range)",
+   "value": 2.72,
+   "dataset": "590 SMART-DS 2018 load profiles (synthetic; residential, commercial, industrial), hourly",
+   "horizon": "24 hours, issued daily at midnight",
+   "baseline": "eleven other configurations; next best is the unadapted M2oE2 backbone (2.98)",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 30,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The proposed model's MSE is 8.72% below that of the same backbone without the adapters (2.98e-3), the paper's ablation.",
+   "metric": "relative MSE difference against the unadapted backbone (%)",
+   "value": -8.72,
+   "dataset": "590 SMART-DS 2018 load profiles, hourly",
+   "horizon": "24 hours",
+   "baseline": "M2oE2 shared model without mLoRA",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 30,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The proposed model's MSE is 13.65% below that of TimesFM-2.5 fine-tuned with LoRA (3.15e-3).",
+   "metric": "relative MSE difference against TimesFM-2.5 + LoRA (%)",
+   "value": -13.65,
+   "dataset": "590 SMART-DS 2018 load profiles, hourly",
+   "horizon": "24 hours",
+   "baseline": "TimesFM-2.5 + LoRA",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 30,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The proposed model's CRPS is 1.18 kW, against 1.32 for the unadapted backbone and 1.31 for the LSTM, the best baseline on that score.",
+   "metric": "CRPS (kW)",
+   "value": 1.18,
+   "dataset": "590 SMART-DS 2018 load profiles, hourly",
+   "horizon": "24 hours",
+   "baseline": "LSTM (1.31), unadapted M2oE2 (1.32)",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 30,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The proposed model's WAPE is 4.16%, against 5.07% for Chronos-2 zero-shot and 5.91% for TimesFM-2.5 zero-shot.",
+   "metric": "WAPE (%)",
+   "value": 4.16,
+   "dataset": "590 SMART-DS 2018 load profiles, hourly",
+   "horizon": "24 hours",
+   "baseline": "Chronos-2 zero-shot (5.07), TimesFM-2.5 zero-shot (5.91)",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 30,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Chronos-2 zero-shot scores a CRPS of 1.48 kW and an MSE of 3.21e-3 on the same test month, behind the model trained on ten months of the same profiles but ahead of several trained baselines (GRU, PatchTST and iTransformer on MSE).",
+   "metric": "CRPS (kW), Chronos-2 zero-shot",
+   "value": 1.48,
+   "dataset": "590 SMART-DS 2018 load profiles, hourly",
+   "horizon": "24 hours",
+   "baseline": "M2oE2-mLoRA (1.18)",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 30,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The proposed model takes 0.11 ms per 24-hour forecast on a Tesla T4 GPU, against 10.15 ms for Chronos-2 and 4.92 ms for TimesFM-2.5; timing covers 4,130 forecasts from 3 to 9 December.",
+   "metric": "ms per forecast (GPU)",
+   "value": 0.11,
+   "dataset": "590 SMART-DS 2018 load profiles, 3-9 December",
+   "horizon": "24 hours",
+   "baseline": "Chronos-2 zero-shot (10.15 ms)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 7,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The proposed model, with its routing data, needs 0.58 MiB of storage, against 0.40 MiB for the unadapted backbone and 455.77 MiB for Chronos-2.",
+   "metric": "storage (MiB)",
+   "value": 0.58,
+   "dataset": null,
+   "horizon": null,
+   "baseline": "Chronos-2 (455.77 MiB)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The backbone is designed to take optional external inputs such as weather, calendar variables and prices, but the experiments section does not say which, if any, were supplied for the SMART-DS runs or to the baselines.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "The paper says its source code and data pipeline are available at a linked repository; that repository's last commit predates the preprint and its file listing and READMEs show the earlier backbone and a single-adapter workflow, not the SMART-DS mixture-of-adapters experiment.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 3
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 0,
+  "rationale": "The series are hourly electric load (target_match 3 on the scale), but far from ours in kind: synthetic customer and transformer profiles of 4 to 130 kW from SMART-DS, not metered zonal demand in GW. The horizon is 24 hours issued at midnight, so day-ahead (horizon_match 2); the paper's week-long figures are seven day-ahead forecasts in a row, not one 168-hour forecast. covariates_match is 0, not stated: the backbone can take weather as an external input and the authors' earlier code does feed temperature, but this paper's experiments do not say what was supplied. The method's point, per-load adaptation across hundreds of heterogeneous series, has no counterpart on a two-zone benchmark."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: no. The paper describes no protocol fixed in advance, and the research call found no registration or analysis plan; the number of clusters was chosen on the validation month. training_overlap_risk: unknown by the date rule, because no weights file for this model was found (the Hugging Face model page linked from the repository returned an empty card with no files or dates, and it belongs to the earlier backbone). The model is trained from scratch on the target series, so in a run of ours the question would be about our own training cutoffs, not pre-training. independent_replication: unknown; one research call found no replication, critique or citing work. evidence_strength: weak. The test window is 30 days (1 to 30 December 2018), under the 90-day minimum; the data are synthetic; there are no intervals, repeated seeds or significance tests; and the code for this experiment could not be found in the linked repository, so the numbers rest on the preprint alone. It is an unreviewed v1 preprint. baseline_same_inputs: yes for the ablation against the unadapted backbone, by construction of an ablation (not stated outright); unknown for the other baselines because the inputs are not listed. Apart from inputs, the comparison with the zero-shot foundation models is not like for like: the proposed model is trained on ten months of the same 590 profiles and the zero-shot models see only the context window. Both foundation models are run on a GPU, and their context length, covariate use and weights revisions are not given in the text read. ci90 is null throughout: the paper gives no intervals. test_window_days is my count of the stated test dates. Central model: M2oE2-mLoRA, the authors' own; Chronos-2 and TimesFM-2.5 are baselines. license: MIT is the linked repository's licence for the backbone code; no licence could be tied to the mixture-of-adapters code or to any weights, so license_ok_for_commercial is left null. discovered_via.provider: the queue row (carried over, found by a search query) does not name the finder; youcom is used because this is the youcom run. Not checked: the PDF and figures, the scripts' contents (only the folder listing and READMEs were read, so the pipeline could sit in a file whose name does not show it), the GEFCom2014 subfolder, the Hugging Face data set and the Zenodo data record linked from the README, the earlier M2oE2 and M2oE2-GL papers, and the two SMART-DS data pages the research call named. Tool use: one research task at the standard tier, no searches, 5 pages fetched, none failed (the model page came back with an empty card)."
+ },
+ "evidence_strength": "weak",
+ "license": "MIT (linked repository, earlier backbone code); none found for this model's code or weights",
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "On target in the broad sense (hourly electric load, probabilistic, with Chronos-2 and TimesFM-2.5 among the baselines) and it has a primary source, but the evidence is thin: one 30-day test month on synthetic customer-level profiles, no intervals, and the code for this experiment is not visibly in the repository the paper links. The setup is also far from ours (day-ahead, kW-scale loads, inputs not stated, a model trained per population of several hundred series), and its headline comparison is about a model that is not in runnable_models and has no published weights, so there is nothing to re-measure now.",
+ "implementation_hint": "No run. The central model, M2oE2-mLoRA, is not in runnable_models: no weights were found, and the linked repository (haorandd/M2oE2_load_forecast, MIT) shows the earlier M2oE2 backbone and a single-adapter LoRA utility rather than the clustering and mixed-adapter pipeline. Running it would mean training the backbone on our load ourselves, once per cutoff to respect the no-lookahead rule, and the per-load mixing has little to act on with two zones; that is work beyond an adapter and outside the 60-minute CPU limit as far as can be judged. The baselines Chronos-2 (models/chronos2.py) and TimesFM-2.5 (models_ff/run_ff.py, univariate) are already on our leaderboard; the paper's figures for them are zero-shot on day-ahead synthetic profiles and say nothing about week-ahead zonal load with temperature. If the authors publish the SMART-DS pipeline or weights, re-judge.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261120T111332_judge_youcom_compact-adaptations-probabilistic-load_7ec5",
+  "session_id": "3dbcd335-23c1-40b8-94d9-d2c9d5d24208",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

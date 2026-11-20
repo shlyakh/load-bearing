@@ -1,0 +1,130 @@
+{
+  "candidate_id": "medium-term-load-economic-fm",
+  "title": "Medium-Term Multi-Resolution Electric Load Forecasting using Economic Data and Foundation Model",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://arxiv.org/abs/2609.31806",
+    "provider": "claude",
+    "retrieved_at": "2026-11-20T11:03:22Z"
+  },
+  "candidate_type": "paper",
+  "primary_sources": [
+    {
+      "url": "https://arxiv.org/abs/2609.31806",
+      "kind": "arxiv",
+      "paraphrase": "Preprint by Lindas, Goude and Ciais, v1 only (2026-09-25), cs.LG. A tabular foundation model forecasts French load at monthly and daily resolution 1 to 48 months ahead from 20 years of load, weather and economic data. Says selected economic covariates improve skill by about 20% over 2015-2025, with MAPE held to 4% monthly and 5% daily. No code link.",
+      "evidence_id": "88146277f930"
+    },
+    {
+      "url": "https://ar5iv.labs.arxiv.org/html/2609.31806",
+      "kind": "arxiv",
+      "paraphrase": "Full text. Model is TabICLv2, in-context, no fine-tuning, no lagged load. RTE national load, ERA5 weather and INSEE, Eurostat and SDES series, all observed values (a hindcast; the authors say operational errors would be larger). Feature selection on 2005-2015, monthly rolling origins Jan 2016 to Dec 2025. Baselines: linear model and default XGBoost, each with its own selected subset.",
+      "evidence_id": "0ebcefee1a52"
+    },
+    {
+      "url": "https://zenodo.org/api/records/22232294",
+      "kind": "zenodo",
+      "paraphrase": "The paper's data record (E. Lindas, LSCE, published 2026-09-01, DOI 10.5281/zenodo.22232294): French demand March 2005 to end 2025, daily and monthly, with weather, calendar and economic covariates. Licence tag CC BY 4.0, but access is restricted and no file is listed, so the data cannot be downloaded without a request. No link to code.",
+      "evidence_id": "5292c5f54416"
+    },
+    {
+      "url": "https://huggingface.co/api/models/jingang/TabICL",
+      "kind": "hf_card",
+      "paraphrase": "Weights repository of the central model: created 2026-02-12, last modified 2026-02-18, head sha 4dcd344e, licence bsd-3-clause. Holds tabicl-regressor-v2-20260212.ckpt, the default TabICLv2 regression checkpoint.",
+      "evidence_id": "66e25420f8aa"
+    },
+    {
+      "url": "https://huggingface.co/jingang/TabICL/commits/main/tabicl-regressor-v2-20260212.ckpt",
+      "kind": "hf_card",
+      "paraphrase": "The regression checkpoint has one commit, d700cf08, an upload on Feb 12. The page shows no year; 2026 is taken from the repository creation date and the date in the file name.",
+      "evidence_id": "7dd15902f5b3"
+    }
+  ],
+  "claims": [
+    {
+      "text": "Headline: adding selected economic covariates improves the skill of the tabular foundation model (TabICLv2) by about 20% over the evaluation decade. In the full text the 20% holds across lead times at daily resolution; at monthly resolution the gain shrinks to near zero at 48 months.",
+      "metric": "skill improvement (%), RMSE-based",
+      "value": 20,
+      "dataset": "French national load (RTE), daily resolution, rolling origins Jan 2016 to Dec 2025",
+      "horizon": "1 to 48 months ahead",
+      "baseline": "the same model with calendar and weather features only",
+      "baseline_same_inputs": "no",
+      "test_window_days": 3653,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "Monthly resolution, TabICLv2 with economic data: MAPE stays at or under about 4% (under about 2,000 MW) at the longest lead times.",
+      "metric": "MAPE (%)",
+      "value": 4.0,
+      "dataset": "French national load (RTE), monthly resolution, rolling origins Jan 2016 to Dec 2025",
+      "horizon": "long lead times, up to 48 months",
+      "baseline": "XGBoost at default settings with economic data (about 4.3%, 2,200 MW)",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 3653,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "Monthly resolution, TabICLv2 with economic data: about 2% MAPE (about 1,000 MW) at short lead times.",
+      "metric": "MAPE (%)",
+      "value": 2.0,
+      "dataset": "French national load (RTE), monthly resolution, rolling origins Jan 2016 to Dec 2025",
+      "horizon": "short lead times (under about a year)",
+      "baseline": "XGBoost at default settings with economic data (about 2.5%, 1,400 MW)",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 3653,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "Daily resolution, with economic data: MAPE stays under about 5% (under about 3,000 MW) at 48 months, for TabICLv2 and for XGBoost alike.",
+      "metric": "MAPE (%)",
+      "value": 5.0,
+      "dataset": "French national load (RTE), daily resolution, rolling origins Jan 2016 to Dec 2025",
+      "horizon": "48 months ahead",
+      "baseline": "XGBoost at default settings with economic data (also under about 5%)",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 3653,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "TabICLv2 is the most accurate of the three models at both resolutions, with or without economic data, except at some monthly lead times where the linear model with economic data is slightly ahead. No number is attached to this ranking.",
+      "metric": null,
+      "value": null,
+      "dataset": "French national load (RTE), daily and monthly, rolling origins Jan 2016 to Dec 2025",
+      "horizon": "1 to 48 months ahead",
+      "baseline": "linear model and XGBoost at default settings",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 3653,
+      "citation_idx": 1,
+      "ci90": null
+    }
+  ],
+  "relevance": {
+    "target_match": 2,
+    "horizon_match": 1,
+    "covariates_match": 3,
+    "rationale": "The series is national electric load, but at daily and monthly resolution, not hourly; the scale has no entry for non-hourly load, so 2 rather than 3 is a judgement. Lead times run from 1 to 48 months, far from a week ahead (1). Temperature and other weather enter as known-future inputs, as observed ERA5 values, which corresponds to our oracle regime only; the economic covariates the paper is about barely move within 168 hours (3 for the weather input)."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "med",
+    "independent_replication": "unknown",
+    "notes": "Central model: TabICLv2, the model in the headline claim; the linear model and XGBoost are its baselines. pre_registered: the full text mentions no registration or prior analysis plan, and features were selected by the authors on 2005-2015; nothing public predates the results. training_overlap_risk (about our run): the regression checkpoint was uploaded on 2026-02-12 (one commit; the year is inferred from the repository creation date and the file name). By my count 38 of the 52 scored weeks (2025-11-10 to 2026-11-02) start after that date, so more than half: med. TabICLv2 is said to be trained on synthetic data, which was not checked here. independent_replication: two searches found no code release, replication or re-run; an SSRN copy of the same paper turned up and was not fetched. evidence_strength is weak: the numbers come without code, and the data record is restricted with no files listed, so the result cannot be reproduced today, although the test window (ten years) is far above the minimum. baseline_same_inputs is partly for the model comparisons: all three models draw on the same feature pool, but each ends with its own subset from forward selection, and XGBoost is untuned; the 20% claim is an ablation of the same model, hence no. Limits of the study itself: covariates are observed values, so every number is an oracle-type result; intervals (95% bootstrap) are shown in figures only, so no ci90; the text mixes months and years for lead times and gives a training end ('until 2021') that conflicts with the stated test period. Unverified: all numbers were read through a fetch summary of the ar5iv rendering, which an earlier run found truncated before the appendices; the arXiv HTML page returned 404 and the PDF was not readable, so no figure or table was checked directly; the MW and MAPE values are approximate readings ('about', 'under'); whether the 20% is measured on RMSE or another score was not confirmed; the licence of the tabicl code was not read from its licence file (the weights repository says bsd-3-clause); CPU runtime of TabICLv2 on our table is unknown."
+  },
+  "evidence_strength": "weak",
+  "license": "BSD-3-Clause",
+  "license_ok_for_commercial": true,
+  "runnable_class": "direct_adapter",
+  "label": "PARTIAL",
+  "label_reason": "The paper is on electric load with weather as a known-future input and a public pretrained model, and it has a primary source, but its headline claim (economic covariates add about 20% skill at lead times of 1 to 48 months, daily and monthly) cannot be re-measured on an hourly week-ahead benchmark, where economic series do not move, and TabICLv2 is not among the models we run today. The evidence is also thin: no code, a restricted data record with no files, covariates that are observed values, and no replication.",
+  "implementation_hint": "Central model TabICLv2: package tabicl (github.com/soda-inria/tabicl), weights jingang/TabICL, file tabicl-regressor-v2-20260212.ckpt (commit d700cf08, 2026-02-12, bsd-3-clause). It is not in runnable_models and not a FoundationForecast wrapper, so it would need its own adapter: TabICLRegressor on a feature table (temperature, calendar; the paper uses no load lags), one call per cutoff, in its own environment, run with the weights-inside-window label (38 of 52 weeks after the weights, by my count). CPU runtime within 60 minutes is unverified; the repository advises a GPU for larger tables. Such a run would measure TabICLv2 as a regressor with temperature against the temperature-only regression, which is not the paper's claim: the economic-covariate effect has no counterpart at 168 h. Baselines in the paper (linear model, default XGBoost) have no load lags either, so their numbers are not comparable with lag_regression_temperature.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261120T110116_judge_claude_medium-term-load-economic-fm_0762",
+    "session_id": "b6132b78-93bc-4cf8-bb3b-8a16e2806fbe",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}

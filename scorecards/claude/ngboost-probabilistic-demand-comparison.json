@@ -1,0 +1,43 @@
+{
+ "candidate_id": "ngboost-probabilistic-demand-comparison",
+ "title": "Probabilistic electrical power demand forecasting with uncertainty quantification",
+ "spec_version": "spec-v1",
+ "discovered_via": {"url": "https://arxiv.org/abs/2609.34120", "provider": "claude", "retrieved_at": "2026-11-20T11:05:37Z"},
+ "candidate_type": "paper",
+ "primary_sources": [
+  {"url": "https://arxiv.org/abs/2609.34120", "kind": "arxiv", "paraphrase": "arXiv abstract (v1, 28 Sep 2026): compares NGBoost, a Bayesian model, MC Dropout and Gaussian process regression on power-consumption data; NGBoost has the lowest MAE and RMSE in every zone with high interval coverage and fairly narrow intervals. No numbers, dataset, horizon or code link in the abstract.", "evidence_id": "1c9237e83f90"},
+  {"url": "https://arxiv.org/html/2609.34120v1", "kind": "arxiv", "paraphrase": "Full text: Tetouan (Morocco) utility data, three zones, year 2017, 10-minute readings aggregated to hourly; chronological 80/20 split; horizon not given; inputs are calendar fields plus temperature, humidity, wind speed and diffuse flows, no lags. Results table per zone and model; no hyperparameters, code or data statement.", "evidence_id": "9cbc71cbac81"}
+ ],
+ "claims": [
+  {"text": "NGBoost has the lowest MAE and RMSE of the four probabilistic models in every zone, with high interval coverage and fairly narrow intervals.", "metric": null, "value": null, "dataset": "Tetouan power consumption, 3 zones, hourly (aggregated from 10-minute), 2017", "horizon": "not stated", "baseline": "Bayesian linear regression, MC Dropout, Gaussian process regression", "baseline_same_inputs": "unknown", "test_window_days": 73, "citation_idx": 0, "ci90": null},
+  {"text": "Zone 1: NGBoost MAE 1682.57, against 3014.88 for MC Dropout (next best) and 3454.93 for Bayesian linear regression.", "metric": "MAE", "value": 1682.57, "dataset": "Tetouan power consumption, zone 1, hourly, 2017", "horizon": "not stated", "baseline": "MC Dropout (MAE 3014.88)", "baseline_same_inputs": "unknown", "test_window_days": 73, "citation_idx": 1, "ci90": null},
+  {"text": "Zone 2: NGBoost MAE 1400.45, against 2232.26 for MC Dropout (next best) and 2659.66 for Bayesian linear regression.", "metric": "MAE", "value": 1400.45, "dataset": "Tetouan power consumption, zone 2, hourly, 2017", "horizon": "not stated", "baseline": "MC Dropout (MAE 2232.26)", "baseline_same_inputs": "unknown", "test_window_days": 73, "citation_idx": 1, "ci90": null},
+  {"text": "Zone 3: NGBoost MAE 1265.71, against 2496.89 for MC Dropout (next best) and 3410.88 for Bayesian linear regression.", "metric": "MAE", "value": 1265.71, "dataset": "Tetouan power consumption, zone 3, hourly, 2017", "horizon": "not stated", "baseline": "MC Dropout (MAE 2496.89)", "baseline_same_inputs": "unknown", "test_window_days": 73, "citation_idx": 1, "ci90": null},
+  {"text": "NGBoost 95% prediction intervals cover 0.95, 0.96 and 0.96 of test observations in zones 1 to 3 (MC Dropout: 0.92, 0.86, 0.77).", "metric": "PICP (95% nominal)", "value": 0.95, "dataset": "Tetouan power consumption, 3 zones, hourly, 2017", "horizon": "not stated", "baseline": "MC Dropout", "baseline_same_inputs": "unknown", "test_window_days": 73, "citation_idx": 1, "ci90": null}
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 0,
+  "covariates_match": 2,
+  "rationale": "Hourly electricity consumption for three distribution zones of one city (3), though far smaller than a PJM zone. The paper never gives a forecast horizon (0). Temperature and other weather readings are inputs, but there are no lag features and the paper does not say whether weather is known in advance or measured at the target hour, so it is not credited as known-future weather (2, not 3)."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "Central model: NGBoost, a method fitted on user data; there are no pretrained weights, so training_overlap_risk is unknown (no weights date exists). Pre-registration: none mentioned in the full text. Replication: one search found no author repository and no third-party rerun, so unknown. Evidence strength weak on two counts in spec.yaml: numbers without code or data statement and without hyperparameters, and a test window under 90 days. test_window_days = 73 is my arithmetic (20% of one year); the paper does not state the test length. baseline_same_inputs is unknown: the four models appear to share one feature set but the paper does not say so. Unverified or doubtful: the forecast horizon (with no lags and same-hour weather the setup reads as a regression on concurrent conditions rather than a forecast, but the paper does not say); units of the errors; the Gaussian process row, which reports coverage 0.00 and an identical interval width in all three zones and looks like an implementation fault, so 'best of four' is in effect best of three; no naive, seasonal or lag-regression baseline; scores have no intervals. The full text was read through a summarising fetch, so table values are as that fetch reported them. Licence: only the paper text licence (CC BY-NC-SA 4.0) was seen; no code licence applies because no code is published."
+ },
+ "evidence_strength": "weak",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "The target is on topic (hourly zonal electricity consumption with temperature as an input) and the paper is a primary source, but the evidence is thin: no stated horizon, a test window of about 73 days, no code, data statement or hyperparameters, and one of the four compared models is visibly broken. There is no pretrained model and nothing in runnable_models that could re-measure the headline comparison, so it cannot be accepted for a run.",
+ "implementation_hint": "Not runnable through our adapters: NGBoost is not in runnable_models and the paper publishes no code or settings. The only route would be new work in core/: fit NGBoost per cutoff on lagged load plus temperature under protocol.yaml, with distribution and tree settings chosen by us, which would test NGBoost in general rather than this paper's result.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261120T110431_judge_claude_ngboost-probabilistic-demand-comparison_e143",
+  "session_id": "2ff0952a-5a21-4907-8047-b6a3a5ef4e5f",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}
