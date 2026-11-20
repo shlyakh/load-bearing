@@ -570,7 +570,7 @@ a { color: var(--model); }
 
   <div class="lane" id="flow-weekly">
     <div class="lane-h"><span class="pill good">Every week</span><h3>From new claims to receipts</h3></div>
-    <p class="note">Today a person starts the run with one command (<code>tools/pipeline.py</code>) and the stages run in the background, each one recorded in <code>runs/</code>. A weekly schedule is planned, not built.</p>
+    <p class="note">The scan and the judge run unattended once a week, as described under "The weekly run" further down this page. Running a model and writing its receipt are started by a person. Every agent run is recorded in <code>runs/</code>.</p>
     <ol class="flow flow-col">
       <li class="stage">
         <div class="stage-h"><span class="kick">Stage 1 &#183; no agent</span><b>Read the listings</b><code>tools/feeds.py</code></div>
@@ -626,6 +626,40 @@ a { color: var(--model); }
         </div>
       </li>
     </ol>
+  </div>
+</section>
+
+<section data-tab="agents" id="flow-run">
+  <span class="eyebrow">The weekly run</span>
+  <h2>Once a week the scan and the judge run unattended, and a person approves the result</h2>
+  <p>The run happens on a rented machine at GitHub, not on a laptop. It is scheduled for one night a week and can also be started by hand; the runs so far were started by hand. It can add scorecards and candidates but cannot change the rules, and nothing it writes reaches this site until a person has merged it.</p>
+  <div class="lane">
+    <div class="lane-h"><span class="pill good">Every week</span><h3>What one run does</h3></div>
+    <ol class="flow flow-row">
+      <li class="node"><span class="kick">1 &#183; Find</span><b>Scan with both providers</b><p>Claude's own search and You.com each look for new forecasting claims, at the same time, into separate files.</p><code>/scan</code></li>
+      <li class="node"><span class="kick">2 &#183; Sort</span><b>Check the registry</b><p>Works already judged, rejected or implemented are skipped. Works left over from an earlier run go first, then new ones, closest to our problem first.</p><code>registry/</code></li>
+      <li class="node"><span class="kick">3 &#183; Check</span><b>Judge each work twice</b><p>Once with each provider, two at a time. A scorecard that does not pass the schema, or comes from a run that failed, is deleted.</p><code>/judge</code></li>
+      <li class="node"><span class="kick">4 &#183; Stop</span><b>Stay inside the limits</b><p>A run judges a few works, stops at a weekly cost budget, and stops at once if the subscription's usage limit is hit. What is left goes first next time.</p><code>tools/weekly.py</code></li>
+      <li class="node"><span class="kick">5 &#183; Hand over</span><b>Open a pull request</b><p>The run's report is the text: what was scanned, what was judged, each label, what failed, and what it cost.</p><code>runs/weekly_*.md</code></li>
+    </ol>
+  </div>
+  <div class="two">
+    <div class="panel">
+      <h3>What the run is not allowed to do</h3>
+      <ul class="plain">
+        <li><strong>Change the rules.</strong> A check refuses any pull request from the run that touches code, the protocol, the problem spec, the instructions the agents follow, or this page.</li>
+        <li><strong>Run a model.</strong> It never downloads weights and never produces a measured number. Measuring is started by a person.</li>
+        <li><strong>Publish what it read.</strong> The full transcripts contain text from other people's pages, so they go to a private archive. Only links, short paraphrased claims and the scorecards are public.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Where a person comes in</h3>
+      <ul class="plain">
+        <li><strong>Merge.</strong> Yuri reads the report and merges the pull request. The next scheduled run waits until he has.</li>
+        <li><strong>Review.</strong> Each scorecard then waits for his verdict on the label and four checks of its parts. The <a href="#review">Review tab</a> shows which are reviewed and which are not.</li>
+        <li><strong>Test the judge.</strong> Eleven works are labelled by Yuri without seeing the judge's label, so the judge can be scored against them.</li>
+      </ul>
+    </div>
   </div>
 </section>
 
