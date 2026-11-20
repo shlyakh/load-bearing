@@ -1,0 +1,51 @@
+{
+  "candidate_id": "tabpfn-3-5",
+  "title": "TabPFN-3.5: Technical Report",
+  "spec_version": "spec-v1",
+  "discovered_via": {"url": "https://arxiv.org/abs/2609.17895", "provider": "claude", "retrieved_at": "2026-11-19T23:35:47Z"},
+  "candidate_type": "model_release",
+  "primary_sources": [
+    {"url": "https://arxiv.org/abs/2609.17895", "kind": "arxiv", "paraphrase": "Abstract (v1 2026-09-15, v3 2026-11-03): new flagship tabular foundation model from Prior Labs; says its gains carry over to task-specific harnesses, including stronger time-series forecasting. No forecasting number, covariate or load statement.", "evidence_id": "56180bc48289"},
+    {"url": "https://arxiv.org/html/2609.17895v3", "kind": "arxiv", "paraphrase": "Full text: on fev-bench (100 tasks, 29 methods) the general checkpoint, run through tabpfn-time-series with no time-series fine-tuning, places sixth, 1.1 points above TabPFN-TS-3 at 2.4x its speed. Weights are on Hugging Face under a non-commercial licence; training follows the TabPFN-3 synthetic prior.", "evidence_id": "c283e7b3c624"},
+    {"url": "https://github.com/PriorLabs/tabpfn-time-series", "kind": "github", "paraphrase": "README: v1.3.0 (2026-09-15) makes TabPFN-3.5 the default model; known future covariates are supported with lag and trailing-mean features; on 25 fev-bench tasks with numeric known covariates those features lower SQL by 4.5% (21 of 25 tasks better). Cloud client is the default mode; code is Apache-2.0.", "evidence_id": "d8ee545a09dd"},
+    {"url": "https://huggingface.co/Prior-Labs/tabpfn_3_5", "kind": "hf_card", "paraphrase": "Model card: licence tabpfn-3-5-license-v1.0 allows testing, evaluation and internal benchmarking but no commercial or production use; trained only on synthetic tabular tasks; default checkpoint tabpfn-v3.5-20260909.safetensors. No forecasting statement and no hardware requirement.", "evidence_id": "5cae86dfb452"},
+    {"url": "https://huggingface.co/api/models/Prior-Labs/tabpfn_3_5", "kind": "hf_card", "paraphrase": "Hub record: revision 06bf2ba35c80a92a3b9abb436b99cf49e7a0365e, repository created and last modified 2026-09-09, not gated, checkpoint files present.", "evidence_id": "d06978b1b1c3"},
+    {"url": "https://huggingface.co/api/models/Prior-Labs/tabpfn_3_5/commits/main", "kind": "hf_card", "paraphrase": "Commit history: all six commits are dated 2026-09-09; commit b0662010 at 16:35 UTC is titled as adding the TabPFN-3.5, 3.5-Fast and multiclass checkpoints.", "evidence_id": "7750f3db41ec"},
+    {"url": "https://zenodo.org/records/23765681", "kind": "zenodo", "paraphrase": "Zenodo deposit of the arXiv v2 PDF (published 2026-09-22, CC BY 4.0); same abstract, no extra results, data or code.", "evidence_id": "006933765b4d"}
+  ],
+  "claims": [
+    {"text": "The gains of the new tabular model carry over to task-specific harnesses, including stronger time-series forecasting (headline claim; descriptive, no number in the abstract).", "metric": null, "value": null, "dataset": null, "horizon": null, "baseline": "TabPFN-3", "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0},
+    {"text": "On fev-bench the general TabPFN-3.5 checkpoint, with no time-series fine-tuning, places sixth of 29 methods, behind TimesFM-3, two Chronos-2 variants, TiRex-2 and Toto-2.0.", "metric": "leaderboard rank", "value": 6, "dataset": "fev-bench (100 tasks)", "horizon": null, "baseline": "TimesFM-3, Chronos-2, TiRex-2, Toto-2.0", "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 1},
+    {"text": "On fev-bench TabPFN-3.5 scores 1.1 points above the time-series-specific TabPFN-TS-3 (skill over Seasonal Naive; which of SQL or MASE the figure refers to was not read).", "metric": "skill score difference (points)", "value": 1.1, "dataset": "fev-bench (100 tasks)", "horizon": null, "baseline": "TabPFN-TS-3", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 1},
+    {"text": "On fev-bench TabPFN-3.5 runs at 2.4 times the speed of TabPFN-TS-3 under the same inference settings.", "metric": "speed ratio", "value": 2.4, "dataset": "fev-bench (100 tasks)", "horizon": null, "baseline": "TabPFN-TS-3", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 1},
+    {"text": "On the 25 fev-bench tasks with numeric known covariates, adding known-covariate lag features lowers SQL by 4.5% with the v3.5 model.", "metric": "SQL reduction (%)", "value": 4.5, "dataset": "fev-bench, 25 tasks with numeric known covariates", "horizon": null, "baseline": "the same model without known-covariate lag features", "baseline_same_inputs": "partly", "test_window_days": null, "citation_idx": 2},
+    {"text": "The covariate lag features improve 21 of those 25 tasks.", "metric": "tasks improved (of 25)", "value": 21, "dataset": "fev-bench, 25 tasks with numeric known covariates", "horizon": null, "baseline": "the same model without known-covariate lag features", "baseline_same_inputs": "partly", "test_window_days": null, "citation_idx": 2},
+    {"text": "On the worst of those 25 tasks SQL is 1.5% higher with the features.", "metric": "SQL increase (%)", "value": 1.5, "dataset": "fev-bench, 25 tasks with numeric known covariates", "horizon": null, "baseline": "the same model without known-covariate lag features", "baseline_same_inputs": "partly", "test_window_days": null, "citation_idx": 2},
+    {"text": "The weights are trained only on synthetic tabular tasks and are licensed for evaluation and research, not for commercial or production use.", "metric": null, "value": null, "dataset": null, "horizon": null, "baseline": null, "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 3}
+  ],
+  "relevance": {
+    "target_match": 1,
+    "horizon_match": 0,
+    "covariates_match": 3,
+    "rationale": "A general tabular model whose forecasting evidence is the general fev-bench suite, with no electric-load result of its own in the pages read (target 1). No forecast horizon is stated in what was read (0). Its forecasting harness takes numeric known-future covariates and builds lag features from them, which is how temperature enters our benchmark (3); the sources do not name weather explicitly."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "high",
+    "independent_replication": "unknown",
+    "notes": "Overlap: the checkpoint commit on the Hub is dated 2026-09-09 (taken from the commit title; the listing does not show files per commit, but every commit in the repository has that date and the file name carries it). The scored window is 52 weeks, 2025-11-10 to 2026-11-02; 8 weeks start after 2026-09-09 (Sep 14 to Nov 2), fewer than half, so high. The card says training is synthetic only, which would make leakage of our data unlikely, but the rule is about the date. Pin revision 06bf2ba35c80a92a3b9abb436b99cf49e7a0365e. Evidence strength: vendor results on a public benchmark with public code and weights, and a descriptive headline claim, so moderate; not pre-registered, and the test-window lengths were not read. The covariate claim compares the model with and without extra features (inputs partly matched). Replication: one search found no independent forecasting evaluation of TabPFN-3.5. Runnable class: spec.yaml lists the FoundationForecast TabPFN wrapper as ff_univariate, but models_ff/tabpfn_ts_v2.py records that this wrapper selects the cloud client without CUDA, and that our TabPFN-TS row calls TabPFNTSPipeline directly in local mode with temperature; direct_adapter is used here for that reason and should be confirmed by Yuri. Not verified: exact fev-bench scores, horizons and whether covariates were used in the leaderboard entry (appendix C.6 was read only in part); CPU runtime of the 3.5 checkpoint (the report times it on a 96 GB GPU and recommends the API without a GPU; the 60-minute limit may not hold); that installed tabpfn 9.2.0 loads this checkpoint locally; the licence acceptance step for local use; the statement, seen only in a search summary, that the largest covariate gains are on temperature-driven load tasks. The cloud client must not be used: it would send our data to a third party. Licence is non-commercial and flagged under license_policy."
+  },
+  "evidence_strength": "moderate",
+  "license": "TabPFN-3.5 License v1.0 (non-commercial; code Apache-2.0)",
+  "license_ok_for_commercial": false,
+  "runnable_class": "direct_adapter",
+  "label": "ACCEPT_RUN",
+  "label_reason": "TabPFN-3.5 is a public model release with pinned-date weights on Hugging Face, and its forecasting harness takes known-future covariates, so it can be measured with temperature in both regimes by pointing our existing local TabPFN-TS adapter at the new checkpoint. Its own evidence is a sixth place on the general fev-bench suite with no load result, only 8 of 52 scored weeks start after the weights date, the licence is non-commercial, and CPU runtime within the 60-minute limit is unverified.",
+  "implementation_hint": "Copy the approach of models_ff/tabpfn_ts_v2.py (tabpfn_time_series.TabPFNTSPipeline, LOCAL mode, CPU, network blocked, temperature as the one known covariate) with checkpoint tabpfn-v3.5-20260909.safetensors from Prior-Labs/tabpfn_3_5 at revision 06bf2ba35c80a92a3b9abb436b99cf49e7a0365e. Not through the FoundationForecast wrapper (cloud client without CUDA). Time one gate window on CPU first; tabpfn-v3.5-fast-20260909.safetensors is the fallback if the limit is exceeded, as a separately labelled row. The fine-tuned TabPFN-TS-3 checkpoint (Prior-Labs/tabpfn_3) is the report's comparison model.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261119T233435_judge_claude_tabpfn-3-5_5928",
+    "session_id": "8e70a6ef-3e98-4de8-a083-935bb197df12",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}

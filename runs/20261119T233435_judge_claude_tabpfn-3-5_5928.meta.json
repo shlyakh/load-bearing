@@ -1,0 +1,113 @@
+{
+ "run_id": "20261119T233435_judge_claude_tabpfn-3-5_5928",
+ "skill": "judge",
+ "provider": "claude",
+ "args": [
+  "tabpfn-3-5"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-19_run2.jsonl. Write the scorecard to scorecards/claude/tabpfn-3-5.json.",
+ "model_requested": "claude-fable-5-2",
+ "provider_tools_allowed": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "provider_tools_denied": [],
+ "mcp_server": null,
+ "mcp_servers": [],
+ "search_tools_present": [
+  "WebFetch",
+  "WebSearch"
+ ],
+ "git_commit": "22562b6-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-19T23:34:35+00:00",
+ "wall_seconds": 154.7,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "8e70a6ef-3e98-4de8-a083-935bb197df12",
+ "is_error": false,
+ "num_turns": 38,
+ "total_cost_usd": 1.5290073999999998,
+ "usage": {
+  "input_tokens": 26,
+  "cache_creation_input_tokens": 50494,
+  "cache_read_input_tokens": 589687,
+  "output_tokens": 14395,
+  "output_tokens_details": {
+   "thinking_tokens": 1932
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 50494,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1475,
+    "cache_read_input_tokens": 61880,
+    "cache_creation_input_tokens": 4758,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4758
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 26,
+   "outputTokens": 14395,
+   "cacheReadInputTokens": 589687,
+   "cacheCreationInputTokens": 50494,
+   "webSearchRequests": 0,
+   "costUSD": 1.5018493999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1932,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 50494,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 98515,
+   "outputTokens": 14613,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.027158,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 7818,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 0,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Read": 7,
+  "Grep": 5,
+  "ToolSearch": 1,
+  "Bash": 13,
+  "Glob": 1,
+  "WebFetch": 8,
+  "WebSearch": 1,
+  "Write": 1
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/claude/tabpfn-3-5.json"
+ ]
+}
