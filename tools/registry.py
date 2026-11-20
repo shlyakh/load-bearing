@@ -78,7 +78,7 @@ RELATIONS = (
     "compares_against",
 )
 KNOWN = ("implemented_scored", "implemented_not_scored", "judged", "rejected")
-DEFERRED = ("cap", "usage_limit", "failed")
+DEFERRED = ("cap", "usage_limit", "failed", "budget")
 MAX_CLAIM = 400
 
 

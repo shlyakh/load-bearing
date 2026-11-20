@@ -1,9 +1,10 @@
 name: Weekly scan and judge
 
 # Scan with every provider, judge what is new, open one pull request (decisions 38, 43 to 46, 48, 50).
-# Started by hand until one run is clean; then add under `on:`
-#   schedule:
-#     - cron: "17 9 * * 1"   # Mondays 09:17 UTC
+# Every night at 06:17 UTC (1:17 am Eastern in winter), in small chunks: a scheduled run
+# scans only when the latest scans are six days old, judges at most 4 works (2 on a scan
+# night), stops at the week's budget, and does not start while an earlier agent pull
+# request is still open (its works would be judged twice and its cost would not be counted).
 #
 # Secrets: CLAUDE_CODE_OAUTH_TOKEN (from `claude setup-token`; bills the subscription),
 #          YDC_API_KEY, ARCHIVE_DEPLOY_KEY (write deploy key of the private archive repo),
@@ -17,6 +18,8 @@ name: Weekly scan and judge
 # nothing prints them.
 
 on:
+  schedule:
+    - cron: "17 6 * * *"
   workflow_dispatch:
     inputs:
       cap:
@@ -32,6 +35,9 @@ on:
         description: Judge from the latest scans already on main, without scanning again (a later chunk of the same week)
         type: boolean
         default: false
+      week_budget:
+        description: Most estimated model cost in one budget week, in dollars, over all runs (0 for none)
+        default: "55"
       queue_only:
         description: Show the queue from the latest scans and stop (no paid runs, no pull request)
         type: boolean
@@ -47,13 +53,41 @@ env:
   CLAUDE_CLI_VERSION: "2.1.323"
 
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+    outputs:
+      go: ${{ steps.check.outputs.go }}
+    steps:
+      - name: A scheduled run waits while an agent pull request is open
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          go=true
+          if [ "$EVENT" = "schedule" ]; then
+            open=$(gh pr list -R "$GITHUB_REPOSITORY" --state open --json headRefName \
+              -q '[.[] | select(.headRefName | startswith("agent/"))] | length')
+            if [ "$open" != "0" ]; then
+              echo "::notice::$open agent pull request(s) still open; tonight's run was not started"
+              go=false
+            fi
+          fi
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+
   agent:
+    needs: preflight
+    if: ${{ needs.preflight.outputs.go == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 330
     permissions:
       contents: read
     outputs:
       has_output: ${{ steps.collect.outputs.has_output }}
+      has_transcripts: ${{ steps.encrypt.outputs.made }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -77,11 +111,15 @@ jobs:
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           YDC_API_KEY: ${{ secrets.YDC_API_KEY }}
-          CAP: ${{ inputs.cap || '60' }}
+          CAP: ${{ inputs.cap || '4' }}
           PROVIDERS: ${{ inputs.providers || 'claude youcom' }}
           MODEL: ${{ inputs.model || 'claude-fable-5-2' }}
           SKIP_SCAN: ${{ inputs.skip_scan && '--skip-scan' || '' }}
-        run: uv run --project core python tools/weekly.py --cap "$CAP" --providers $PROVIDERS --model "$MODEL" $SKIP_SCAN
+          WEEK_BUDGET: ${{ inputs.week_budget || '55' }}
+          SCHEDULED: ${{ github.event_name == 'schedule' && '--scan-every 6 --cap-with-scan 2' || '' }}
+        run: >
+          uv run --project core python tools/weekly.py --cap "$CAP" --providers $PROVIDERS
+          --model "$MODEL" --week-budget "$WEEK_BUDGET" $SKIP_SCAN $SCHEDULED
       - name: Guard, only output paths were changed
         if: ${{ always() && !inputs.queue_only }}
         run: python3 tools/guard_paths.py
@@ -126,7 +164,7 @@ jobs:
   archive:
     # Transcripts go to the private repo even when the agent job failed part-way.
     needs: agent
-    if: ${{ always() && !inputs.queue_only }}
+    if: ${{ always() && needs.agent.outputs.has_transcripts == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions: {}

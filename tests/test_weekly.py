@@ -175,3 +175,50 @@ def test_the_cli_five_hour_limit_counts_as_a_usage_limit():
     assert wk.hit_limit(failed | {"api_error_status": "429"})
     assert not wk.hit_limit(failed | {"error_text": "Failed to authenticate"})
     assert not wk.hit_limit({"failure": None, "error_text": text})
+
+
+def test_week_budget_stops_judging_and_counts_earlier_runs(repo, monkeypatch):
+    run, calls = fake_run(repo, 6, {})
+    monkeypatch.setattr(wk, "run", run)
+    monkeypatch.setattr(wk, "JUDGE_ESTIMATE_USD", 1.0)
+    monkeypatch.setattr(wk, "SCAN_ESTIMATE_USD", 1.0)
+    # 2 for the scans, then 4 judge runs at 1 each fit in a budget of 6
+    rep = weekly(monkeypatch, "--parallel", "1", "--week-budget", "6")
+    started = [j for j in rep["judges"] if not j.get("skipped")]
+    assert len(started) == 4 and rep["stopped"] == "budget" and rep["ok"]
+    assert rep["total_cost_usd"] == 6.0 and rep["budget"]["spent_before_usd"] == 0
+    left = [e["queue"]["reason"] for e in rg.load(repo).values() if e["queue"]]
+    assert left == ["budget"] * 4
+    assert (
+        "Spent before this run $0.0, after it $6.0"
+        in next((repo / "runs").glob("*.md")).read_text()
+    )
+
+    # the next night: that run's report is on the branch, so the week is already used up
+    n = len(calls)
+    monkeypatch.setattr(sys, "argv", ["weekly.py", "--date", "2027-01-05", "--week-budget", "6"])
+    wk.main()
+    assert len(calls) == n and len(list((repo / "runs").glob("weekly_*.json"))) == 1
+
+
+def test_scan_every_reuses_a_recent_scan_and_scan_night_has_its_own_cap(repo, monkeypatch):
+    run, calls = fake_run(repo, 5, {})
+    monkeypatch.setattr(wk, "run", run)
+    rep = weekly(
+        monkeypatch, "--parallel", "1", "--scan-every", "6", "--cap", "4", "--cap-with-scan", "1"
+    )
+    assert rep["cap"] == 1 and [c[0] for c in calls].count("scan") == 2  # no scan yet: scan
+    monkeypatch.setattr(
+        sys, "argv", ["weekly.py", "--date", "2027-01-06", "--scan-every", "6", "--cap", "2"]
+    )
+    wk.main()
+    assert [c[0] for c in calls].count("scan") == 2  # two days old: reused
+    assert [c[0] for c in calls].count("judge") == 2 + 4
+
+
+def test_budget_week_starts_at_the_weekly_reset():
+    at = wk.datetime.fromisoformat
+    assert wk.week_start(at("2026-11-20T04:00:00+00:00")) == at("2026-11-20T03:00:00+00:00")
+    assert wk.week_start(at("2026-11-27T02:59:00+00:00")) == at("2026-11-20T03:00:00+00:00")
+    assert wk.week_start(at("2026-11-27T03:00:00+00:00")) == at("2026-11-27T03:00:00+00:00")
+    assert wk.week_start(at("2026-11-19T23:10:00+00:00")) == at("2026-11-13T03:00:00+00:00")
