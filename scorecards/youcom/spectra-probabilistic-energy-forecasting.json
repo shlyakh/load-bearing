@@ -1,0 +1,166 @@
+{
+ "candidate_id": "spectra-probabilistic-energy-forecasting",
+ "title": "SPECTRA: State-Space Exogenous Context and Temporal-Frequency Resolution Architecture for Probabilistic Energy Forecasting",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2607.20587",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-20T03:51:54Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/abs/2607.20587",
+   "kind": "arxiv",
+   "paraphrase": "arXiv record, v1 of 22 Jul 2026 (stat.ML), said to be submitted to IEEE Trans. Power Systems. The abstract claims the best CRPS in 14 of 18 load, price, solar and wind settings, with average CRPS 5.74% and upper-tail quantile risk 7.27% below the strongest baselines, for a trained architecture that separates deterministic and residual streams and aligns exogenous inputs with both.",
+   "evidence_id": "d85724b01a90"
+  },
+  {
+   "url": "https://arxiv.org/html/2607.20587v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text. Hourly ECL, Open Power System Data and GEFCom2014 (load track with temperature), chronological 7:1:2 split, 168 h input. 18 settings = 9 dataset-task pairs x short (mean of 12, 24, 36 h) and long (mean of 72, 120, 168 h). Eight neural baselines trained by the authors; means of 3 seeds, no intervals. Exogenous inputs cover the horizon as known-future values.",
+   "evidence_id": "36f06d6bdef7"
+  },
+  {
+   "url": "https://github.com/yedadasd/SPECTRA",
+   "kind": "github",
+   "paraphrase": "Authors' repository, linked from the paper: PyTorch model code, loaders, preprocessing and per-dataset scripts for SPECTRA and the baselines; head 7b220ab of 28 Jul 2026. No licence file, no releases, no trained weights, and the preprocessed data files are not in the listing. Needs mamba-ssm, for which a CUDA GPU is recommended.",
+   "evidence_id": "5318f41fe829"
+  }
+ ],
+ "claims": [
+  {
+   "text": "SPECTRA has the best CRPS in 14 of 18 settings (9 dataset-task pairs, each at a short and a long horizon group) and is in the top two in 17.",
+   "metric": "settings with best CRPS, of 18",
+   "value": 14,
+   "dataset": "ECL; Open Power System Data load, price, solar, wind; GEFCom2014 load, price, solar, wind",
+   "horizon": "short = mean of 12, 24, 36 h; long = mean of 72, 120, 168 h (solar and wind: 72 h only)",
+   "baseline": "DeepAR, TFT, TADNet, TiDE, TimeXer, Autoformer, PatchTST, DLinear, trained by the authors",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Averaged over the 18 settings, CRPS is 5.74% below the strongest baseline in each setting.",
+   "metric": "average CRPS reduction vs strongest baseline (%)",
+   "value": 5.74,
+   "dataset": "ECL, Open Power System Data, GEFCom2014",
+   "horizon": "12 to 168 h, in two groups",
+   "baseline": "the best of the eight neural baselines per setting",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "Averaged over the 18 settings, the 90% quantile risk is 7.27% below the strongest baseline.",
+   "metric": "average rho90 reduction vs strongest baseline (%)",
+   "value": 7.27,
+   "dataset": "ECL, Open Power System Data, GEFCom2014",
+   "horizon": "12 to 168 h, in two groups",
+   "baseline": "the best of the eight neural baselines per setting",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "The gain in median accuracy is much smaller: the 50% quantile risk improves by 1.78% on average.",
+   "metric": "average rho50 reduction vs strongest baseline (%)",
+   "value": 1.78,
+   "dataset": "ECL, Open Power System Data, GEFCom2014",
+   "horizon": "12 to 168 h, in two groups",
+   "baseline": "the best of the eight neural baselines per setting",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "GEFCom2014 load (temperature and calendar covariates), long horizons: SPECTRA CRPS 0.253, against 0.254 for TimeXer and 0.255 for TADNet.",
+   "metric": "normalised CRPS",
+   "value": 0.253,
+   "dataset": "GEFCom2014 load track, 2011-2014, last 20% as test",
+   "horizon": "mean of 72, 120, 168 h",
+   "baseline": "TimeXer 0.254",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "GEFCom2014 load, short horizons: SPECTRA CRPS 0.166, against 0.172 for TFT.",
+   "metric": "normalised CRPS",
+   "value": 0.166,
+   "dataset": "GEFCom2014 load track, 2011-2014, last 20% as test",
+   "horizon": "mean of 12, 24, 36 h",
+   "baseline": "TFT 0.172",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "ECL load, long horizons: SPECTRA CRPS 0.187, against 0.197 for TADNet.",
+   "metric": "normalised CRPS",
+   "value": 0.187,
+   "dataset": "ECL, 321 clients, hourly, 2012-2014, last 20% as test",
+   "horizon": "mean of 72, 120, 168 h",
+   "baseline": "TADNet 0.197",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Open Power System Data load, long horizons: SPECTRA CRPS 0.162, against 0.184 for TADNet.",
+   "metric": "normalised CRPS",
+   "value": 0.162,
+   "dataset": "Open Power System Data, 59 load series, hourly, 2015-2017, last 20% as test",
+   "horizon": "mean of 72, 120, 168 h",
+   "baseline": "TADNet 0.184",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Removing the exogenous-alignment module raises CRPS by 4.5% on ECL and 9.3% on Open Power System Data load.",
+   "metric": "CRPS increase without the exogenous module, OPS load (%)",
+   "value": 9.3,
+   "dataset": "Open Power System Data load (ECL: 4.5%)",
+   "horizon": null,
+   "baseline": "full SPECTRA",
+   "baseline_same_inputs": "no",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 3,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load is one of the four targets and fills 6 of the 18 settings (ECL clients, European national load, the GEFCom2014 utility load track), so the target is scored 3; the other 12 settings are price, solar and wind. The long horizon group averages 72, 120 and 168 hours from a 168-hour input, which reaches our week ahead, so horizon is scored 3, with the reservation that 168 hours is never reported on its own. Exogenous inputs span the forecast horizon as known-future values and the GEFCom2014 load track uses temperature, which is our required covariate, so covariates are scored 3; the weather is the recorded series, which corresponds to our oracle regime only."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: no; the paper and repository describe no plan fixed before the results, and the research task found none. training_overlap_risk: unknown by the date rule, because there is no weights file: no checkpoint is published on GitHub or Hugging Face, so the model would be trained by us on data before each cutoff, and overlap would then be governed by our own training split rather than a weights date. independent_replication: unknown. One research task and one search found no rerun, no critique with new numbers and no citing study; the only outside page is an automated review (not fetched, not cited), which per the research answer notes near-ties, three seeds and undisclosed hyperparameters. evidence_strength: moderate. The result is public and in principle reproducible (code for the model and the baselines, three public benchmark sets, test partitions of 20% of two to four years, which is above 90 days for every set although no dates or origin counts are given), but it is not pre-registered or replicated, and whether the baselines saw the same inputs is not stated. Things that weaken the headline: every number is the mean of three seeds with no interval or deviation, so ci90 is empty; on the setting closest to ours (GEFCom2014 load with temperature, long horizons) the margin is 0.253 against 0.254, about 0.4%, which three seeds cannot separate; the 5.74% average is carried by settings such as Open Power System load (12 to 20%) and by price and solar; the method loses on OPS price long and both OPS wind settings and ties on GEFCom2014 wind short; all baselines are neural models trained by the authors with one shared learning rate and at most 10 epochs, with no statistical, naive or regression baseline and no pretrained model. baseline_same_inputs is unknown on every claim: the paper states the same split, horizons, quantiles and loss, but not which baselines received the exogenous series; several (PatchTST, DLinear, Autoformer) do not take future covariates by design. The ablation claim is marked no because it removes the inputs on purpose. The own count of the table agrees with 14 of 18 (three losses, one tie). Not verified: the method sections III-A to III-E of the full text were not read (the introduction, problem statement, pipeline overview and the whole experiments section were); the repository's model, loader and task scripts were not opened (only the README and two listings), so how future covariates are built, whether the weather is observed or forecast in each benchmark set (the reading that it is recorded values is mine, from the GEFCom2014 description), and whether the scripts use the paper's 99 quantiles (the README example trains three) are open; the absence of a licence rests on the top-level file listing; the preprocessed data files and the NewEnergy2025 set, which the paper says is in the repository, were not seen there; that mamba-ssm cannot be installed or run on a Mac CPU was not tested. The research answer said the horizon groups were not readable in the full text; the fetched page gives them and is used here. Tools: one research task at the standard tier, one search, 5 pages fetched (none failed)."
+ },
+ "evidence_strength": "moderate",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "ACCEPT_STAGE3",
+ "label_reason": "On target (hourly load among the tasks, horizons to 168 hours, temperature as a known-future input) and sourced by a paper with public code, but it is a trained architecture with no published weights and is not among the models we can run, so measuring it means training it per cutoff, which is more than an adapter. The evidence is the authors' own table: three seeds, no intervals, neural baselines only, and a margin of about 0.4% on the one load setting that uses temperature.",
+ "implementation_hint": "Not in runnable_models and not a FoundationForecast wrapper; no weights repository. Running it would need: our own implementation or the authors' code (the repository shows no licence, so ask the authors or write our own, rule 9); an environment with mamba-ssm and pytorch-wavelets, which the README recommends a CUDA GPU for, against our CPU laptop and 60-minute limit; and a training loop inside the harness, fitted once per cutoff on load and temperature before the cutoff, with temperature for c+1..c+168 from the active regime. The paper's setting matches our oracle regime only; the forecast regime is the case it leaves to future work. Report MAE from the median quantile against the temperature-only regression; CRPS is not one of our metrics. If Stage 3 is taken up, the GEFCom2014 load long-horizon cell (0.253 against 0.254) is the comparison to keep in mind when setting expectations.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261120T034938_judge_youcom_spectra-probabilistic-energy-forecasting_63de",
+  "session_id": "56146f8e-de30-45b6-abf4-c84aa6d565c9",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

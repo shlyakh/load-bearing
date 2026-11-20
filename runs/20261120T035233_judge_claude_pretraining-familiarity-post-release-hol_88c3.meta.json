@@ -1,0 +1,114 @@
+{
+ "run_id": "20261120T035233_judge_claude_pretraining-familiarity-post-release-hol_88c3",
+ "skill": "judge",
+ "provider": "claude",
+ "args": [
+  "pretraining-familiarity-post-release-holdout"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-20.jsonl. Write the scorecard to scorecards/claude/pretraining-familiarity-post-release-holdout.json.",
+ "model_requested": "claude-fable-5-2",
+ "provider_tools_allowed": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "provider_tools_denied": [],
+ "mcp_server": null,
+ "mcp_servers": [],
+ "search_tools_present": [
+  "WebFetch",
+  "WebSearch"
+ ],
+ "git_commit": "bd5cc37-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-20T03:52:33+00:00",
+ "wall_seconds": 253.7,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "b71f3176-6860-463c-b4e3-505eba482f5f",
+ "is_error": false,
+ "api_error_status": null,
+ "error_text": null,
+ "num_turns": 42,
+ "total_cost_usd": 2.0868206,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 57634,
+  "cache_read_input_tokens": 762093,
+  "output_tokens": 24293,
+  "output_tokens_details": {
+   "thinking_tokens": 2975
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 57634,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1405,
+    "cache_read_input_tokens": 69011,
+    "cache_creation_input_tokens": 4767,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4767
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 30,
+   "outputTokens": 24293,
+   "cacheReadInputTokens": 762093,
+   "cacheCreationInputTokens": 57634,
+   "webSearchRequests": 0,
+   "costUSD": 2.0465226,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2975,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 57634,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 104105,
+   "outputTokens": 19775,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.040298,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 11282,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 0,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Bash": 24,
+  "ToolSearch": 1,
+  "WebFetch": 8,
+  "WebSearch": 2,
+  "Read": 2,
+  "Write": 2,
+  "Grep": 2
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/claude/pretraining-familiarity-post-release-holdout.json"
+ ]
+}

@@ -1,0 +1,110 @@
+{
+ "run_id": "20261120T035252_judge_youcom_pretraining-familiarity-post-release-hol_a286",
+ "skill": "judge",
+ "provider": "youcom",
+ "args": [
+  "pretraining-familiarity-post-release-holdout"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-20.jsonl. Write the scorecard to scorecards/youcom/pretraining-familiarity-post-release-holdout.json.",
+ "model_requested": "claude-fable-5-2",
+ "provider_tools_allowed": [
+  "mcp__you-com__you-search",
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research"
+ ],
+ "provider_tools_denied": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "mcp_server": {
+  "name": "you-com",
+  "url": "https://api.you.com/mcp?tools=you-search,you-contents,you-research"
+ },
+ "mcp_servers": [
+  {
+   "name": "you-com",
+   "status": "connected"
+  }
+ ],
+ "search_tools_present": [
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research",
+  "mcp__you-com__you-search"
+ ],
+ "git_commit": "bd5cc37-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-20T03:52:52+00:00",
+ "wall_seconds": 276.3,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "0c84aff0-5f62-4e34-a5e0-fc8796bf641a",
+ "is_error": false,
+ "api_error_status": null,
+ "error_text": null,
+ "num_turns": 46,
+ "total_cost_usd": 3.5414318000000002,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 123990,
+  "cache_read_input_tokens": 1355599,
+  "output_tokens": 32155,
+  "output_tokens_details": {
+   "thinking_tokens": 5998
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 123990,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1299,
+    "cache_read_input_tokens": 133612,
+    "cache_creation_input_tokens": 6387,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6387
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 34,
+   "outputTokens": 32155,
+   "cacheReadInputTokens": 1355599,
+   "cacheCreationInputTokens": 123990,
+   "webSearchRequests": 0,
+   "costUSD": 3.5414318000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 5998,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 123990,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Bash": 31,
+  "ToolSearch": 1,
+  "mcp__you-com__you-contents": 5,
+  "mcp__you-com__you-research": 5,
+  "mcp__you-com__you-search": 1,
+  "Write": 2
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/youcom/pretraining-familiarity-post-release-holdout.json"
+ ]
+}
