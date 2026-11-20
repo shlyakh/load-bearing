@@ -62,7 +62,7 @@ def fake_run(repo: Path, n_candidates: int, fail: dict[tuple[str, str], str]):
     scorecard unless `fail` names (provider, candidate id) with a result text."""
     calls = []
 
-    def run(skill, provider, args, note="", model=""):
+    def run(skill, provider, args, note="", model="", progress=None):
         calls.append((skill, provider, *args))
         meta = {
             "run_id": f"r-{skill}-{provider}-{'-'.join(args)}",
@@ -132,7 +132,7 @@ def test_usage_limit_stops_judging_and_still_writes_the_report(repo, monkeypatch
 def test_one_provider_scan_failing_does_not_stop_the_other(repo, monkeypatch):
     run, _ = fake_run(repo, 2, {})
 
-    def flaky(skill, provider, args, note="", model=""):
+    def flaky(skill, provider, args, note="", model="", progress=None):
         if skill == "scan" and provider == "youcom":
             return {"run_id": "x", "failure": "timed out", "result": None, "total_cost_usd": 0}
         return run(skill, provider, args, note, model)
@@ -222,3 +222,53 @@ def test_budget_week_starts_at_the_weekly_reset():
     assert wk.week_start(at("2026-11-27T02:59:00+00:00")) == at("2026-11-20T03:00:00+00:00")
     assert wk.week_start(at("2026-11-27T03:00:00+00:00")) == at("2026-11-27T03:00:00+00:00")
     assert wk.week_start(at("2026-11-19T23:10:00+00:00")) == at("2026-11-13T03:00:00+00:00")
+
+
+def test_progress_lines_say_what_runs_and_carry_no_page_text(repo, monkeypatch, capsys):
+    run, _ = fake_run(repo, 2, {})
+
+    def chatty(skill, provider, args, note="", model="", progress=None):
+        progress({"seconds": 125, "turns": 9, "searches": 4, "fetches": 3, "other": 2})
+        return run(skill, provider, args, note, model)
+
+    monkeypatch.setattr(wk, "run", chatty)
+    summary = repo / "summary.md"
+    monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary))
+    weekly(monkeypatch, "--parallel", "1", "--cap", "1")
+    out = capsys.readouterr().out
+    assert "scan claude: started" in out and "scan youcom: done in" in out
+    assert "queue: 1 works, 2 judge runs" in out
+    assert "judge 1/2 claude work-0: working, 2 min, 9 turns, 4 searches, 3 fetches" in out
+    assert "judge 2/2 youcom work-0: done in" in out and "week $4.00" in out
+    assert summary.read_text().count("| judge |") == 2
+
+    monkeypatch.setattr(sys, "argv", ["weekly.py", "--date", "2027-01-05", "--skip-scan"])
+    wk.main()
+    out = capsys.readouterr().out
+    assert "scan claude: NOT scanning (--skip-scan was given); reusing scan_2027-01-04" in out
+    assert "scan claude: started" not in out
+
+
+def test_follow_saves_the_stream_counts_activity_and_reports(tmp_path):
+    lines = [
+        {"type": "system", "subtype": "init"},
+        {"type": "assistant", "message": {"content": [{"type": "tool_use", "name": "WebSearch"}]}},
+        {"type": "assistant", "message": {"content": [{"type": "tool_use", "name": "WebFetch"}]}},
+        {
+            "type": "assistant",
+            "message": {"content": [{"type": "tool_use", "name": "mcp__you-com__you-contents"}]},
+        },
+        {"type": "assistant", "message": {"content": [{"type": "tool_use", "name": "Read"}]}},
+        {"type": "result", "num_turns": 4},
+    ]
+    script = "import sys\nfor l in sys.argv[1:]: print(l, flush=True)"
+    cmd = [sys.executable, "-c", script, *[json.dumps(x) for x in lines]]
+    seen = []
+    stream = tmp_path / "s.jsonl"
+    code, timed_out = rs.follow(cmd, dict(wk.os.environ), stream, 30, seen.append, every=0)
+    assert (code, timed_out) == (0, False) and len(stream.read_text().splitlines()) == 6
+    last = seen[-1]
+    assert (last["turns"], last["searches"], last["fetches"], last["other"]) == (4, 1, 2, 1)
+
+    slow = [sys.executable, "-c", "import time; time.sleep(30)"]
+    assert rs.follow(slow, dict(wk.os.environ), stream, 0.5) == (-1, True)

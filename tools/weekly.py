@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -61,6 +62,38 @@ STOP_AFTER = 3  # judge failures in a row
 JUDGE_ESTIMATE_USD = 3.0
 SCAN_ESTIMATE_USD = 12.5  # one provider
 WEEK_ANCHOR = "2026-11-20T03:00:00+00:00"  # the subscription's weekly reset (Fridays 03:00 UTC)
+
+
+SAY = threading.Lock()
+
+
+def say(text: str, row: str = "") -> None:
+    """One timestamped progress line on standard output, which is the Actions step log.
+    `row`, a markdown table row, also goes to the run's Summary page. The repository is
+    public and so are its logs: only ids, counts, times, costs and labels belong here,
+    never page text or search queries."""
+    with SAY:
+        print(f"{datetime.now(UTC):%H:%M:%S} {text}", flush=True)
+        path = os.environ.get("GITHUB_STEP_SUMMARY")
+        if row and path:
+            with open(path, "a") as f:
+                f.write(row + "\n")
+
+
+def beat(what: str):
+    """The callback a run reports its counts to, about once a minute."""
+
+    def tell(n: dict) -> None:
+        say(
+            f"{what}: working, {n['seconds'] // 60} min, {n['turns']} turns, "
+            f"{n['searches']} searches, {n['fetches']} fetches, {n['other']} other tool calls"
+        )
+
+    return tell
+
+
+def mins(meta: dict) -> str:
+    return f"{(meta.get('wall_seconds') or 0) / 60:.1f} min"
 
 
 def suffix(day: str) -> str:
@@ -121,13 +154,22 @@ def scan(provider: str, day: str, tag: str, model: str) -> dict:
         f"Weekly run. Write the candidates to {target.relative_to(ROOT)} and use "
         f"`--candidate scan-{day}{tag.replace('_', '-')}` for the scan ledger."
     )
-    meta = run("scan", provider, [], note=note, model=model)
+    what = f"scan {provider}"
+    say(f"{what}: started")
+    meta = run("scan", provider, [], note=note, model=model, progress=beat(what))
     out = step(meta) | {"provider": provider, "file": None, "limit": hit_limit(meta)}
     if not meta["failure"]:
         if target.exists() and read_rows(target):
             out["file"] = str(target.relative_to(ROOT))
         else:
             out["failure"] = f"the scan finished but {target.relative_to(ROOT)} is missing or empty"
+    cost = f"${meta.get('total_cost_usd') or 0:.2f}"
+    n = len(read_rows(target)) if out["file"] else 0
+    result = f"{n} candidates" if not out["failure"] else f"FAILED: {out['failure']}"
+    say(
+        f"{what}: done in {mins(meta)}, {cost}, {result}",
+        f"| scan | {provider} | | {mins(meta)} | {cost} | {result} |",
+    )
     return out
 
 
@@ -141,10 +183,14 @@ class Judging:
         self.lock = threading.Lock()
         self.in_a_row = 0
         self.stopped: str | None = None
+        self.number: dict[tuple[str, str], int] = {}  # task -> its place in the run
+        self.spent = 0.0  # this run's judge cost so far
+        self.spent_before = 0.0  # the week's cost before judging began
 
     def one(self, task: tuple[str, str]) -> dict:
         cid, provider = task
         out = {"candidate_id": cid, "provider": provider}
+        what = f"judge {self.number.get(task, '?')}/{len(self.number) or '?'} {provider} {cid}"
         with self.lock:
             if not self.stopped and self.budget_left is not None:
                 if self.budget_left < JUDGE_ESTIMATE_USD:
@@ -152,14 +198,19 @@ class Judging:
                 else:
                     self.budget_left -= JUDGE_ESTIMATE_USD  # held until the real cost is known
             if self.stopped:
+                say(
+                    f"{what}: not started ({self.stopped})",
+                    f"| judge | {provider} | {cid} | | | not started ({self.stopped}) |",
+                )
                 return out | {"skipped": self.stopped}
+        say(f"{what}: started")
         card = ROOT / "scorecards" / provider / f"{cid}.json"
         note = (
             f"Weekly run. The candidate row is in {self.queue_file}. "
             f"Write the scorecard to {card.relative_to(ROOT)}."
         )
         since = time.time()
-        meta = run("judge", provider, [cid], note=note, model=self.model)
+        meta = run("judge", provider, [cid], note=note, model=self.model, progress=beat(what))
         failure = meta["failure"]
         if not failure and not card.exists():
             failure = "the judge finished but wrote no scorecard"
@@ -173,6 +224,8 @@ class Judging:
             if self.budget_left is not None:
                 self.budget_left += JUDGE_ESTIMATE_USD - (meta.get("total_cost_usd") or 0)
             self.in_a_row = self.in_a_row + 1 if failure else 0
+            self.spent += meta.get("total_cost_usd") or 0
+            total = f"judging so far ${self.spent:.2f}, week ${self.spent_before + self.spent:.2f}"
             if hit_limit(meta):
                 self.stopped = self.stopped or "usage_limit"
             elif self.in_a_row >= STOP_AFTER:
@@ -181,6 +234,12 @@ class Judging:
         if not failure:
             c = json.loads(card.read_text())
             out |= {"label": c.get("label"), "runnable_class": c.get("runnable_class")}
+        cost = f"${meta.get('total_cost_usd') or 0:.2f}"
+        result = f"FAILED: {failure}" if failure else f"label {out['label']}"
+        say(
+            f"{what}: done in {mins(meta)}, {cost}, {result}; {total}",
+            f"| judge | {provider} | {cid} | {mins(meta)} | {cost} | {result} |",
+        )
         return out
 
 
@@ -351,14 +410,17 @@ def main() -> None:
         if budget["left_usd"] < JUDGE_ESTIMATE_USD:
             print(f"this week's budget is used (${spent} of ${a.week_budget}); nothing was started")
             return
+    why_no_scan = "--skip-scan was given" if a.skip_scan else ""
     if a.scan_every and not a.skip_scan:
         ages = [scan_age_days(p, a.date) for p in a.providers]
         if all(x is not None and x < a.scan_every for x in ages):
             a.skip_scan = True  # the week's scans are recent enough
+            why_no_scan = f"the latest scans are {max(ages)} days old, under {a.scan_every}"
     if budget and not a.skip_scan:
         if budget["left_usd"] < SCAN_ESTIMATE_USD * len(a.providers) + JUDGE_ESTIMATE_USD:
             budget["scan_skipped"] = True  # judge from the latest scans instead
             a.skip_scan = True
+            why_no_scan = "the week's budget cannot cover a scan"
     if not a.skip_scan and a.cap_with_scan is not None:
         a.cap = a.cap_with_scan
     tag = "" if a.dry_run else suffix(a.date)
@@ -377,10 +439,22 @@ def main() -> None:
         "budget": budget,
     }
 
+    if not a.dry_run:
+        week = ""
+        if budget:
+            week = f", week budget ${budget['spent_before_usd']} of ${a.week_budget:g} spent"
+        say(
+            f"{weekly_id}: model {a.model or 'the CLI default'}, providers "
+            f"{' '.join(a.providers)}, cap {a.cap}{week}",
+            "| Step | Provider | Candidate | Time | Cost | Result |\n|---|---|---|---|---|---|",
+        )
+
     # 1. scan
     if a.skip_scan:
         for p in a.providers:
             f = latest(ROOT, p)
+            if not a.dry_run:
+                say(f"scan {p}: NOT scanning ({why_no_scan}); reusing {f.name if f else 'nothing'}")
             rep["scans"].append(
                 {"provider": p, "file": str(f.relative_to(ROOT)) if f else None, "reused": True}
             )
@@ -424,6 +498,10 @@ def main() -> None:
     if budget:
         left = budget["left_usd"] - sum(s.get("total_cost_usd") or 0 for s in rep["scans"])
     judging = Judging(f"{a.date}{tag}", a.model, left)
+    judging.number = {t: i for i, t in enumerate(tasks, 1)}
+    scans_cost = sum(s.get("total_cost_usd") or 0 for s in rep["scans"])
+    judging.spent_before = (budget["spent_before_usd"] if budget else 0) + scans_cost
+    say(f"queue: {len(res['queue'])} works, {len(tasks)} judge runs, {a.parallel} at a time")
     if any(s.get("limit") for s in rep["scans"]):
         judging.stopped = "usage_limit"  # a scan already hit the limit: do not start judges
     with ThreadPoolExecutor(max(1, a.parallel)) as pool:

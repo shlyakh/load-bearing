@@ -43,9 +43,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import secrets
 import subprocess
 import sys
+import threading
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -73,6 +75,7 @@ YOUCOM_TOOLS = ["you-search", "you-contents", "you-research"]
 # you-research is off on the hosted server unless requested with ?tools= (notes/hackathon_tools.md).
 YOUCOM_URL = "https://api.you.com/mcp?tools=" + ",".join(YOUCOM_TOOLS)
 KEY_VAR = "YDC_API_KEY"
+FETCH = re.compile("fetch|contents")  # WebFetch, you-contents
 
 TOOLS = {
     "claude": ["WebSearch", "WebFetch"],
@@ -259,11 +262,78 @@ def failure(meta: dict) -> str | None:
     return None
 
 
+def activity(line: str, seen: dict) -> None:
+    """Count one stream line into `seen`: turns, searches, fetches, other tool calls.
+    Only counts leave this function; the line's text is never kept."""
+    try:
+        m = json.loads(line)
+    except json.JSONDecodeError:
+        return
+    if not isinstance(m, dict) or m.get("type") != "assistant":
+        return
+    seen["turns"] += 1
+    message = m.get("message")
+    content = message.get("content") if isinstance(message, dict) else None
+    for block in content if isinstance(content, list) else []:
+        if isinstance(block, dict) and block.get("type") == "tool_use":
+            name = str(block.get("name", "")).lower()
+            kind = "searches" if "search" in name else "fetches" if FETCH.search(name) else "other"
+            seen[kind] += 1
+
+
+def follow(
+    cmd: list[str], env: dict, stream: Path, timeout: float, progress=None, every: float = 60
+) -> tuple[int, bool]:
+    """Start the CLI, save its output stream line by line, and every `every` seconds hand
+    `progress` the counts so far. Returns (exit code, timed out)."""
+    seen = {"turns": 0, "searches": 0, "fetches": 0, "other": 0}
+    proc = subprocess.Popen(
+        cmd,
+        cwd=ROOT,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        env=env,
+        text=True,
+    )
+    timed_out = threading.Event()
+
+    def stop() -> None:
+        timed_out.set()
+        proc.kill()
+
+    timer = threading.Timer(timeout, stop)
+    timer.start()
+    t0 = last = time.monotonic()
+    try:
+        with stream.open("w") as f:
+            for line in proc.stdout:
+                f.write(line)
+                f.flush()
+                activity(line, seen)
+                if progress and time.monotonic() - last >= every:
+                    last = time.monotonic()
+                    progress(seen | {"seconds": round(last - t0)})
+        code = proc.wait()
+    finally:
+        timer.cancel()
+    return (-1, True) if timed_out.is_set() else (code, False)
+
+
 def run(
-    skill: str, provider: str, args: list[str], note: str = "", model: str = "", timeout: int = 3600
+    skill: str,
+    provider: str,
+    args: list[str],
+    note: str = "",
+    model: str = "",
+    timeout: int = 3600,
+    progress=None,
+    every: float = 60,
 ) -> dict:
     """Run one skill headless, save the stream and the metadata, return the metadata
-    (with the final message under "result")."""
+    (with the final message under "result"). `progress`, if given, is called about every
+    `every` seconds while the run is working, with counts only: turns, searches, fetches,
+    other tool calls, seconds."""
     if provider not in TOOLS:
         sys.exit(f"unknown provider {provider}")
     if skill == "smoke" and provider != "youcom":
@@ -284,19 +354,7 @@ def run(
     stream.parent.mkdir(exist_ok=True)
     t0 = time.perf_counter()
     timed_out = False
-    with stream.open("w") as f:
-        try:
-            code = subprocess.run(
-                cmd,
-                cwd=ROOT,
-                stdin=subprocess.DEVNULL,
-                stdout=f,
-                stderr=subprocess.PIPE,
-                env=env,
-                timeout=timeout,
-            ).returncode
-        except subprocess.TimeoutExpired:
-            code, timed_out = -1, True
+    code, timed_out = follow(cmd, env, stream, timeout, progress, every)
     result, tools, init = parse(stream)
     dirty = "-dirty" if git("status", "--porcelain", "--untracked-files=no") else ""
     meta = {
