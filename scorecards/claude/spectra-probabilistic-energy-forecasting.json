@@ -1,0 +1,44 @@
+{
+ "candidate_id": "spectra-probabilistic-energy-forecasting",
+ "title": "SPECTRA: State-Space Exogenous Context and Temporal-Frequency Resolution Architecture for Probabilistic Energy Forecasting",
+ "spec_version": "spec-v1",
+ "discovered_via": {"url": "https://arxiv.org/abs/2607.20587", "provider": "claude", "retrieved_at": "2026-11-20T03:51:47Z"},
+ "candidate_type": "paper",
+ "primary_sources": [
+  {"url": "https://arxiv.org/abs/2607.20587", "kind": "arxiv", "paraphrase": "arXiv abstract (v1, 22 Jul 2026, submitted to IEEE Trans. Power Systems): a trained architecture with separate deterministic and residual streams, exogenous context aligned to both, and quantile outputs; best CRPS in 14 of 18 load, price, solar and wind settings, average CRPS 5.74% and upper-tail quantile risk 7.27% below the strongest baselines.", "evidence_id": "d85724b01a90"},
+  {"url": "https://arxiv.org/html/2607.20587v1", "kind": "arxiv", "paraphrase": "Full text: ECL (2012-2014), Open Power System Data (2015-2017) and GEFCom2014 (2011-2014, with temperature), hourly; 7:1:2 chronological split with no test dates; input 168 h, horizons 12 to 168 h reported as short and long averages; eight trained deep baselines, three seeds, no intervals; trained on one A30 GPU; median (rho50) gain 1.78%.", "evidence_id": "36f06d6bdef7"},
+  {"url": "https://github.com/yedadasd/SPECTRA", "kind": "github", "paraphrase": "Official implementation: training code and per-dataset scripts, 14 commits, no releases, no licence shown, no pretrained checkpoints and no datasets; needs PyTorch with CUDA and mamba-ssm, GPU recommended. README repeats the headline numbers.", "evidence_id": "5318f41fe829"}
+ ],
+ "claims": [
+  {"text": "SPECTRA has the best CRPS in 14 of 18 settings across load, price, solar and wind forecasting (top two in 17 of 18 per the full text).", "metric": "count of settings with best CRPS (of 18)", "value": 14, "dataset": "ECL, Open Power System Data, GEFCom2014; load, price, solar, wind", "horizon": "averages over 12/24/36 h (short) and 72/120/168 h (long)", "baseline": "DeepAR, TFT, TADNet, TiDE, TimeXer, Autoformer, PatchTST, DLinear (trained, quantile head)", "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "Average CRPS is 5.74% below the strongest baseline per setting.", "metric": "CRPS reduction (%)", "value": 5.74, "dataset": "18 settings across ECL, Open Power System Data, GEFCom2014", "horizon": "averages over 12/24/36 h (short) and 72/120/168 h (long)", "baseline": "strongest of eight trained deep baselines per setting", "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "Upper-tail quantile risk (rho90) is 7.27% below the strongest baselines on average.", "metric": "rho90 quantile risk reduction (%)", "value": 7.27, "dataset": "18 settings across ECL, Open Power System Data, GEFCom2014", "horizon": "averages over 12/24/36 h (short) and 72/120/168 h (long)", "baseline": "strongest of eight trained deep baselines per setting", "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "Median accuracy (rho50) improves by only 1.78% on average, so the gain is mostly in the spread and upper tail rather than the point forecast.", "metric": "rho50 quantile risk reduction (%)", "value": 1.78, "dataset": "18 settings across ECL, Open Power System Data, GEFCom2014", "horizon": "averages over 12/24/36 h (short) and 72/120/168 h (long)", "baseline": "strongest of eight trained deep baselines per setting", "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 1, "ci90": null},
+  {"text": "On what is probably the ECL load setting, long-horizon CRPS is 0.187 against 0.197 for TADNet (short: 0.150 against 0.169); column assignment in Table I is inferred, not verified.", "metric": "CRPS", "value": 0.187, "dataset": "ECL load (probable; table labels did not extract cleanly)", "horizon": "average over 72/120/168 h", "baseline": "TADNet", "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 1, "ci90": null}
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 2,
+  "rationale": "Hourly electric load is one of four targets (ECL clients, European OPS series, GEFCom2014 load), though none is PJM zonal load and the headline pools load with price, solar and wind (3). Horizons run from 12 to 168 h and the week-ahead result appears only inside a 72/120/168 h average, never on its own (2). The model takes exogenous inputs over the future horizon and GEFCom2014 includes temperature, but the paper does not say which covariates ECL and OPS used or whether weather was actual or forecast (2, not 3)."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "Pre-registration: none mentioned in the full text. Replication: one search found only the arXiv record and an auto-summary page (pith.science, not opened); no third-party rerun. Training overlap: no pretrained weights exist (the model is trained per dataset), so there is no weights date; unknown/not applicable. Evidence strength moderate: public code and public benchmark data make the result reproducible in principle, but there are no intervals or significance tests (three seeds only), the test window is not dated (20% of a 2-4 year span would exceed 90 days, but that is my inference, so test_window_days is null), and the paper does not say whether baselines received the same exogenous inputs. No regression or foundation-model baseline is included. The headline metric is CRPS; the paper's own median-accuracy gain is 1.78%, which is the number closest to our point-forecast metrics. Unverified: per-setting Table I values (the HTML table did not extract cleanly, two reads disagreed on column labels, and the PDF and the README's results image were not read); one read suggests PatchTST is slightly ahead on one load setting. The full text describes ECL as load only while the table appears to carry price, solar and wind columns in the same block; this may be an extraction artefact. Repository licence, last commit date and parameter count were not found. The repository shows no licence, so its code may not be reusable; rule 9 means we would write our own."
+ },
+ "evidence_strength": "moderate",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "ACCEPT_STAGE3",
+ "label_reason": "The paper is on target (hourly load with exogenous inputs, horizons up to 168 h) and has a primary source with public training code, but it is a trained architecture with no pretrained weights, not in runnable_models, and it needs a CUDA GPU (mamba-ssm), so measuring it is work well beyond an adapter. Its claim is a pooled CRPS gain over other trained deep models with no intervals and no regression baseline, and its own median-accuracy gain is only 1.78%.",
+ "implementation_hint": "Not runnable through models/chronos2.py or models_ff/run_ff.py and no weights repository. Stage 3 route: train SPECTRA per cutoff on PJM JC/DOM load plus temperature on a CUDA machine (mamba-ssm; the paper used one A30), take the median quantile as the point forecast, and compare with the temperature-only regression. The repository has no licence, so check with the authors or reimplement. The closest claim to test is the 1.78% median gain, not the CRPS headline.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261120T034938_judge_claude_spectra-probabilistic-energy-forecasting_a403",
+  "session_id": "e5d7fcdb-07a7-4ca4-8c49-d371f2821c6f",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

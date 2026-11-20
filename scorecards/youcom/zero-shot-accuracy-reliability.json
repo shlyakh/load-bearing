@@ -1,0 +1,185 @@
+{
+ "candidate_id": "zero-shot-accuracy-reliability",
+ "title": "Evaluating Accuracy and Probabilistic Reliability of Zero-Shot Time Series Foundation Models",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2609.25788",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-20T04:00:11Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/abs/2609.25788",
+   "kind": "arxiv",
+   "paraphrase": "arXiv record, v1 of 22 Sep 2026 (cs.LG, cs.AI), accepted at ADBIS 2026. The abstract reports six pretrained forecasters on energy, traffic and financial data against statistical baselines and one supervised deep model: the pretrained models come out ahead, xLSTM models stay calibrated across horizons, patch transformers lose calibration at long horizons.",
+   "evidence_id": "28fe61e1d10e"
+  },
+  {
+   "url": "https://arxiv.org/html/2609.25788v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text. Chronos-2, TiRex, Moirai-2.0, Sundial, TimesFM and Toto, all univariate, against ARIMA, a running average, a random walk with drift and a small PatchTST, on three single series; the energy one is hourly Polish national grid data (12,407 points, 2024-25) with horizons from 12 to 672 hours. Metrics: sMAPE, and coverage error and interval MAE of the 80% interval.",
+   "evidence_id": "21e60684a1fb"
+  },
+  {
+   "url": "https://github.com/unic-ailab/TSFM-Eval",
+   "kind": "github",
+   "paraphrase": "Authors' repository, Apache-2.0, 21 commits from 11 May to 22 Sep 2026, no tags or releases. It holds one parquet file of per-step forecasts (truth, p10, p50, p90, errors, timings) for every model, dataset and scenario, and a notebook that rebuilds the plots and aggregates from it. No script that runs the models and no input series were listed. Files were not opened.",
+   "evidence_id": "3419aa61765e"
+  },
+  {
+   "url": "https://huggingface.co/NX-AI/TiRex",
+   "kind": "hf_card",
+   "paraphrase": "Model card of the central model: TiRex, 35M parameters, xLSTM, univariate zero-shot forecasts with quantiles, default weights file model.ckpt, under the NXAI community licence. The card points to a newer TiRex-2 that takes covariates.",
+   "evidence_id": "449cafb612e3"
+  },
+  {
+   "url": "https://huggingface.co/NX-AI/TiRex/commits/main/model.ckpt",
+   "kind": "hf_card",
+   "paraphrase": "Commit history of the weights file: a single commit, the repository's first (d76a39c), on 26 May 2025 (07:15 UTC in the API listing). Later commits on the repository are README and licence edits, an ONNX upload on 5 Feb 2026 and a card edit on 13 Nov 2026.",
+   "evidence_id": "c7b70bab2cdd"
+  },
+  {
+   "url": "https://huggingface.co/NX-AI/TiRex/blob/main/LICENSE",
+   "kind": "hf_card",
+   "paraphrase": "NXAI Community License: free use, modification and redistribution with attribution; an organisation with consolidated annual revenue above EUR 100 million that builds the model into a commercial product or service needs a separate commercial licence.",
+   "evidence_id": "570cef56ea28"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Across three series (traffic, energy, finance), zero-shot pretrained forecasters match or beat the statistical baselines and a small supervised PatchTST, but point accuracy and interval calibration trade off: the xLSTM model (TiRex) stays calibrated across horizons while patch-based transformers (TimesFM, Moirai-2.0) become over-confident at long horizons.",
+   "metric": null,
+   "value": null,
+   "dataset": "EdgeTraffic (1 s), MixGridPL (hourly), SPY (daily); one series each",
+   "horizon": "10 s to 1,800 s; 12 h to 672 h; 1 to 252 trading days",
+   "baseline": "ARIMA, running average, random walk with drift, PatchTST",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 0,
+   "ci90": null
+  },
+  {
+   "text": "On hourly Polish grid data with a 240 h context, Chronos-2, TiRex and Sundial reach sMAPE of 3.92 to 3.95% at a 12 h horizon, against 14% for ARIMA and 13% for the running average.",
+   "metric": "sMAPE (%), best pretrained model",
+   "value": 3.92,
+   "dataset": "MixGridPL, Poland national grid, hourly",
+   "horizon": "12 hours",
+   "baseline": "ARIMA 14%, running average 13%",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 506,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "At a 672 h horizon on the same series Chronos-2 stays at sMAPE 6.4% (Moirai-2.0 6.6%) while ARIMA reaches 19%.",
+   "metric": "sMAPE (%), Chronos-2",
+   "value": 6.4,
+   "dataset": "MixGridPL, Poland national grid, hourly",
+   "horizon": "672 hours",
+   "baseline": "ARIMA 19%",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 476,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "At a fixed 24 h horizon Chronos-2's sMAPE on the Polish series falls from 6.70% to 4.4% as its input grows from 120 h to 624 h.",
+   "metric": "sMAPE (%), Chronos-2 at the longest context",
+   "value": 4.4,
+   "dataset": "MixGridPL, Poland national grid, hourly",
+   "horizon": "24 hours",
+   "baseline": "the same model at the shortest context (6.70%)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 491,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On the Polish series TiRex's 80% interval misses nominal coverage by 0.01 to 0.04 in every scenario.",
+   "metric": "interval coverage error (ICE) of the 80% interval, upper end of the range",
+   "value": 0.04,
+   "dataset": "MixGridPL, Poland national grid, hourly",
+   "horizon": "12 to 672 hours",
+   "baseline": "Sundial and PatchTST, about 0.45",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Sundial and the supervised PatchTST are over-confident on the Polish series whatever the context, with coverage error around 0.45.",
+   "metric": "interval coverage error (ICE) of the 80% interval",
+   "value": 0.45,
+   "dataset": "MixGridPL, Poland national grid, hourly",
+   "horizon": "24 hours, contexts 96 to 600 h",
+   "baseline": "TiRex 0.01 to 0.04",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Chronos-2's coverage error at 24 h on the Polish series drops from 0.17 to 0.04 as its input grows from 120 h to 624 h.",
+   "metric": "interval coverage error (ICE), Chronos-2 at the longest context",
+   "value": 0.04,
+   "dataset": "MixGridPL, Poland national grid, hourly",
+   "horizon": "24 hours",
+   "baseline": "the same model at the shortest context (0.17)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 491,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Moirai is well calibrated at 12 h on the Polish series (coverage error 0.01) but the size of its interval misses grows from 109 to 479 as the horizon lengthens.",
+   "metric": "interval MAE of the 80% interval at the long end (series units)",
+   "value": 479,
+   "dataset": "MixGridPL, Poland national grid, hourly",
+   "horizon": "12 hours to the long end of the range (the exact horizon for 479 is not stated)",
+   "baseline": "the same model at 12 h (109)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On one-second traffic counts at an 1,800 s horizon TimesFM's coverage error reaches 0.73 and Moirai's 0.56, while Toto holds 0.07 and Chronos-2 and TiRex stay below 0.06 at every horizon.",
+   "metric": "interval coverage error (ICE) of the 80% interval, TimesFM",
+   "value": 0.73,
+   "dataset": "EdgeTraffic, one intersection, 7,478 seconds",
+   "horizon": "1,800 seconds",
+   "baseline": "TiRex and Chronos-2 below 0.06; Toto 0.07",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 0,
+   "citation_idx": 1,
+   "ci90": null
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 3,
+  "covariates_match": 1,
+  "rationale": "One of the three series is hourly aggregate electricity for a national grid (Poland), which is our kind of target at a larger scale; the other two (one-second traffic counts, daily share prices) are off target, and each domain is a single series. The energy horizons run from 12 to 672 hours and include 144 and 288 hours, so they bracket a week, though not at exactly 168 hours and the numbers quoted in the text are for 12, 24 and 672 hours only (the rest are in plots and the released results file). Every model runs on the series history alone: no weather and no calendar input, so covariates are scored 1. The study's own contribution is interval calibration, which our benchmark does not score."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "low",
+  "independent_replication": "unknown",
+  "notes": "Central model: the headline claim singles out the xLSTM architecture for calibration, and TiRex is the only xLSTM model tested, so runnable_class, license and training_overlap_risk refer to NX-AI/TiRex; the paper's conclusion also calls Chronos-2 the most balanced, and it and the other four models are in implementation_hint. The paper does not name checkpoints; 35M parameters and the cited 2025 paper match the NX-AI/TiRex card, and 'TimesFM (200M)' is presumably the 2.5 release (not stated). training_overlap_risk: low. It is about our run: model.ckpt has a single commit, 26 May 2025, before our first scored week (10 Nov 2025), so all 52 scored weeks start after it. pre_registered: no; nothing in the paper or repository mentions a dated plan. independent_replication: unknown. One search and one research task found no rerun or critique; the only related result is a later study in Future Internet (Oct 2026) that the research tool presented as outside support, but it shares two of the three authors, uses other data and another coverage measure, and is not a replication (only its abstract and introduction were read). evidence_strength: moderate. Per-step forecasts for every model and a notebook are public, and the hourly series spans about 17 months with rolling windows (test_window_days are my own estimates from the series length, context and step; the paper gives no window counts); it is not pre-registered or replicated, and the headline is descriptive. Reasons it is at the low end of moderate: the code that produced the forecasts and the input series are not in the repository listing, so the forecasts can be re-scored but not regenerated; there is one series per domain, no interval or significance test on any number, and results are shown as plots. baseline_same_inputs is 'partly': all models are scored on the same targets, but the zero-shot models receive the context plus one extra horizon as input while PatchTST trains on that extra horizon, PatchTST is deliberately tiny (one layer, hidden size 32) and fitted per segment, and what history ARIMA and the two naive baselines were given is not stated. The baseline set has no seasonal naive and no regression, so on a strongly seasonal load series 'beats the statistical baselines' is a low bar: a running average and a drifting random walk ignore the daily cycle. The architecture reading rests on one model per family, and the paper's own numbers cut across it: Toto is a transformer and stays calibrated on traffic, and Chronos-2 (a transformer encoder, described in the paper as a quantised tokeniser, which fits the original Chronos rather than Chronos-2 as I understand it; not checked against the Chronos-2 card) is as well calibrated as TiRex. The claim that the Polish and traffic series are outside every model's training data is the authors' statement; no audit is given and none was done here. The context values in the results text (C=120 to 624 on the energy series) are the table's values plus the 24 h horizon. Not verified: the parquet file and notebook were not opened, so none of the numbers were recomputed; the dataset source (the cited CarbonOracle paper and the GreenAnalyzer repository) was not read, so whether the Polish series is demand, generation or an energy-mix total is taken from the paper's and README's wording ('load'); figures could not be read, only the text; the repository README gives the paper a different title (it adds 'efficiency'), which suggests the results file may contain timing material the arXiv version dropped. license_ok_for_commercial is null: the NXAI licence allows commercial use except by organisations above EUR 100 million revenue, which then need a separate licence; it is neither Apache-2.0 nor MIT. Whether models_ff/run_ff.py runs TiRex as it stands was not tried; spec.yaml lists TiRex among the FoundationForecast wrappers as univariate. Tools: one research task at the standard tier, one search, 9 pages fetched over 4 calls (none failed)."
+ },
+ "evidence_strength": "moderate",
+ "license": "NXAI Community License",
+ "license_ok_for_commercial": null,
+ "runnable_class": "ff_univariate",
+ "label": "ACCEPT_STAGE3",
+ "label_reason": "A sourced benchmark with public per-step forecasts whose energy series is hourly national grid load at horizons that bracket a week, and whose models are ones we can run. Its headline comparison is the calibration of 80% intervals (TiRex against patch-based transformers), which our benchmark cannot re-measure without adding interval scoring under a new protocol version, so it is not ACCEPT_RUN; all models are univariate and the baselines are weak for a seasonal load series.",
+ "implementation_hint": "Central model NX-AI/TiRex (weights model.ckpt at revision d76a39c, 26 May 2025; 52 of 52 scored weeks after it): ff_univariate through models_ff/run_ff.py, load history only; the TiRex wrapper has not been run here. Also in the study: amazon/chronos-2 (direct_adapter, models/chronos2.py, here it would be run without temperature to match), TimesFM 200M (google/timesfm-2.5-200m-pytorch, ff_univariate, models_ff/run_ff.py), and Moirai-2.0, Sundial and Toto (FoundationForecast wrappers, univariate). What a receipt would need beyond an adapter: keep the 0.1 and 0.9 quantiles per window and score empirical coverage of the 80% interval per horizon day (the paper's coverage error is the absolute gap to 0.80, and its interval MAE is the mean distance of misses from the nearest bound); protocol-v1 scores point metrics only, so this is a new protocol version with a line in DEVIATIONS.md, labelled secondary. The point-accuracy half could be read from existing univariate rows against the temperature-only regression, but that is not the study's comparison: its baselines are ARIMA, a running average and a random walk, with a 240 h context and sMAPE. A cheaper first step is to re-score the released forecast_results.parquet at 144 h on the Polish series."
+,
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261120T035728_judge_youcom_zero-shot-accuracy-reliability_1dfa",
+  "session_id": "78a83709-b5bd-4f56-bd99-b7fbd306a9ed",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}
