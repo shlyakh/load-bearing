@@ -4,6 +4,31 @@ What Yuri does once before the first scheduled run (decisions 43, 46, 48, 50), t
 to start it. The design is in `notes/rebaseline_plan.md`; the workflow is
 `.github/workflows/weekly.yml`.
 
+## State on Thu Nov 26, 2026
+
+The setup below is done and the timer is on. The two sections after this one are kept as
+the record of how it was set up.
+
+- **Done:** the four secrets, `ARCHIVE_REPO` = `shlyakh/load-bearing-private`, `rebaseline`
+  merged, runs on Nov 19, 20 and 26, pull requests #2 to #5 merged.
+- **Timer:** `weekly.yml` fires on Thursday and Friday at 06:17 UTC and the repository
+  variable `RUN_NIGHT` keeps one of them. It is `thu`: the run is on Friday at about
+  1:17 am Eastern, after the subscription's weekly reset (Thursday 9:59 pm Eastern).
+  `gh variable set RUN_NIGHT --body wed` moves it to the night before the reset; `off`
+  stops it. GitHub can start a scheduled run hours late (10.5 hours on Nov 26).
+- **A scheduled run does not start while an agent pull request is open.** Merge or close
+  the week's pull request before Friday 1:17 am Eastern, or that week is skipped.
+- **Size of a scheduled run:** it scans when the latest scans are six days old, then
+  judges 3 works (4 without a scan), inside `week_budget` ($55 of the client's estimated
+  cost per budget week, counted from the reports on `main`).
+- **By hand:** `gh workflow run weekly.yml -f cap=3 -f week_budget=72`; `-f skip_scan=true`
+  judges from the latest scans; `-f queue_only=true` only prints the queue. Raise
+  `week_budget` for a run that should spend more than the week's $55.
+- **Usage limits:** on Nov 19 a run at `cap` = 60 hit the 5-hour limit after two scans and
+  7 judge runs, about $40. A run and an interactive session share that limit.
+- **Confirmed:** GitHub does not start `guard.yml` on a pull request opened by the
+  workflow (#5 had no checks). The guard runs twice inside the weekly run.
+
 ## One-time setup
 
 1. **Private archive repo.** Create a private repository (for example

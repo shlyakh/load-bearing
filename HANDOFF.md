@@ -1,5 +1,13 @@
 # Handoff: where things stand
 
+## Weekly run, Thu Nov 26, 2026
+
+The weekly run is live: `rebaseline` is merged, the setup is done and the timer runs on
+Friday at about 1:17 am Eastern. Current state and commands are at the top of
+`notes/weekly_run_setup.md`. Steps 1 to 4 of the list below are done, except that no run
+at `cap` = 60 finished (it hit the 5-hour limit on Nov 19); runs are 3 or 4 works each.
+Each week Yuri merges the run's pull request, or the next scheduled run does not start.
+
 ## RESUME HERE: the rebaseline, paused Sun Nov 15, 2026 (evening)
 
 Yuri switched to another project for a day or more. The first weekly run is no longer
