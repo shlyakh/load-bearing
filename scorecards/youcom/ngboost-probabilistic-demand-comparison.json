@@ -1,0 +1,226 @@
+{
+ "candidate_id": "ngboost-probabilistic-demand-comparison",
+ "title": "Probabilistic electrical power demand forecasting with uncertainty quantification",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2609.34120",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-20T11:07:36Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/abs/2609.34120",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page, v1 of 28 Sep 2026, five authors. Compares four probabilistic methods on electricity consumption and says NGBoost has the lowest MAE and RMSE in every zone with high coverage and fairly narrow intervals. Names no dataset or horizon; no code or data link.",
+   "evidence_id": "1c9237e83f90"
+  },
+  {
+   "url": "https://arxiv.org/html/2609.34120v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text. Tetouan (Morocco) distribution load, three zones, 2017, resampled to hourly. Inputs: hour, day, month and observed weather; no load lags. One chronological 80/20 split. Table II gives MAE, RMSE, NLL, CRPS, pinball, coverage and width of a 95% interval for Bayesian linear regression, MC Dropout, GPR and NGBoost per zone.",
+   "evidence_id": "9cbc71cbac81"
+  },
+  {
+   "url": "https://archive.ics.uci.edu/dataset/849/power+consumption+of+tetouan+city",
+   "kind": "docs",
+   "paraphrase": "UCI record of the dataset the paper uses: three Tetouan distribution networks, ten-minute steps, 52,417 instances listed, five weather features and three consumption targets, one CSV, CC BY 4.0. The paper cites the dataset's 2018 conference paper, not this record.",
+   "evidence_id": "1d01d1a43d4d"
+  },
+  {
+   "url": "https://github.com/stanfordmlgroup/ngboost",
+   "kind": "github",
+   "paraphrase": "Repository of the NGBoost library, the central method: a scikit-learn based Python package on PyPI, Apache-2.0, actively developed. An algorithm trained from scratch with no pretrained weights; it holds no code for this study.",
+   "evidence_id": "1acf7cf774c0"
+  }
+ ],
+ "claims": [
+  {
+   "text": "NGBoost has the lowest MAE of the four methods in Zone 1: 1682.57 kW, against 3014.88 kW for MC Dropout, the next best.",
+   "metric": "MAE, kW",
+   "value": 1682.57,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 1, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "MC Dropout neural network (next best of Bayesian linear regression, MC Dropout, GPR)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost has the lowest MAE of the four methods in Zone 2: 1400.45 kW, against 2232.26 kW for MC Dropout, the next best.",
+   "metric": "MAE, kW",
+   "value": 1400.45,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 2, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "MC Dropout neural network (next best of Bayesian linear regression, MC Dropout, GPR)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost has the lowest MAE of the four methods in Zone 3: 1265.71 kW, against 2496.89 kW for MC Dropout, the next best.",
+   "metric": "MAE, kW",
+   "value": 1265.71,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 3, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "MC Dropout neural network (next best of Bayesian linear regression, MC Dropout, GPR)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost has the lowest RMSE of the four methods in Zone 1: 2241.14 kW, against 3837.81 kW for MC Dropout.",
+   "metric": "RMSE, kW",
+   "value": 2241.14,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 1, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "MC Dropout neural network (next best of Bayesian linear regression, MC Dropout, GPR)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost has the lowest RMSE of the four methods in Zone 2: 1799.98 kW, against 2843.16 kW for MC Dropout.",
+   "metric": "RMSE, kW",
+   "value": 1799.98,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 2, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "MC Dropout neural network (next best of Bayesian linear regression, MC Dropout, GPR)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost has the lowest RMSE of the four methods in Zone 3: 1760.22 kW, against 3365.98 kW for MC Dropout.",
+   "metric": "RMSE, kW",
+   "value": 1760.22,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 3, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "MC Dropout neural network (next best of Bayesian linear regression, MC Dropout, GPR)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost's nominal 95% prediction interval covers 0.95 of the test hours in Zone 1.",
+   "metric": "PICP of the 95% interval",
+   "value": 0.95,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 1, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost's nominal 95% prediction interval covers 0.96 of the test hours in Zone 2.",
+   "metric": "PICP of the 95% interval",
+   "value": 0.96,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 2, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost's nominal 95% prediction interval covers 0.96 of the test hours in Zone 3.",
+   "metric": "PICP of the 95% interval",
+   "value": 0.96,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 3, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost's 95% interval in Zone 1 is 8068.97 kW wide on average, about half the width of Bayesian linear regression's (16792.41 kW) at similar coverage.",
+   "metric": "MPIW of the 95% interval, kW",
+   "value": 8068.97,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 1, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "Bayesian linear regression (the other method with coverage near 0.95)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost's 95% interval in Zone 2 is 6949.29 kW wide on average, about half the width of Bayesian linear regression's (13274.41 kW) at similar coverage.",
+   "metric": "MPIW of the 95% interval, kW",
+   "value": 6949.29,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 2, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "Bayesian linear regression (the other method with coverage near 0.95)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "NGBoost's 95% interval in Zone 3 is 6601.56 kW wide on average, well under half the width of Bayesian linear regression's (16561.43 kW) at similar coverage.",
+   "metric": "MPIW of the 95% interval, kW",
+   "value": 6601.56,
+   "dataset": "Tetouan city distribution load (Morocco), Zone 3, 2017, hourly; last 20% of the year",
+   "horizon": "not stated (each test hour predicted from its own calendar and weather features)",
+   "baseline": "Bayesian linear regression (the other method with coverage near 0.95)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 73,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Gaussian process regression fails on this data: MAE between about 18,000 and 32,000 kW, zero interval coverage, and the same interval width in all three zones. The 'four methods' comparison is in effect a comparison of three.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "The evaluation is a single chronological 80/20 split of one year, with observed weather for the target hour as input and no load lags; no forecast horizon, issue time or rolling origin is defined.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "The underlying data is public (UCI record, CC BY 4.0), so the comparison could be redone, but the paper releases no code, hyperparameters or seeds.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 2
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 0,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load per zone (target_match 3), though the zones are three distribution networks of one Moroccan city, with errors reported in kW, not transmission zones like JC and DOM. No horizon is stated (horizon_match 0): the setup is a regression of each hour's load on that hour's calendar and weather values, not a forecast issued at an origin for a lead time. Temperature and other weather enter as observed values for the target hour, which corresponds to our oracle regime (covariates_match 3); there is no forecast-weather regime and no load history in the inputs."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: the paper mentions no registration or frozen plan and the research call found none. training_overlap_risk: unknown by the spec's rule, because there is no weights file: NGBoost is fitted from scratch, so in our harness it would see only load up to each cutoff. evidence_strength is weak on two counts in the spec's rule: no code (the data is public; the code, hyperparameters and seeds are not), and a test window under 90 days. test_window_days = 73 is my arithmetic (20% of 8,736 hourly rows, from 52,416 ten-minute rows), not a figure the paper states. The test set is one block at the end of 2017, so the summer peak is in training only. baseline_same_inputs: yes for the MAE, RMSE and width claims, read from the paper's single feature table, which is presented as applying to all four models; whether the comparators were tuned is not stated. GPR's zero coverage with an identical width in every zone points to a setup problem (the authors blame non-stationarity and scaling; the research answer suggests kernel or scaling choices, without a source), so NGBoost's margin rests on two working comparators. No naive, persistence or seasonal baseline and no lagged-load model is reported, so the numbers say nothing about skill against a standard load forecast. The text announces a time-only versus time-plus-weather comparison but reports none. Coverage of 0.95 to 0.96 is one number per zone, with no reliability diagram, interval or repeat over seeds; ci90 is null throughout. The paper's SHAP figure is for an XGBoost model, which is not one of the four compared. Central model: NGBoost. It is not in runnable_models and is not a pretrained model. runnable_class is not_runnable in the sense used for earlier from-scratch methods: nothing of the paper's own (code, configuration, weights) can be run, although the library is public and light enough for a CPU. license is the NGBoost library's (Apache-2.0, from its repository); the paper text is CC BY-NC-SA 4.0 and the data CC BY 4.0. independent_replication: one research call found no replication or follow-up; other work on the same data (the 2018 dataset paper, an LSTM/BLSTM preprint, tutorials) tests different models and is not a test of this claim. discovered_via.provider: the queue row came from the arXiv feed and lists both claude and youcom as finders, with no order; youcom is used because this is the youcom run. Not checked: the figures, the dataset's 2018 conference paper (seen only as a research source), the NGBoost version the authors used, and the 52,416 versus 52,417 row count (the research answer attributes it to a header line; not verified)."
+ },
+ "evidence_strength": "weak",
+ "license": "Apache-2.0",
+ "license_ok_for_commercial": true,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "On target in subject (hourly zonal load with temperature as an input) and sourced to its own preprint and a public dataset, but the evidence is thin: one unreviewed preprint without code, a single test block of about 73 days from one city, no stated horizon, no naive or lagged-load baseline, and one comparator that visibly failed. Its headline comparison is among four from-scratch probabilistic regressors, none of them in runnable_models, so there is nothing to re-measure now.",
+ "implementation_hint": "Nothing to run from the paper itself. The central method is the ngboost package (stanfordmlgroup/ngboost, Apache-2.0, on PyPI), a from-scratch learner, not a foundation model: it has no weights repository and is covered by neither models/chronos2.py nor models_ff/run_ff.py. If wanted, it could be a secondary row in core/ next to LightGBM (NGBRegressor on the same lag, calendar and temperature features, fitted per cutoff); that would be our own configuration, not the paper's, which has no load lags and unstated hyperparameters. The paper's interval metrics (coverage, width, CRPS) are not in our metric list; only MAE and RMSE would line up, and the paper gives no error ratio against a regression baseline to compare with.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261120T110513_judge_youcom_ngboost-probabilistic-demand-comparison_3a85",
+  "session_id": "98b0eca3-e17b-41b5-ab5c-ccc599d8d6b8",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

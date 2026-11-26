@@ -1,0 +1,292 @@
+{
+ "candidate_id": "foundation-or-formula-timesfm3",
+ "title": "Foundation or Formula? A Simulation-Based Comparison of Google's TimesFM-3 and Classical Time-Series Models",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2610.00589",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-20T11:12:11Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/abs/2610.00589",
+   "kind": "arxiv",
+   "paraphrase": "Abstract, v1 of 30 Sep 2026, stat.ME. Exploratory comparison of TimesFM-3 with classical methods on 7,200 series simulated from nine known processes, 12-step horizon, protocol called pre-registered. Neither family dominates: TimesFM-3 never above 1.31 times a scenario's best, every classical method at least 2.2 somewhere; auto ARIMA 21-24% better on seasonal ARIMA data with four or more cycles.",
+   "evidence_id": "2bd57e15921b"
+  },
+  {
+   "url": "https://arxiv.org/html/2610.00589v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text. Nine processes, four lengths (24 to 200 points), 200 replications, period 12, horizon 12, MASE. TimesFM-3 zero-shot and univariate (weights revision 43046b8) against seasonal naive, Theta, AutoETS, AutoARIMA and their mean. Table 3 gives each method's ratio to the scenario's best; later sections add post-hoc checks: covariates, a 48-step horizon, M4 and FRED-MD.",
+   "evidence_id": "f539f98e616c"
+  },
+  {
+   "url": "https://github.com/ebrahimkhaled/timesfm-classical-paper",
+   "kind": "github",
+   "paraphrase": "Authors' repository: 22 commits from 8 to 26 Sep 2026, five releases (latest v1.2.2). Protocol file, deviations log, numbered pipeline scripts, per-series results, figures and two manuscript versions. A covariate script and a 48-step check are listed among the post-hoc additions.",
+   "evidence_id": "395cd76c453d"
+  },
+  {
+   "url": "https://zenodo.org/records/22976253",
+   "kind": "zenodo",
+   "paraphrase": "Zenodo software record, v1.2.2 of 26 Sep 2026, a snapshot of the repository: protocol, deviations, code, per-series metrics for 129,600 evaluations, raw forecasts and quantiles. Code MIT, results CC-BY-4.0; the TimesFM-3 weights are not redistributed because their licence is non-commercial. Version notes describe the referee rounds behind the revisions as simulated.",
+   "evidence_id": "8944efd7d27d"
+  },
+  {
+   "url": "https://github.com/ebrahimkhaled/timesfm-classical-paper/blob/master/PREREGISTRATION.md",
+   "kind": "github",
+   "paraphrase": "The protocol: headed as frozen on 8 Sep 2026 before any simulation result. Fixes the nine processes and their parameters, lengths, replications, seeding, six methods, horizon 12, MASE as primary measure, the tests and five hypotheses. TimesFM-3 is specified as zero-shot and univariate. It sits in the authors' repository, not in an outside registry.",
+   "evidence_id": "790a875348de"
+  },
+  {
+   "url": "https://github.com/ebrahimkhaled/timesfm-classical-paper/commits/master/PREREGISTRATION.md",
+   "kind": "github",
+   "paraphrase": "History of the protocol file: one commit, ecc1eb5 of 8 Sep 2026, which also adds the results, figures and manuscript and whose message already reports two refuted hypotheses. The file is unedited since, but no public timestamp shows it existing before the results.",
+   "evidence_id": "e16dbb85c8c2"
+  },
+  {
+   "url": "https://github.com/ebrahimkhaled/timesfm-classical-paper/blob/master/DEVIATIONS.md",
+   "kind": "github",
+   "paraphrase": "Dated log of departures. The first three change two generators and a burn-in and are described as made before any forecast; the rest are marked post-result, among them a repaired row-alignment bug and a deleted invalid test statistic. The header records that it once wrongly called all departures pre-result.",
+   "evidence_id": "3c4e011bdcb8"
+  },
+  {
+   "url": "https://huggingface.co/api/models/google/timesfm-3.0-pytorch/commits/main",
+   "kind": "hf_card",
+   "paraphrase": "Commit list of the central model's weights repository: weights and config uploaded 2026-08-24 22:41 UTC (6455822); later commits to 2026-09-02 are titled as README, LICENSE and metadata changes, two setting the licence to the TimesFM non-commercial licence v1.0. Head is 43046b8, the revision the paper used.",
+   "evidence_id": "8e7ad53c9602"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Across the 36 scenarios, TimesFM-3's mean MASE is never more than 1.31 times that of the best method in the same scenario (95% bootstrap interval 1.28 to 1.36; the worst case is the seasonal ARIMA process at n = 200). The paper's own summary table marks this as a post-hoc summary of the pre-registered forecasts.",
+   "metric": "worst ratio of mean MASE to the scenario's best method",
+   "value": 1.31,
+   "dataset": "7,200 simulated series: nine processes x four lengths (24, 48, 96, 200 points) x 200 replications, seasonal period 12",
+   "horizon": "12 steps",
+   "baseline": "best of seasonal naive, Theta, AutoETS, AutoARIMA, their mean combination and TimesFM-3 in each scenario",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Every classical method is at least 2.2 times worse than the best method somewhere; the smallest classical worst case is AutoARIMA's 2.22 (95% interval 2.07 to 2.38), on the seasonal ARIMA process with two cycles (n = 24).",
+   "metric": "worst ratio of mean MASE to the scenario's best method",
+   "value": 2.22,
+   "dataset": "7,200 simulated series, 36 scenarios",
+   "horizon": "12 steps",
+   "baseline": "best method in each scenario",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "In the median scenario TimesFM-3 is within 0.8% of the best method (ratio 1.008; AutoARIMA 1.032).",
+   "metric": "median ratio of mean MASE to the scenario's best method",
+   "value": 1.008,
+   "dataset": "7,200 simulated series, 36 scenarios",
+   "horizon": "12 steps",
+   "baseline": "best method in each scenario",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "TimesFM-3 has the lowest mean MASE in 16 of the 36 scenarios; classical methods take the other 20 (AutoARIMA 10).",
+   "metric": "scenarios won, of 36",
+   "value": 16,
+   "dataset": "7,200 simulated series, 36 scenarios",
+   "horizon": "12 steps",
+   "baseline": "seasonal naive, Theta, AutoETS, AutoARIMA, mean combination",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On the seasonal ARIMA process at n = 48 (four cycles), AutoARIMA's mean MASE is 21.8% below TimesFM-3's.",
+   "metric": "relative MASE difference, AutoARIMA against TimesFM-3 (%)",
+   "value": -21.8,
+   "dataset": "simulated SARIMA(1,0,0)(1,1,0)[12], n = 48, 200 replications",
+   "horizon": "12 steps",
+   "baseline": "TimesFM-3, zero-shot, univariate",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On the seasonal ARIMA process at n = 96, AutoARIMA's mean MASE is 21.1% below TimesFM-3's.",
+   "metric": "relative MASE difference, AutoARIMA against TimesFM-3 (%)",
+   "value": -21.1,
+   "dataset": "simulated SARIMA(1,0,0)(1,1,0)[12], n = 96, 200 replications",
+   "horizon": "12 steps",
+   "baseline": "TimesFM-3, zero-shot, univariate",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On the seasonal ARIMA process at n = 200, AutoARIMA's mean MASE is 23.7% below TimesFM-3's.",
+   "metric": "relative MASE difference, AutoARIMA against TimesFM-3 (%)",
+   "value": -23.7,
+   "dataset": "simulated SARIMA(1,0,0)(1,1,0)[12], n = 200, 200 replications",
+   "horizon": "12 steps",
+   "baseline": "TimesFM-3, zero-shot, univariate",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "With only two seasonal cycles (n = 24) the order reverses: TimesFM-3's mean MASE is 1.321 against 2.284 for AutoARIMA, 42% lower, because the automatic methods fall back to non-seasonal models.",
+   "metric": "MASE, TimesFM-3",
+   "value": 1.321,
+   "dataset": "simulated SARIMA(1,0,0)(1,1,0)[12], n = 24, 200 replications",
+   "horizon": "12 steps",
+   "baseline": "AutoARIMA (2.284)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Post hoc: given the month of the year as past-and-future covariates (sine and cosine), TimesFM-3's mean MASE rose in seven of the eight seasonal scenarios, for example from 1.124 to 1.194 on the seasonal ARIMA process at n = 96.",
+   "metric": "MASE, TimesFM-3 with calendar covariates",
+   "value": 1.194,
+   "dataset": "simulated SARIMA(1,0,0)(1,1,0)[12], n = 96",
+   "horizon": "12 steps",
+   "baseline": "the same model without covariates (1.124)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Post hoc, 48-step horizon: over steps 25 to 48 TimesFM-3's worst ratio to the best method is 1.80 against 1.41 for AutoARIMA (logistic process excluded), so the smaller worst case no longer belongs to TimesFM-3.",
+   "metric": "worst ratio of mean MASE to the scenario's best method, steps 25-48",
+   "value": 1.8,
+   "dataset": "the nine processes regenerated with the same seeds for a 48-step horizon",
+   "horizon": "steps 25 to 48 of 48",
+   "baseline": "AutoARIMA (1.41)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Post hoc, 48-step horizon: on a logistic process that has already flattened (n = 200), TimesFM-3 forecasts a decline; its mean MASE over the 48 steps is 8.37, against 1.11 for seasonal naive and 2.51 for AutoARIMA.",
+   "metric": "MASE, TimesFM-3",
+   "value": 8.37,
+   "dataset": "simulated logistic growth with noise, n = 200",
+   "horizon": "48 steps",
+   "baseline": "seasonal naive (1.11)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Post hoc: with randomised parameters, heavy tails and outliers, TimesFM-3's worst ratio rises to between 1.49 and 1.56 (bootstrap intervals up to about 1.83); the lower figure is entered as the value.",
+   "metric": "worst ratio of mean MASE to the scenario's best method",
+   "value": 1.49,
+   "dataset": "robustness design: randomised parameters and four departures from the assumptions, 200 replications per scenario",
+   "horizon": "12 steps",
+   "baseline": "best method in each scenario",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Post hoc, real data after the model's documented training data: on 101 FRED-MD monthly series forecast for January 2025 to June 2026, TimesFM-3's mean MASE is 0.607 against 0.540 for AutoARIMA, and the tests do not separate them.",
+   "metric": "MASE, TimesFM-3",
+   "value": 0.607,
+   "dataset": "FRED-MD, August 2026 vintage, 101 monthly macroeconomic series, one origin (December 2024)",
+   "horizon": "18 months",
+   "baseline": "AutoARIMA (0.540)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 546,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Averaged over the design, TimesFM-3's nominal 80% intervals cover 0.814 of outcomes (Monte Carlo standard error 0.003).",
+   "metric": "coverage of the nominal 80% interval",
+   "value": 0.814,
+   "dataset": "7,200 simulated series",
+   "horizon": "12 steps",
+   "baseline": null,
+   "baseline_same_inputs": "unknown",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "TimesFM-3 takes 47.1 ms per series on the CPU (12 threads) and 24.9 ms batched on a consumer GPU, against 2,369.7 ms for AutoARIMA on one core.",
+   "metric": "ms per series, CPU",
+   "value": 47.1,
+   "dataset": "the simulated series (12-step forecasts from at most 200 points)",
+   "horizon": "12 steps",
+   "baseline": "AutoARIMA, one CPU core (2,369.7 ms)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "None of the five hypotheses written into the protocol survives unqualified: two are not supported, one is contradicted and two are partly supported. The protocol stated no decision rules, so these verdicts are the authors' reading of the pattern of tests.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "The protocol fixes TimesFM-3 as zero-shot and univariate; its covariate and multivariate inputs are outside the pre-registered design.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 4
+  },
+  {
+   "text": "The protocol file's only public commit is the one that also adds the results; the paper itself states that the first external timestamp postdates the forecasts and that the 22-minute lead rests on local file timestamps.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 5
+  },
+  {
+   "text": "Code, per-series metrics and raw forecasts for all 129,600 evaluations are archived (code MIT, results CC-BY-4.0), so any number can be rescored without re-running the model.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 3
+  }
+ ],
+ "relevance": {
+  "target_match": 1,
+  "horizon_match": 1,
+  "covariates_match": 1,
+  "rationale": "The pre-registered design is simulated series with a seasonal period of 12 and at most 200 points, with two real-data side checks on monthly M4 and FRED-MD series: no electric load, no other energy series, nothing hourly (target_match 1). The horizon is 12 steps, with one post-hoc check at 48 steps; neither corresponds to 168 hourly steps (horizon_match 1). TimesFM-3 is run univariate by protocol (covariates_match 1); the only covariate test is a post-hoc one with month-of-year terms, not weather. What bears on our benchmark is indirect: the model is one we run, the worst case found is on strongly seasonal data, and the 48-step check suggests its behaviour changes once the horizon passes the first output patch."
+ },
+ "checks": {
+  "pre_registered": "unknown",
+  "training_overlap_risk": "high",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: unknown, because the claim cannot be confirmed from outside. A protocol with hypotheses exists and a deviations log is kept, but the protocol is a file in the authors' repository, not a registry entry, and its single commit (8 Sep 2026) is the one that adds the results. The paper says so itself: frozen 22 minutes before the first forecast by local file timestamps, first external timestamp after the forecasts. Three generator changes are logged as made before any forecast; that too is the authors' statement. The headline 1.31 figure is labelled a post-hoc summary by the paper; the 21 to 24% seasonal result is labelled pre-registered. training_overlap_risk is about our run and follows the date rule: weights uploaded 2026-08-24 22:41 UTC (commit list; later commits are titled as text and licence changes, no per-file dates). The scored cutoffs after that date run from Mon 2026-08-31 to Mon 2026-11-02, 10 of 52 weeks, fewer than half, so high. This is my count from scored_window; the harness's own count was not re-read here. For the study's own data the question does not arise in the same way: simulated series cannot have been in pre-training, which is the point of the design. independent_replication: unknown. One research call found no replication or critique; the R cross-check of the classical methods and the robustness runs are the authors' own. evidence_strength: moderate. Public code, forecasts and per-series results make it reproducible, the baselines are well chosen (including a combination and seasonal naive), and 200 replications give tight Monte Carlo intervals; but pre-registration is not externally verifiable, there is no replication, the headline is a descriptive post-hoc summary of an exploratory study, and it is an unreviewed preprint (the repository says a first journal declined it on scope and the referee rounds behind the revisions were simulated). test_window_days is null for the simulation claims: there is no calendar window; 546 days for FRED-MD is my count of January 2025 to June 2026, from one origin. baseline_same_inputs is partly for the seasonal comparisons because the classical methods are told the period of 12 and TimesFM-3 is not; the paper's post-hoc attempt to supply it as covariates did not help the model. For the covariate claim, partly means the same series with calendar terms added by design. ci90 is null throughout: the paper gives 95% bootstrap intervals, quoted in the claim text, and no 90% ones. The intervals reflect Monte Carlo error only, and the 'best method' is picked on the same replications (the paper estimates the resulting bias as small, 1.31 against 1.32). Central model: TimesFM-3; TimesFM-2.5, Chronos-Bolt, Chronos-2 and TiRex appear only in post-hoc sections, where their worst ratios are 2.18 to 3.06. license is that of the TimesFM-3 weights, from the commit titles, the paper and the Zenodo note; the licence text was not opened. discovered_via.provider: the queue row came from the arXiv feed and lists claude and youcom as finders; youcom is used because this is the youcom run. Not checked: the Supporting Information, figures, the code itself, deviations D-08 to D-15 (the fetched page was read to D-07), the PDF, the M4 section in detail, and the four research sources not fetched (Google's blog, repository and model card, and the v1.2.0 release notes). Tool use: one research task at the standard tier, no searches, 8 pages fetched, none failed."
+ },
+ "evidence_strength": "moderate",
+ "license": "TimesFM Non-Commercial License v1.0 (weights); Apache-2.0 (code)",
+ "license_ok_for_commercial": false,
+ "runnable_class": "ff_native_exog",
+ "label": "PARTIAL",
+ "label_reason": "Well sourced and unusually open (protocol, code, raw forecasts and a deviations log are public) and about a model we already run, but it is off our target on all three scales: simulated and monthly series, a 12-step horizon, and TimesFM-3 without covariates, so it carries no evidence on week-ahead hourly load with temperature. Its headline comparison, a worst-case ratio against automatic ARIMA and other classical methods across 36 simulated scenarios, has no counterpart on a two-zone load benchmark whose baseline is the temperature-only regression, so there is nothing to re-measure as a transfer test; read it as context for the TimesFM-3 rows.",
+ "implementation_hint": "No new run. The central model is google/timesfm-3.0-pytorch, which spec.yaml lists as ff_native_exog through models_ff/run_ff.py (the study pins the same head revision, 43046b8; weights upload 6455822 on 2026-08-24). The study's comparison cannot be mapped onto our protocol: its opponents are AutoARIMA, AutoETS, Theta and seasonal naive on univariate series, its measure is a worst case across scenarios, and our baseline is the temperature-only regression on one kind of series. Three points are worth carrying to the existing TimesFM-3 rows as secondary checks, none of them a receipt: (1) the model's worst case here is strongly seasonal data with enough history, which describes hourly load; (2) its behaviour worsened past the first 24 steps at a 48-step horizon, and our 168 hours spans three 64-step output patches, so error by lead day is worth reading; (3) adding calendar covariates did not help it on seasonal data, which bears on how to read a univariate against temperature comparison. A seasonal-naive or AutoARIMA row in core/ (statsmodels is installed; statsforecast is not) would be our own addition under a new protocol version, not this paper's setup. Other models named (TimesFM-2.5, Chronos-2, Chronos-Bolt, TiRex) are post hoc in the paper.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261120T110829_judge_youcom_foundation-or-formula-timesfm3_3d0e",
+  "session_id": "fab78c82-fce8-4fc7-a836-29fc8bc634a7",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

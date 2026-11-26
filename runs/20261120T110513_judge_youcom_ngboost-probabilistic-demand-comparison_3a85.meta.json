@@ -1,0 +1,109 @@
+{
+ "run_id": "20261120T110513_judge_youcom_ngboost-probabilistic-demand-comparison_3a85",
+ "skill": "judge",
+ "provider": "youcom",
+ "args": [
+  "ngboost-probabilistic-demand-comparison"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-20_run2.jsonl. Write the scorecard to scorecards/youcom/ngboost-probabilistic-demand-comparison.json.",
+ "model_requested": "claude-fable-5-2",
+ "provider_tools_allowed": [
+  "mcp__you-com__you-search",
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research"
+ ],
+ "provider_tools_denied": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "mcp_server": {
+  "name": "you-com",
+  "url": "https://api.you.com/mcp?tools=you-search,you-contents,you-research"
+ },
+ "mcp_servers": [
+  {
+   "name": "you-com",
+   "status": "connected"
+  }
+ ],
+ "search_tools_present": [
+  "mcp__you-com__you-contents",
+  "mcp__you-com__you-research",
+  "mcp__you-com__you-search"
+ ],
+ "git_commit": "a209b6a-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-20T11:05:13+00:00",
+ "wall_seconds": 196.8,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "98b0eca3-e17b-41b5-ab5c-ccc599d8d6b8",
+ "is_error": false,
+ "api_error_status": null,
+ "error_text": null,
+ "num_turns": 30,
+ "total_cost_usd": 2.6926674000000004,
+ "usage": {
+  "input_tokens": 38,
+  "cache_creation_input_tokens": 94677,
+  "cache_read_input_tokens": 1416457,
+  "output_tokens": 22356,
+  "output_tokens_details": {
+   "thinking_tokens": 2091
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 94677,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1137,
+    "cache_read_input_tokens": 104317,
+    "cache_creation_input_tokens": 6369,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6369
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 38,
+   "outputTokens": 22356,
+   "cacheReadInputTokens": 1416457,
+   "cacheCreationInputTokens": 94677,
+   "webSearchRequests": 0,
+   "costUSD": 2.6926674000000004,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2091,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 94677,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Bash": 18,
+  "ToolSearch": 1,
+  "mcp__you-com__you-contents": 3,
+  "mcp__you-com__you-research": 6,
+  "Write": 1
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/youcom/ngboost-probabilistic-demand-comparison.json"
+ ]
+}
