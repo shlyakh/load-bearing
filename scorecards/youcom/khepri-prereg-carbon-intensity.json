@@ -1,0 +1,298 @@
+{
+  "candidate_id": "khepri-prereg-carbon-intensity",
+  "title": "Zero-shot time-series foundation models against the Khepri v1.5 baselines for 96-hour carbon-intensity forecasts in nine Nordic bidding zones: a preregistered comparison",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://arxiv.org/abs/2611.02895",
+    "provider": "claude",
+    "retrieved_at": "2026-11-26T23:00:00Z"
+  },
+  "candidate_type": "paper",
+  "primary_sources": [
+    {
+      "url": "https://arxiv.org/html/2611.02895v1",
+      "kind": "arxiv",
+      "paraphrase": "Full text, v1. Three zero-shot models (Timestral-5M, Timestral-209M, Chronos-2; univariate, 8192-hour context) against the Khepri v1.5 SARIMA and GBM baselines for 96-hour hourly carbon-intensity forecasts in nine Nordic zones. Tables for a 2025 retrospective test (361 daily origins) and a 14-origin post-release holdout; pinned revisions, twelve dated deviations, stated limits.",
+      "evidence_id": "0d8122839f48"
+    },
+    {
+      "url": "https://arxiv.org/abs/2611.02895",
+      "kind": "arxiv",
+      "paraphrase": "Abstract page, v1 submitted 2 Nov 2026, one author. Headline: all three models have lower zone-averaged MAPE than both baselines on the 2025 test, by 0.952 to 1.347 points; on the holdout the differences have the same sign but lie inside the preregistered minimum detectable effect and are reported as not determined.",
+      "evidence_id": "a1421ebc73bf"
+    },
+    {
+      "url": "https://doi.org/10.5281/zenodo.23881315",
+      "kind": "zenodo",
+      "paraphrase": "The study's deposit (v1.0.0, 2 Nov 2026, one 175 MB tarball). Its description lists code, the carbon-intensity series every arm saw, all forecasts with 21 quantiles, the locked analysis output and the preregistration proofs (tarball hash, OpenTimestamps proof, signed tag objects), with reproduce commands and an expected output hash. The tarball was not opened.",
+      "evidence_id": "af744cd2fd07"
+    },
+    {
+      "url": "https://github.com/avalyset/khepri-tsfm",
+      "kind": "github",
+      "paraphrase": "The author's repository: preregistration folder, locked analysis script, stored predictions and results, deviation log, 27 tests, Apache-2.0 code and CC-BY-4.0 data. The preregistration folder's last commit carries the hash the paper gives for its prereg-v1 tag. Last commit 3 Nov 2026; no stars or forks.",
+      "evidence_id": "5c5e0fb3a4ef"
+    },
+    {
+      "url": "https://doi.org/10.5281/zenodo.23101127",
+      "kind": "zenodo",
+      "paraphrase": "Khepri v1.5.0, the same author's earlier artifact and the source of both baselines (2 Oct 2026): the per-zone carbon-intensity series and 96-hour SARIMA and gradient-boosting forecasts. Version 1.5 fixed a training bug in the boosting model; afterwards boosting beats SARIMA in seven zones and loses in NO4 and NO5.",
+      "evidence_id": "a09dc46a09e3"
+    },
+    {
+      "url": "https://huggingface.co/mistralai/Timestral-209M",
+      "kind": "hf_card",
+      "paraphrase": "Model card of the central model's weights: 209M parameters, context up to 32,768 steps, up to 1,024 steps per forward pass, 21 quantiles, known-future covariates supported, CPU inference. Weights under a Modified MIT licence. Says nothing about carbon intensity or Nordic data.",
+      "evidence_id": "966584a0f435"
+    },
+    {
+      "url": "https://huggingface.co/mistralai/Timestral-209M/commits/main",
+      "kind": "hf_card",
+      "paraphrase": "Commit history of the weights repository: two commits, both on 15 Oct (2026), a squashed upload and a README update whose hash, 9874d25, is the revision the study pins. No per-file dates.",
+      "evidence_id": "c3265b610332"
+    }
+  ],
+  "claims": [
+    {
+      "text": "On the 2025 test Timestral-209M has a zone-averaged 96-hour MAPE of 6.213% against 7.561% for SARIMA, 1.347 points lower (Diebold-Mariano with HLN correction, p < 0.0001). The author labels this test 'contamination not ruled out'.",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -1.347,
+      "dataset": "Khepri v1.5 hourly carbon intensity, NO1-NO5 and SE1-SE4, 2025 test, 361 daily origins",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 SARIMA, code and hyperparameters unchanged",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 361,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "On the 2025 test Timestral-209M is 1.134 points below the GBM baseline (6.213% against 7.347%, p < 0.0001).",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -1.134,
+      "dataset": "Khepri v1.5 hourly carbon intensity, NO1-NO5 and SE1-SE4, 2025 test, 361 daily origins",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 GBM (LightGBM, three seeds), unchanged",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 361,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "On the 2025 test Timestral-5M is 1.308 points below SARIMA (6.253% against 7.561%, p < 0.0001).",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -1.308,
+      "dataset": "Khepri v1.5 hourly carbon intensity, NO1-NO5 and SE1-SE4, 2025 test, 361 daily origins",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 SARIMA, unchanged",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 361,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "On the 2025 test Timestral-5M is 1.094 points below GBM (6.253% against 7.347%, p < 0.0001).",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -1.094,
+      "dataset": "Khepri v1.5 hourly carbon intensity, NO1-NO5 and SE1-SE4, 2025 test, 361 daily origins",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 GBM, unchanged",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 361,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "On the 2025 test Chronos-2 is 1.166 points below SARIMA (6.395% against 7.561%, p < 0.0001).",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -1.166,
+      "dataset": "Khepri v1.5 hourly carbon intensity, NO1-NO5 and SE1-SE4, 2025 test, 361 daily origins",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 SARIMA, unchanged",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 361,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "On the 2025 test Chronos-2 is 0.952 points below GBM (6.395% against 7.347%, p < 0.0001), the smallest of the six differences.",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -0.952,
+      "dataset": "Khepri v1.5 hourly carbon intensity, NO1-NO5 and SE1-SE4, 2025 test, 361 daily origins",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 GBM, unchanged",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 361,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Each of the three models has a lower 2025 mean MAPE than SARIMA in 9 of the 9 zones; the preregistered hypothesis asked for at least 5.",
+      "metric": "zones (of 9) where the model beats SARIMA",
+      "value": 9,
+      "dataset": "Khepri v1.5 hourly carbon intensity, per zone, 2025 test, 361 daily origins",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 SARIMA, unchanged",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 361,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "The minimum detectable effect fixed before any foundation-model run is 2.989 points for the 14-origin holdout (0.413 for the 2025 test); a holdout difference smaller than it is reported as not determined whatever its p-value.",
+      "metric": "minimum detectable MAPE difference, holdout (percentage points)",
+      "value": 2.989,
+      "dataset": "computed from the SARIMA minus GBM loss difference on the Khepri v1.5 2025 test",
+      "horizon": "96 hours",
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Post-release holdout: Timestral-209M is 1.326 points below SARIMA (8.005% against 9.332%, p = 0.0023); inside the minimum detectable effect, so the verdict is not determined.",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -1.326,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins, after the Timestral release)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 SARIMA, training rule shifted by parameters (training span 2.79 and 1.79 years against 3 and 2)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Post-release holdout: Timestral-209M is 1.218 points below GBM (8.005% against 9.223%, p < 0.0001); not determined.",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -1.218,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 GBM, training rule shifted by parameters",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Post-release holdout: Timestral-5M is 0.917 points below SARIMA (8.415% against 9.332%, p = 0.069); not determined.",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -0.917,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 SARIMA, training rule shifted by parameters",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Post-release holdout: Timestral-5M is 0.808 points below GBM (8.415% against 9.223%, p = 0.0002); not determined.",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -0.808,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 GBM, training rule shifted by parameters",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Post-release holdout: Chronos-2 is 0.838 points below SARIMA (8.494% against 9.332%, p = 0.081); not determined.",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -0.838,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 SARIMA, training rule shifted by parameters",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Post-release holdout: Chronos-2 is 0.729 points below GBM (8.494% against 9.223%, p = 0.0003); not determined.",
+      "metric": "MAPE difference, model minus baseline (percentage points)",
+      "value": -0.729,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "Khepri v1.5 GBM, training rule shifted by parameters",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Holdout CRPS of Timestral-209M is 1.0733 gCO2-eq/kWh against 1.4165 for SARIMA (p < 0.0001); the SARIMA quantiles were built from a Gaussian predictive distribution for this study, so part of the gap may come from them.",
+      "metric": "CRPS (gCO2-eq/kWh), quantile-score approximation over 21 levels",
+      "value": 1.0733,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "SARIMA with constructed Gaussian quantiles (1.4165)",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Holdout CRPS of Timestral-5M is 1.1114 gCO2-eq/kWh against 1.4165 for SARIMA (p < 0.0001).",
+      "metric": "CRPS (gCO2-eq/kWh), quantile-score approximation over 21 levels",
+      "value": 1.1114,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "SARIMA with constructed Gaussian quantiles (1.4165)",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 14,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "Holdout CRPS of Chronos-2 is 1.1198 gCO2-eq/kWh against 1.4165 for SARIMA (p < 0.0001).",
+      "metric": "CRPS (gCO2-eq/kWh), quantile-score approximation over 21 levels",
+      "value": 1.1198,
+      "dataset": "same nine series, holdout origins 2026-10-16 to 2026-10-29 (14 origins)",
+      "horizon": "96 hours, daily origins at 00:00 UTC",
+      "baseline": "SARIMA with constructed Gaussian quantiles (1.4165)",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 14,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "The contamination indicator (the models' advantage on the 2025 test minus their advantage on the holdout) is at most 0.391 points (Timestral-5M against SARIMA; lowest -0.084), with z between -0.68 and 1.75, under the preregistered threshold of 1.96; with 14 holdout origins it has little power.",
+      "metric": "retro advantage minus holdout advantage (percentage points), largest",
+      "value": 0.391,
+      "dataset": "2025 test (361 origins) against the holdout (14 origins)",
+      "horizon": "96 hours",
+      "baseline": "Khepri v1.5 SARIMA and GBM",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 14,
+      "citation_idx": 0,
+      "ci90": null
+    }
+  ],
+  "relevance": {
+    "target_match": 2,
+    "horizon_match": 2,
+    "covariates_match": 1,
+    "rationale": "The target is hourly carbon intensity of generation (gCO2-eq/kWh) in nine Nordic bidding zones, an hourly energy series but not electric load, so 2. The horizon is 96 hours from daily origins: multi-day, longer than day-ahead and a little over half of our 168 hours; the scale has no step between day-ahead and a week, and I score it 2 rather than 1 because it is closer to our setting than a day-ahead study. Every arm is univariate and the paper defers covariates to a later version, so 1; our spec requires temperature as a known-future input. What makes it relevant beyond the scores is the design: zero-shot models we run (Timestral-209M and Chronos-2 at the same revisions we pin) against classical baselines, with a plan fixed in advance and a holdout dated after the weights."
+  },
+  "checks": {
+    "pre_registered": "yes",
+    "training_overlap_risk": "high",
+    "independent_replication": "unknown",
+    "notes": "Central model: Timestral-209M. The headline names three models together; Timestral-209M has the largest advantage on both tests (the 1.347 end of the headline range) and the holdout is dated to its release, so runnable_class, licence and training_overlap_risk refer to it. This is a judgement call: with Chronos-2 as the central model the class would be direct_adapter (models/chronos2.py), the licence Apache-2.0 and the overlap risk low. Timestral-5M is not in runnable_models. pre_registered: yes, on the author's own record. The paper, the Zenodo description and the repository README all say the design, analysis code and minimum detectable effect were fixed at tag prereg-v1 (commit 74539f2) with an OpenTimestamps proof before any foundation-model forecast; the repository's prereg folder was last changed by a commit with that hash. Not verified here: the OpenTimestamps proof and the signed tag (inside the tarball, not opened), the tag list, and the OSF registration, whose page returned a sign-in screen (the paper says it is embargoed and pending approval). Registration and the model runs fall on the same day, 2 Nov 2026, and the baselines' 2025 results were already known to the author, whose own earlier artifact they come from; the foundation-model results were not. Eight of the twelve deviations precede registration; the later four concern the prospective log, packaging and wording. training_overlap_risk is about our run: the weights repository has two commits, both on 15 Oct 2026 (the commit page shows no year and no per-file dates; the year is from the paper), inside our scored window, with 3 of 52 scored weeks starting after it (19 Oct, 26 Oct, 2 Nov), so high. The study's own overlap question is separate: it labels its 2025 test 'contamination not ruled out' because the model's training data and cut-off are undisclosed. independent_replication: unknown; one research call found no replication or critique, and the repository has no forks. The reproduction of the baselines is the author's own. evidence_strength: strong by the spec's rule, for the 2025 result only: pre-registered, 361 daily origins (over the 90-day minimum), and baselines given the same series with the same context end. What that rating does not cover: the only test whose target hours postdate all three models has 14 origins, and by the study's own rule every holdout MAPE comparison is 'not determined'; taken alone it would be weak. The holdout forecasts were also made after the truth was observed, so it is not a live test. If the unverified proofs or the same-day registration are judged to fall short of pre-registration, the rating drops to moderate. baseline_same_inputs: yes for MAPE (all arms univariate on the same filled series), although the models read 8192 hours of context and the baselines are fitted on two to three years and applied to shorter windows; partly for CRPS, because the SARIMA quantiles were constructed for this study. Other limits the author states: the NO1 SARIMA fit is not bit-reproducible; 17 to 55% of holdout hours are gap-filled in NO2, NO3 and NO5 and the filled series is also the truth (a six-zone sensitivity gives larger differences); NO5 is constant in the holdout. No intervals are given, only test statistics and p-values, so ci90 is empty. test_window_days counts daily origins. Licence: Modified MIT from the model card; the paper says it carries a revenue restriction; the licence text was not fetched in this run, so license_ok_for_commercial is null (it depends on the user's revenue). discovered_via: first seen in the Claude-provider scan of 13 Nov 2026 (registry); carried over in the queue. Not verified: the contents of the Zenodo tarball, the results file and its hash, the per-zone table, the Khepri v1.5 preprint, the Chronos-2 card (known from research snippets only: Apache-2.0), and the Timestral-5M card. The research answer's Chronos-2 card date of 17 Oct 2025 has no snippet behind it and is not used. Budget: 1 research call at the standard tier, no searches, 8 pages fetched (one, OSF, failed)."
+  },
+  "evidence_strength": "strong",
+  "license": "Modified MIT (weights, with a revenue restriction); Apache-2.0 (code)",
+  "license_ok_for_commercial": null,
+  "runnable_class": "ff_native_exog",
+  "label": "ACCEPT_RUN",
+  "label_reason": "A sourced, pre-registered comparison with public code, forecasts and deposit, whose headline (zero-shot Timestral-209M and Chronos-2 beating classical baselines on a multi-day hourly energy series) can be re-measured now with both models, which are in runnable_models at the revisions the study pins. It is carbon intensity at 96 hours without covariates, and its only post-release test is inconclusive by its own rule, so our run is a transfer test to week-ahead load and must carry the weights label (3 of 52 scored weeks after 15 Oct 2026).",
+  "implementation_hint": "Timestral-209M through models_ff/run_ff.py (weights mistralai/Timestral-209M, ff_native_exog) against the temperature-only regression, per zone and regime. The study ran every model on the series history alone, so a univariate Timestral row is the closest match to its setup; the temperature row is the one our spec asks for. The study pins revision 9874d25, the same as models/pins.json, so no new download is needed; label the row with the weights date, since only 3 of 52 scored weeks start after 15 Oct 2026. Secondary: Chronos-2 through models/chronos2.py (amazon/chronos-2, direct_adapter; the study pins 29ec376, also our pin); it is the protocol's primary comparison and is already measured. Timestral-5M is not in runnable_models; it is a FoundationForecast Timestral checkpoint and would be ff_native_exog if added, but that is not needed for the receipt. Differences to state in the receipt: carbon intensity against load, 96 hours from daily origins against 168 hours from Monday origins, 8192-hour context, MAPE differences in points against SARIMA and GBM where we report an error ratio against the regression.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261126T225015_judge_youcom_khepri-prereg-carbon-intensity_591d",
+    "session_id": "12eff7d1-581a-48f2-ac9c-c7190774fd3a",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}

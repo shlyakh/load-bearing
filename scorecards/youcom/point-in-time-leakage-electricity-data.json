@@ -1,0 +1,184 @@
+{
+  "candidate_id": "point-in-time-leakage-electricity-data",
+  "title": "The Hidden Look-Ahead: Point-in-Time Leakage in Electricity Market Data",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://arxiv.org/abs/2610.25389",
+    "provider": "claude",
+    "retrieved_at": "2026-11-26T22:47:00Z"
+  },
+  "candidate_type": "paper",
+  "primary_sources": [
+    {
+      "url": "https://arxiv.org/html/2610.25389v1",
+      "kind": "arxiv",
+      "paraphrase": "Full text, v1. An audit of the timestamps of 128,656 vendor forecast runs (wind, solar and demand forecasts for Great Britain from ten weather-model configurations) against the day-ahead and first intraday auction gates, 2022 to 2026. Compares selecting runs by issue time, publication time and finalisation time. Fits no model; data are a commercial archive; no code or data deposit is named.",
+      "evidence_id": "e805b2b8497f"
+    },
+    {
+      "url": "https://arxiv.org/abs/2610.25389",
+      "kind": "arxiv",
+      "paraphrase": "Abstract page, v1 submitted 18 Oct 2026, one author, text under CC BY 4.0. Headline: the latest run issued before the gate was not yet published on over 99% of delivery days for six of ten configurations at one of two gates, and the apparent accuracy effect of the leak runs from -9% to +24%. Links no code or data.",
+      "evidence_id": "3219f1676b11"
+    }
+  ],
+  "claims": [
+    {
+      "text": "Selecting the latest run issued before the gate picks a run not yet published at the gate on more than 99% of delivery days for six of the ten weather-model configurations at one of the two gates.",
+      "metric": "share of delivery days with an unpublished run selected (%)",
+      "value": 99.0,
+      "dataset": "Energy Quantified forecast-run timestamps, GB, 1,734 delivery days Jan 2022 to Sep 2026 (two configurations 2026 only)",
+      "horizon": "day-ahead and first intraday auction gates on D-1",
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": 1734,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "For GFS at the day-ahead gate the naive selection was unpublished on 99.8% of summer (BST) delivery days.",
+      "metric": "share of delivery days with an unpublished run selected (%)",
+      "value": 99.8,
+      "dataset": "Energy Quantified forecast-run timestamps, GFS, GB day-ahead gate, summer days 2022 to 2026",
+      "horizon": "day-ahead gate (09:50 UK time, D-1)",
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": 1039,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "For the same configuration and gate the share is 0.6% on winter (GMT) days, because the gate moves an hour in UTC while run times do not.",
+      "metric": "share of delivery days with an unpublished run selected (%)",
+      "value": 0.6,
+      "dataset": "Energy Quantified forecast-run timestamps, GFS, GB day-ahead gate, winter days 2022 to 2026",
+      "horizon": "day-ahead gate (09:50 UK time, D-1)",
+      "baseline": "the summer share for the same configuration and gate (99.8)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 695,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "The median delay from a GFS run's issue time to its publication by the vendor is 3.55 hours; across the ten configurations the median is between 2.75 hours (ICON short-range) and 6.72 hours (ECMWF ensemble).",
+      "metric": "median publication delay (hours)",
+      "value": 3.55,
+      "dataset": "Energy Quantified forecast-run timestamps, wind generation runs, 2022 to 2026",
+      "horizon": null,
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": 1734,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Demand forecasts from GFS at the day-ahead gate: the naively selected run has a mean absolute error 17.9% lower than the run selected by the finalisation rule (95% interval 16.2 to 19.7, block bootstrap), 24.0% in summer.",
+      "metric": "apparent MAE gain of the naive selection (%)",
+      "value": 17.9,
+      "dataset": "Energy Quantified GB demand forecasts and outturns, half-hourly, 882 delivery days Jan 2024 to May 2026",
+      "horizon": "day-ahead gate (D-1) for delivery day D",
+      "baseline": "run selected by the finalisation rule at the true gate, same configuration, zero action margin",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 882,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Demand forecasts from ICON at the day-ahead gate in summer: the apparent gain is 24.2%, the top of the headline range (13.5% over all days, 95% interval 11.3 to 15.9).",
+      "metric": "apparent MAE gain of the naive selection, summer (%)",
+      "value": 24.2,
+      "dataset": "Energy Quantified GB demand forecasts and outturns, half-hourly, summer days within Jan 2024 to May 2026",
+      "horizon": "day-ahead gate (D-1) for delivery day D",
+      "baseline": "run selected by the finalisation rule at the true gate, same configuration, zero action margin",
+      "baseline_same_inputs": "yes",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Demand forecasts from GFS at the intraday gate in summer: the naively selected run is 8.6% less accurate, the bottom of the headline range (-4.6% over all days, 95% interval -5.8 to -3.4).",
+      "metric": "apparent MAE gain of the naive selection, summer (%)",
+      "value": -8.6,
+      "dataset": "Energy Quantified GB demand forecasts and outturns, half-hourly, summer days within Jan 2024 to May 2026",
+      "horizon": "first intraday auction gate (17:30 UK time, D-1) for delivery day D",
+      "baseline": "run selected by the finalisation rule at the true gate, same configuration, zero action margin",
+      "baseline_same_inputs": "yes",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Wind forecasts from the ECMWF 06/18 UTC runs at the day-ahead gate: apparent gain of 11.4% (95% interval 8.9 to 14.0); for ICON wind at the same gate it is 0.0%.",
+      "metric": "apparent MAE gain of the naive selection (%)",
+      "value": 11.4,
+      "dataset": "Energy Quantified GB wind generation forecasts and outturns, half-hourly, 771 delivery days within Jan 2024 to May 2026",
+      "horizon": "day-ahead gate (D-1) for delivery day D",
+      "baseline": "run selected by the finalisation rule at the true gate, same configuration, zero action margin",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 771,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "A run one day older is only 1.5 to 3% less accurate for demand (25 to 35% for wind), so the demand gains above come from which run of the day a rule admits, not from its age; the cause of that daily cycle in the vendor's demand forecasts is not established.",
+      "metric": "loss of accuracy per day of extra lead, demand (%), upper end",
+      "value": 3.0,
+      "dataset": "Energy Quantified GB demand forecasts, runs selected one to five days before the day-ahead gate, 2024 to 2026",
+      "horizon": "one to five days ahead",
+      "baseline": "the run selected by the finalisation rule at the day-ahead gate",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 882,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Publication delays drift: the four ECMWF configurations became 0.6 to 1.4 hours faster after late 2024, which changes which run a fixed rule admits.",
+      "metric": "change in median publication delay (hours), largest",
+      "value": 1.4,
+      "dataset": "Energy Quantified forecast-run timestamps, ECMWF configurations, 2022 to mid-2024 against 2025",
+      "horizon": null,
+      "baseline": "median delay 2022 to mid-2024",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 1734,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Outturn series (wind, solar, demand) were revised for delivery days up to 32 days old between two retrievals, while auction prices did not change; earlier values are not kept by the archive.",
+      "metric": "oldest revised delivery day at first retrieval (days)",
+      "value": 32.0,
+      "dataset": "Energy Quantified GB outturns Jan 2024 to May 2026, retrieved 1 Jun and 7 Oct 2026",
+      "horizon": null,
+      "baseline": "the first retrieval of the same series",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 882,
+      "citation_idx": 0,
+      "ci90": null
+    }
+  ],
+  "relevance": {
+    "target_match": 2,
+    "horizon_match": 2,
+    "covariates_match": 3,
+    "rationale": "Not a forecasting method: it audits when weather-driven vendor forecasts become available. The series are half-hourly GB wind generation, solar generation and national demand forecasts, used as inputs to price studies; demand is one of three and is the vendor's forecast, not a load model, so the target is scored 2 (other energy series) and not 3. Decisions are at day-ahead and intraday gates for the next day, so the horizon is 2; one side result looks at runs one to five days older. Covariates are scored 3 because the whole subject is weather-model output used as a known-future input and the difference between its issue time and its availability, which is the question behind our forecast regime; the inputs are a vendor's power and demand conversions of weather runs, not temperature itself."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "unknown",
+    "independent_replication": "unknown",
+    "notes": "candidate_type: paper, as in the queue row. Central model: none; nothing is fitted, the forecasts scored are a vendor's. training_overlap_risk: not applicable in substance (no pretrained weights); 'unknown' because there is no weights date to set against the scored window. pre_registered: no; the text names no plan fixed in advance, and the naive selections came from an earlier version of the author's own pipeline, so the study is after the fact. independent_replication: unknown; one research call and one search restricted to github.com found no replication, critique, repository or data deposit. evidence_strength: weak under the spec's rule (numbers without code or data). Every number is the author's own, computed on a commercial archive (Energy Quantified) that cannot be read without a subscription, although the windows are long (1,734 days for timestamps, 882 for values). What is checkable from outside is the mechanism, not the percentages: the Nord Pool GB rulebook (fetched) gives the same gate times in UK clock time (day-ahead 09:50, IDA1 17:30); an ECMWF product page (fetched) shows hours between run time and availability, but its dissemination table came back garbled, so the 05:45 release time the paper cites was not confirmed. These two pages are context and are not listed as primary sources. Reading of the headline: Table 3 has no pooled column, so 'six of ten above 99%' is the author's count; by my reading the six are ICON short-range, ECMWF ensemble, the two ECMWF 06/18 configurations (above 99% in both seasons at one gate) and the two AIFS configurations, which exist for 2026 summer only. GFS and ECMWF main runs exceed 99% in one season only. The -9% and +24% ends of the range are summer values for demand (GFS at the intraday gate, ICON at the day-ahead gate); the all-day values are -4.6% and 17.9%. Intervals in the paper are 95% (paired circular block bootstrap, 7-day blocks), so ci90 is left empty and the 95% bounds are in the claim text. Summer-only claims have no day count stated, so their test_window_days is empty. baseline_same_inputs is 'yes' for the gain claims because both selections come from the same configuration and days and are scored on the same outturns. Limits the author states: one vendor, one market, two gates; the archive keeps only final values, so the values actually visible at the gate are not recovered; the reference outturns are themselves revised; the meaning of the vendor's timestamps rests on polling three runs on one evening; no effect on a downstream model, price forecast or trading result is measured. Not verified: the vendor archive and its documentation; the PDF (the HTML rendering was read; figures are images and were not inspected); the EPEX trading brochure and the ECMWF dissemination schedule the paper cites (not fetched). The research answer's ECMWF time ranges come from its own text, not from a source snippet, and are not used."
+  },
+  "evidence_strength": "weak",
+  "license": null,
+  "license_ok_for_commercial": null,
+  "runnable_class": "not_runnable",
+  "label": "PARTIAL",
+  "label_reason": "A real primary source on a question that matters to our forecast regime (a weather run's issue time is not the time it could be used), but it is a timing audit of one vendor's GB archive with no model, code or data, so its percentages cannot be reproduced and nothing can be run on our benchmark. The mechanism is corroborated by public exchange and weather-centre schedules; the magnitudes are, by the author's own account, specific to that vendor, market and period.",
+  "implementation_hint": "No model from runnable_models is involved; nothing goes through models/chronos2.py or models_ff/run_ff.py, and there is no receipt to write. What could carry over is a data check of our own, outside the harness, which this run did not do: the forecast regime takes Open-Meteo Previous Runs values `temperature_2m_previous_dayN` (REFERENCE.md), defined by lead before the valid time, not by when a run became downloadable. The check would be whether, for a Monday 00:00 America/New_York origin, each value used for hours c+1 to c+168 comes from a run that had been published by c (GFS publication lag in this paper is about 3.5 hours at one vendor; NOAA's own lag is not measured here), and whether the answer changes with daylight saving, since our issue time is local and run times are UTC. Any change to the regime would need a new protocol version and a DEVIATIONS.md line; protocol-v1 stays as tagged. The paper's side result that a day of extra lead costs demand forecasts only 1.5 to 3% is about a vendor's GB demand forecast, not about temperature inputs to our models.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261126T224655_judge_youcom_point-in-time-leakage-electricity-data_4256",
+    "session_id": "52b3e328-9280-43ad-945d-a47a4398a265",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}

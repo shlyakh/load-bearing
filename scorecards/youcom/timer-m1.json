@@ -1,0 +1,160 @@
+{
+  "candidate_id": "timer-m1",
+  "title": "Timer-M1: A Multivariate Time Series Foundation Model via Learning Primitives",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://arxiv.org/abs/2610.11734",
+    "provider": "claude",
+    "retrieved_at": "2026-11-26T22:44:01Z"
+  },
+  "candidate_type": "paper",
+  "primary_sources": [
+    {
+      "url": "https://arxiv.org/html/2610.11734v1",
+      "kind": "arxiv",
+      "paraphrase": "Full text, v1. A 121M-parameter model with temporal attention and gated variate attention, pretrained on episodes that assign target, past-only and known-future roles. Reports aggregate scores on fev-bench, TIME and GIFT-Eval against public submissions, a fev-bench breakdown by covariate type, synthetic probe tasks and ablations. Names no code, weights, licence or load experiment.",
+      "evidence_id": "d43fcc211ca6"
+    },
+    {
+      "url": "https://arxiv.org/abs/2610.11734",
+      "kind": "arxiv",
+      "paraphrase": "Abstract page, v1 submitted 8 Oct 2026, paper under CC BY-NC-ND 4.0. Headline: a pretrained multivariate model with target, past-only and known-future covariate roles, reported first on FEV and TIME and second on GIFT-Eval among recent foundation models. Links no code or weights.",
+      "evidence_id": "2ef4a0f38e0f"
+    }
+  ],
+  "claims": [
+    {
+      "text": "fev-bench, 100 configurations: Timer-M1 reaches SQL skill 0.4887, first among the methods the paper displays (TimesFM-3 0.4866, Chronos-2 0.4728).",
+      "metric": "SQL skill score",
+      "value": 0.4887,
+      "dataset": "fev-bench, 100 configurations",
+      "horizon": null,
+      "baseline": "seasonal naive = 0; TimesFM-3 0.4866",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "fev-bench, 100 configurations: Timer-M1 reaches MASE skill 0.3771, first among the methods displayed (TimesFM-3 0.3742, Chronos-2 0.3550).",
+      "metric": "MASE skill score",
+      "value": 0.3771,
+      "dataset": "fev-bench, 100 configurations",
+      "horizon": null,
+      "baseline": "seasonal naive = 0; TimesFM-3 0.3742",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "TIME, 98 configurations: Timer-M1 reaches normalised MASE 0.6372, lowest among the methods displayed; a matched rerun of TimesFM-3 gives 0.63977, a 0.40% gap the authors call competitive rather than established superiority.",
+      "metric": "MASE (normalised to seasonal naive)",
+      "value": 0.6372,
+      "dataset": "TIME, 98 configurations",
+      "horizon": null,
+      "baseline": "seasonal naive = 1; TimesFM-3 0.6398",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "TIME, 98 configurations: Timer-M1 reaches normalised CRPS 0.5363, level with TimesFM-3 (0.5363 in the table, 0.53635 in the matched rerun, under 0.01% apart).",
+      "metric": "CRPS (normalised to seasonal naive)",
+      "value": 0.5363,
+      "dataset": "TIME, 98 configurations",
+      "horizon": null,
+      "baseline": "seasonal naive = 1; TimesFM-3 0.5363",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "GIFT-Eval, 97 configurations: Timer-M1 reaches normalised MASE 0.6806, second among the methods displayed, behind TimesFM-3 (0.6668).",
+      "metric": "MASE (normalised to seasonal naive)",
+      "value": 0.6806,
+      "dataset": "GIFT-Eval, 97 configurations",
+      "horizon": "short, medium and long terms",
+      "baseline": "seasonal naive = 1; TimesFM-3 0.6668; Chronos-2 0.6978",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "GIFT-Eval, 97 configurations: Timer-M1 reaches normalised CRPS 0.4688, second among the methods displayed, behind TimesFM-3 (0.4557).",
+      "metric": "CRPS (normalised to seasonal naive)",
+      "value": 0.4688,
+      "dataset": "GIFT-Eval, 97 configurations",
+      "horizon": "short, medium and long terms",
+      "baseline": "seasonal naive = 1; TimesFM-3 0.4557; Chronos-2 0.4854",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "On the 18 fev-bench tasks with known-future covariates, the setting closest to ours, Timer-M1 reaches SQL skill 0.5363, second to TimesFM-3 (0.5458) and ahead of Chronos-2 (0.5257).",
+      "metric": "SQL skill score",
+      "value": 0.5363,
+      "dataset": "fev-bench, 18 tasks with known-future covariates",
+      "horizon": null,
+      "baseline": "TimesFM-3 0.5458; Chronos-2 0.5257",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "On the same 18 known-future tasks Timer-M1 reaches MASE skill 0.4481, second to TimesFM-3 (0.4549) and ahead of Chronos-2 (0.4323).",
+      "metric": "MASE skill score",
+      "value": 0.4481,
+      "dataset": "fev-bench, 18 tasks with known-future covariates",
+      "horizon": null,
+      "baseline": "TimesFM-3 0.4549; Chronos-2 0.4323",
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Timer-M1 is a single pretrained checkpoint of about 121M parameters that takes target, past-only and known-future covariate roles without task-specific updates.",
+      "metric": null,
+      "value": null,
+      "dataset": null,
+      "horizon": null,
+      "baseline": null,
+      "baseline_same_inputs": "unknown",
+      "test_window_days": null,
+      "citation_idx": 1,
+      "ci90": null
+    }
+  ],
+  "relevance": {
+    "target_match": 1,
+    "horizon_match": 1,
+    "covariates_match": 2,
+    "rationale": "A general-purpose forecasting model whose evidence is aggregate scores on three mixed-domain benchmarks plus synthetic probes. The paper has no electricity-load case and no weather experiment, so the target is scored 1 (other time series), although fev-bench and GIFT-Eval contain energy tasks inside the aggregates. Horizons are whatever the benchmark tasks set, with nothing week-ahead singled out, so 1. The model does take known-future covariates, which is the interface our temperature input needs, but nothing shows it used with weather, so 2 rather than 3."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "unknown",
+    "independent_replication": "unknown",
+    "notes": "candidate_type: the queue row says model_release, but no release was found, so this is judged as a paper; the missing-source exception for runnable releases does not apply. Release check, all on 2026-11-26: the paper and its abstract page name no repository, weights or licence; the Hub's model search for timer-m1 is empty; the model lists of thuml and of bytedance-research (which hosts the earlier Timer-S1) have no Timer-M1; the Hub paper page for 2610.11734 is a 404, which means no public Hub repository cites the paper; one search each restricted to huggingface.co and github.com found only earlier Timer-family repositories; the research call located none either. This shows absence in the places looked, not that no release exists elsewhere (for example a ModelScope mirror or a private-preview API, neither checked). training_overlap_risk: unknown, because there is no weights file and the paper states no release date or data cutoff. Separately from our date rule, the ablation appendix says GIFT-Eval and TIME training collections are part of every training variant, and the authors say training-data exposure is not matched across the compared models. pre_registered: no; nothing describes a plan fixed before the results. independent_replication: unknown; the research call and both searches found no outside rerun, and without weights none is possible. evidence_strength: weak under the spec's rule (numbers without code or data): every figure is the authors' own, measured on a checkpoint that cannot be obtained. The authors themselves limit the headline: ranks are among the methods they display, from fixed snapshots of public submissions, not official leaderboard placements, and the TIME margin over TimesFM-3 is described as not established. baseline_same_inputs is unknown on every benchmark row because the comparison scores are other teams' public submissions, not reruns under one harness. The abstract's 'first on FEV' holds for the aggregate; on the known-future-covariate subset the model is second to TimesFM-3. Not verified: the official leaderboards (not opened, so whether Timer-M1 has been submitted is unknown); a later analysis named by the research call (arXiv 2611.31619, not fetched) that reportedly finds these boards cannot separate neighbouring ranks; figures in the paper that the HTML rendering dropped (some probe-task NMAE values and gate ablation numbers in the running text are blank; the appendix tables were readable and are what the claims use); CPU runtime, which cannot be measured."
+  },
+  "evidence_strength": "weak",
+  "license": null,
+  "license_ok_for_commercial": null,
+  "runnable_class": "not_runnable",
+  "label": "PARTIAL",
+  "label_reason": "The paper is a real primary source for a model with the known-future covariate interface we need, but no weights, code or licence could be found, so its benchmark numbers are unreproducible and nothing can be run on our benchmark. It reports no load or weather result, and by its own account its ranks are among the methods it displays and it is second to TimesFM-3 on the known-future covariate tasks.",
+  "implementation_hint": "Nothing to run today: no weights repository exists for Timer-M1 and spec.yaml lists no FoundationForecast wrapper for it. Re-check on later scans: huggingface.co/api/models?search=timer-m1, the thuml and bytedance-research organisations, github.com/thuml, and whether huggingface.co/papers/2610.11734 stops returning 404. If weights appear, re-judge: at about 121M parameters it should fit the CPU limit, it would need a direct adapter passing temperature as a known-future covariate (ff_native_exog only if FoundationForecast adds a wrapper), the weights licence must be read from the model card (the paper's CC BY-NC-ND covers the text only), and the weights commit date would almost certainly fall late in or after the scored window, so expect few or no scored weeks after it. TimesFM 3.0, which the paper places ahead of it on known-future tasks and on GIFT-Eval, is already runnable through FoundationForecast.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261126T224305_judge_youcom_timer-m1_1817",
+    "session_id": "b0dc702f-000c-471d-b858-6929d4300798",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}
