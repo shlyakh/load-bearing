@@ -10,12 +10,17 @@ The setup below is done and the timer is on. The two sections after this one are
 the record of how it was set up.
 
 - **Done:** the four secrets, `ARCHIVE_REPO` = `shlyakh/load-bearing-private`, `rebaseline`
-  merged, runs on Nov 19, 20 and 26, pull requests #2 to #5 merged.
-- **Timer:** `weekly.yml` fires on Thursday and Friday at 06:17 UTC and the repository
-  variable `RUN_NIGHT` keeps one of them. It is `thu`: the run is on Friday at about
-  1:17 am Eastern, after the subscription's weekly reset (Thursday 9:59 pm Eastern).
-  `gh variable set RUN_NIGHT --body wed` moves it to the night before the reset; `off`
-  stops it. GitHub can start a scheduled run hours late (10.5 hours on Nov 26).
+  merged, runs on Nov 19, 20, 26 and 27, pull requests #2 to #6 merged.
+- **Timer:** `weekly.yml` fires every three hours from Thursday to Saturday UTC, and
+  `tools/schedule_gate.py` keeps the first firing inside the week's window, once
+  (decision 53). The repository variable `RUN_NIGHT` picks the window. It is `thu`: the
+  48 hours from the subscription's weekly reset (Thursday 9:59 pm Eastern, Friday 03:00
+  UTC), so normally Friday at about 1:17 am Eastern. `gh variable set RUN_NIGHT --body wed`
+  moves it to Thursday 05:00 to 23:30 UTC, before the reset; `off` stops it. A firing
+  that is not kept shows as a run of a few seconds whose notice says why. GitHub starts
+  scheduled runs late (10.5 hours on Nov 26, and not within two hours on Nov 27, when the
+  run was started by hand); the many slots are there for that.
+- **One run a week:** a run started by hand inside the window counts as the week's run.
 - **A scheduled run does not start while an agent pull request is open.** Merge or close
   the week's pull request before Friday 1:17 am Eastern, or that week is skipped.
 - **Size of a scheduled run:** it scans when the latest scans are six days old, then

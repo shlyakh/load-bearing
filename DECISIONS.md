@@ -68,6 +68,7 @@ Plan: `notes/rebaseline_plan.md`.
 | 50 | The first scheduled run waits for the registry and the run ids and is started by hand in GitHub Actions. The weekly timer is switched on after one clean run | Without the registry the 120-day window would re-judge hackathon work |
 | 51 | A private repo is created now, for transcripts and private notes only. The project is split after `protocol-v3` is scored: the week-ahead benchmark stays public; long-term (1 to 6 month) forecasting starts in the private repo, with PJM first, and installs the public harness as a package | The archive needs a private home now; the split should not compete with the baseline work |
 | 52 | The Codex port (`AGENTS.md`, `.agents/`) is fixed and committed, pointing at the shared skill files, not a copy | A second copy of the skills would drift |
+| 53 | The weekly timer fires every three hours from Thursday to Saturday UTC, and `tools/schedule_gate.py` keeps the first firing inside the week's window, once: 48 hours from the reset for `RUN_NIGHT=thu`, Thursday 05:00 to 23:30 UTC for `wed`. A run started by hand counts as the week's run (Yuri, Nov 27 2026) | GitHub started the scheduled run 10.5 hours late on Nov 26 and had not started it two hours after its time on Nov 27; a single slot tied to one weekday loses the week when a firing is very late or dropped |
 
 Also fixed: `spec.yaml` names the lag regression with temperature as the baseline
 to beat; the LightGBM row uses exactly the lag regression's input columns.

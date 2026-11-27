@@ -49,6 +49,7 @@ sys.path.insert(0, str(ROOT))
 from tools import registry as rg  # noqa: E402
 from tools.merge_candidates import latest, merge  # noqa: E402
 from tools.run_skill import cli_version, git, run, youcom_key  # noqa: E402
+from tools.schedule_gate import WEEK_ANCHOR  # noqa: E402
 from tools.validate_scorecard import errors  # noqa: E402
 
 PROVIDERS = ("claude", "youcom")
@@ -61,7 +62,6 @@ STOP_AFTER = 3  # judge failures in a row
 # step is not started when the week's spend plus its estimate would pass the budget.
 JUDGE_ESTIMATE_USD = 3.0
 SCAN_ESTIMATE_USD = 12.5  # one provider
-WEEK_ANCHOR = "2026-11-20T03:00:00+00:00"  # the subscription's weekly reset (Fridays 03:00 UTC)
 
 
 SAY = threading.Lock()

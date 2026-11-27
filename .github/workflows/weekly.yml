@@ -1,13 +1,18 @@
 name: Weekly scan and judge
 
 # Scan with every provider, judge what is new, open one pull request (decisions 38, 43 to 46, 48, 50).
-# Once a week, at 06:17 UTC (1:17 am Eastern in winter), on the night the repository
-# variable RUN_NIGHT names (Yuri, 2026-11-20). The subscription's week resets on Thursday
-# at 9:59 pm Eastern, so the two choices fall on either side of it:
-#   wed  the night from Wednesday to Thursday: uses what is left of the current week
-#   thu  the night from Thursday to Friday (the default): uses the new week
+# Once a week, on the night the repository variable RUN_NIGHT names (Yuri, 2026-11-20). The
+# subscription's week resets on Thursday at 9:59 pm Eastern (Friday 03:00 UTC), so the two
+# choices fall on either side of it:
+#   wed  Thursday 05:00 to 23:30 UTC: uses what is left of the current week
+#   thu  the 48 hours from the reset (the default): uses the new week
 #   off  no scheduled run
 # Change it with `gh variable set RUN_NIGHT --body wed`, or under Settings, Variables.
+# GitHub starts scheduled workflows late (10.5 hours on 2026-11-26) and may drop one, so
+# the timer fires every three hours from Thursday to Saturday UTC and tools/schedule_gate.py
+# keeps the first firing inside the window, once a week (decision 53). A firing that is
+# not kept ends in a few seconds. A run started by hand is never held back, and counts as
+# the week's run.
 # A scheduled run scans when the latest scans are six days old and then judges at most 3
 # works (4 when it does not scan), which fits one 5-hour session. It stops at the week's
 # budget, and does not start while an earlier agent pull request is still open (its works
@@ -26,7 +31,7 @@ name: Weekly scan and judge
 
 on:
   schedule:
-    - cron: "17 6 * * 4,5" # Thursday and Friday UTC; preflight keeps one of them
+    - cron: "17 */3 * * 4,5,6" # every 3 hours, Thursday to Saturday UTC; preflight keeps one
   workflow_dispatch:
     inputs:
       cap:
@@ -64,33 +69,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
+      contents: read
       pull-requests: read
     outputs:
       go: ${{ steps.check.outputs.go }}
     steps:
-      - name: A scheduled run needs its night, and no agent pull request still open
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: A scheduled firing starts the run once, inside the week's window
         id: check
         env:
           GH_TOKEN: ${{ github.token }}
           EVENT: ${{ github.event_name }}
           RUN_NIGHT: ${{ vars.RUN_NIGHT || 'thu' }}
         run: |
-          go=true
-          if [ "$EVENT" = "schedule" ]; then
-            case "$(date -u +%u)" in 4) tonight=wed ;; 5) tonight=thu ;; *) tonight=other ;; esac
-            if [ "$RUN_NIGHT" != "$tonight" ]; then
-              echo "::notice::RUN_NIGHT is $RUN_NIGHT and tonight is $tonight; no run"
-              echo "go=false" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            open=$(gh pr list -R "$GITHUB_REPOSITORY" --state open --json headRefName \
-              -q '[.[] | select(.headRefName | startswith("agent/"))] | length')
-            if [ "$open" != "0" ]; then
-              echo "::notice::$open agent pull request(s) still open; tonight's run was not started"
-              go=false
-            fi
+          set -euo pipefail
+          if [ "$EVENT" != "schedule" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
-          echo "go=$go" >> "$GITHUB_OUTPUT"
+          gh pr list -R "$GITHUB_REPOSITORY" --state all --limit 50 \
+            --json headRefName,state,createdAt | python3 tools/schedule_gate.py "$RUN_NIGHT"
 
   agent:
     needs: preflight
