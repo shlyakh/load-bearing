@@ -20,6 +20,10 @@ the record of how it was set up.
   that is not kept shows as a run of a few seconds whose notice says why. GitHub starts
   scheduled runs late (10.5 hours on Nov 26, and not within two hours on Nov 27, when the
   run was started by hand); the many slots are there for that.
+- **Expect the run on Friday afternoon Eastern, not at 1:17 am.** On Nov 27 the slots at
+  09:17, 12:17, 15:17 and 18:17 UTC produced one firing, at 18:57 UTC; the gate skipped
+  it correctly (pull request #7 was open). So GitHub delivers a firing roughly every ten
+  hours here, and the 48-hour window holds several. Why it is that late is not known.
 - **One run a week:** a run started by hand inside the window counts as the week's run.
 - **A scheduled run does not start while an agent pull request is open.** Merge or close
   the week's pull request before Friday 1:17 am Eastern, or that week is skipped.
