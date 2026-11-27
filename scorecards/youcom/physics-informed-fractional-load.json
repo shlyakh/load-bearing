@@ -1,0 +1,184 @@
+{
+ "candidate_id": "physics-informed-fractional-load",
+ "title": "Physics-Informed Fractional Load Forecasting With Memory-Aware Break Detection for Reserve Scheduling",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2611.19970",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-27T08:50:00Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/abs/2611.19970",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page, v1 of 15 Nov 2026, the only version; one author; eess.SY, stat.AP, stat.ME. A day-ahead load model with a fractional temperature kernel for building thermal inertia, breaks and long memory estimated jointly, and reserves scheduled from the joint hourly error law. Headline: MAPE 15.7% and 10.3% below the best of ten benchmarks. No code link.",
+   "evidence_id": "f2d75873bc9e"
+  },
+  {
+   "url": "https://arxiv.org/html/2611.19970v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text with supplement. Issued 10:00 the day before for 24 hourly loads (leads 15 to 38 h), target-day temperatures taken as observed. ISO-NE system load (test 2008-2016, 3288 days) and PJM footprint load (test 2019-2021, 1065 days). Table III: MAPE 1.56% and 2.13% against ten author-implemented benchmarks. Ablation and settings given; no code, data release or pre-registration mentioned.",
+   "evidence_id": "6e168b93e0a2"
+  }
+ ],
+ "claims": [
+  {
+   "text": "On ISO-NE system load the proposed method has a day-ahead MAPE of 1.56% over the 2008-2016 test years.",
+   "metric": "MAPE (%)",
+   "value": 1.56,
+   "dataset": "ISO-NE hourly system load, GEFCom2017 files, test 2008-2016 (3288 days)",
+   "horizon": "day-ahead, leads 15 to 38 h (issued 10:00 the day before)",
+   "baseline": "best of ten: LSTM (1.85); vanilla MLR 3.52, recency MLR 2.89, GBDT with load lags 1.94",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 3288,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "That ISO-NE MAPE is 15.7% below the best benchmark's (LSTM).",
+   "metric": "relative reduction in MAPE against the best benchmark (%)",
+   "value": 15.7,
+   "dataset": "ISO-NE hourly system load, test 2008-2016",
+   "horizon": "day-ahead, leads 15 to 38 h",
+   "baseline": "LSTM (1.85% MAPE)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 3288,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On PJM footprint load the proposed method has a day-ahead MAPE of 2.13% over the 2019-2021 test years.",
+   "metric": "MAPE (%)",
+   "value": 2.13,
+   "dataset": "PJM hourly metered load of the whole footprint (Ruan et al. open data set), temperatures from three airport stations, test 2019-2021 (1065 days)",
+   "horizon": "day-ahead, leads 15 to 38 h",
+   "baseline": "best of ten: GBDT with load lags (2.38); vanilla MLR 4.45, recency MLR 3.64, LSTM 2.44",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1065,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "That PJM MAPE is 10.3% below the best benchmark's (GBDT with load lags).",
+   "metric": "relative reduction in MAPE against the best benchmark (%)",
+   "value": 10.3,
+   "dataset": "PJM footprint hourly load, test 2019-2021",
+   "horizon": "day-ahead, leads 15 to 38 h",
+   "baseline": "GBDT with load lags (2.38% MAPE)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1065,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "In PJM the method is not the best in every year: in 2019, with two years of training data, the LSTM has a MAPE of 2.18% against 2.26% for the proposed method; the proposed method is lowest in 2020 and 2021 and in all nine ISO-NE years.",
+   "metric": "MAPE (%), PJM 2019, proposed",
+   "value": 2.26,
+   "dataset": "PJM footprint hourly load, test year 2019",
+   "horizon": "day-ahead, leads 15 to 38 h",
+   "baseline": "LSTM (2.18)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 365,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Removing the thermal memory raises the MAPE by 37.0% in ISO-NE (four test years) and 28.6% in PJM.",
+   "metric": "relative rise in MAPE without thermal memory, PJM (%)",
+   "value": 28.6,
+   "dataset": "PJM 2019-2021; ISO-NE 2009, 2012, 2014, 2016",
+   "horizon": "day-ahead, leads 15 to 38 h",
+   "baseline": "full proposed model (ablation)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1065,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Replacing the fractional kernel with an ordinary exponential one, with everything else kept, raises the MAPE by 1.2% in PJM (2.13 to 2.16%) and 3.1% in ISO-NE: the fractional kernel itself accounts for a small part of the headline gain.",
+   "metric": "relative rise in MAPE with an exponential kernel, PJM (%)",
+   "value": 1.2,
+   "dataset": "PJM 2019-2021; ISO-NE 2009, 2012, 2014, 2016",
+   "horizon": "day-ahead, leads 15 to 38 h",
+   "baseline": "full proposed model (ablation)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1065,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Removing the residual model, which conditions on recent forecast errors, raises the MAPE by 64.1% in PJM and 54.6% in ISO-NE; it is the largest single component in PJM.",
+   "metric": "relative rise in MAPE without the residual model, PJM (%)",
+   "value": 64.1,
+   "dataset": "PJM 2019-2021; ISO-NE 2009, 2012, 2014, 2016",
+   "horizon": "day-ahead, leads 15 to 38 h",
+   "baseline": "full proposed model (ablation)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 1065,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On the eight GEFCom2017 ISO-NE zones in 2016, applied zone by zone with zonal temperatures, the method averages a MAPE of 2.30% against 4.95% for the author's rerun of adaptive multitask learning under the same day-ahead protocol.",
+   "metric": "MAPE (%), mean over eight zones",
+   "value": 2.3,
+   "dataset": "GEFCom2017, eight ISO-NE load zones, 2016",
+   "horizon": "day-ahead, leads 15 to 38 h",
+   "baseline": "adaptive multitask learning, re-implemented and rerun by the author (4.95)",
+   "baseline_same_inputs": "unknown",
+   "test_window_days": 366,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Reserves scheduled from the joint error distribution breach the storage energy limit on 4.1% of days in ISO-NE and 8.5% in PJM, against 36.7% and 57.5% when the same forecasts ignore error correlations.",
+   "metric": "share of days with a storage energy breach, PJM (%)",
+   "value": 8.5,
+   "dataset": "PJM with the Bath County plant; ISO-NE with Northfield Mountain",
+   "horizon": "day-ahead",
+   "baseline": "same forecasts with a diagonal covariance (57.5 in PJM, 36.7 in ISO-NE)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The target-day temperatures are taken as observed, and the paper lists this as a limitation; no result with forecast weather is reported.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  },
+  {
+   "text": "The paper releases no code and has no code or data availability statement; the load and weather data it uses are public third-party sets (GEFCom2017 files, the Ruan et al. PJM data set).",
+   "metric": null,
+   "value": null,
+   "citation_idx": 1
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load in MW, and one of the two systems is PJM, so target_match is 3; but the PJM series is the whole footprint (mean 89 GW, weather from Philadelphia, Columbus and Richmond), not a zone such as JC or DOM, and the data end in Nov 2021. The horizon is day-ahead, 15 to 38 hours, not a week (horizon_match 2). Temperature over the target day is an input given as observed, which is a known-future weather covariate and matches our oracle regime only (covariates_match 3); dew point is also used by some benchmarks. The paper's second half, reserve scheduling for a pumped-storage plant and probabilistic scores, has no counterpart in our benchmark."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "pre_registered: no. The paper describes no protocol fixed in advance and the research call found none. training_overlap_risk: unknown by the date rule, because there is no weights file: the method is fitted from scratch on each system's own history, so in any run of ours the question would be our own training cutoffs. independent_replication: unknown; one research task found no replication, critique, citing work or discussion (the preprint is 12 days old). evidence_strength: weak, a borderline call against moderate. For moderate: test windows of 3288 and 1065 days, far over the 90-day minimum; ten benchmarks stated to share the information set and yearly retraining; Diebold-Mariano tests; public input data; settings and seeds listed in the supplement. For weak, which decided it: no code, so the numbers cannot be reproduced without re-implementing the whole pipeline; every benchmark was implemented and tuned by the single author; the preprint is an unreviewed v1; nothing is pre-registered or replicated. This is the same reading given to the other code-less preprints in this run. baseline_same_inputs: yes on the paper's own statement, not checked; it is unknown for the zone comparison, where the adaptive multitask method is the author's re-implementation of a load-history method and its inputs are not spelled out. ci90 is null throughout: the paper gives significance marks and no intervals for the accuracy numbers. My arithmetic, not the paper's: 1.56 against 1.85 is 15.7% lower; 2.13 against 2.38 is 10.5%, so the stated 10.3% presumably comes from unrounded values. Against the paper's regression benchmarks the PJM MAPE is 52% below the vanilla MLR and 41% below the recency MLR; these are the nearest things to our temperature-only regression but are not it. The research answer said the 1.56% (Table III) and 1.53% (ablation) ISO-NE figures conflict; they do not, since the ablation covers four ISO-NE years only. What limits transfer to our benchmark: the largest gains come from the residual model (conditioning on errors up to the issue time) and the boosted correction; the fractional kernel against an exponential one is worth 1.2% in PJM. Persistence of recent errors fades with lead time, and the paper reports nothing beyond 38 hours, so nothing in it speaks to 168 hours. Temperatures are observed, so nothing speaks to our forecast regime, which carries the primary comparison. In PJM 2019 the LSTM was better. Central model: the author's framework; it is not in runnable_models. license: null, since there is nothing released to run; the article is under arXiv's non-exclusive licence. discovered_via.provider is youcom: the lead came from the arXiv feed and its first merged row (candidates/merged/scan_2026-11-19_run2.jsonl) names youcom as the finder. Label: PARTIAL rather than ACCEPT_STAGE3 because of the evidence, not the relevance; Yuri may reasonably read it the other way. Not checked: the PDF, figures and TeX source (the HTML was read for the introduction's contribution list, problem setting, backbone, all of Section VI, the conclusion and supplement sections S-III to S-V; the proofs, the numerical checks S-II, Sections III to V in detail and the reference list were not read); the Ruan et al. PJM data set and the GEFCom2017 files; the two earlier papers by the author and the GitHub account listings, known only from the research call's source entries; whether either GitHub account is the author's. Tool use: one research task at the standard tier, no searches, 2 pages fetched, none failed."
+ },
+ "evidence_strength": "weak",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "On target (hourly load with temperature, PJM among the test systems) and it has a primary source, but the evidence is one unreviewed single-author preprint with no code, every benchmark implemented by the author, and no replication. Its results are day-ahead with observed temperatures on the whole PJM footprint to 2021, and most of the gain comes from conditioning on recent errors, so nothing in it can be re-measured at 168 hours with a model we can run today.",
+ "implementation_hint": "No run now: the framework is not in runnable_models and no code or fitted model is released. If staged, the cheap piece is the temperature kernel alone: filter heating and cooling degree-hours (bases 15.5 and 18.5 C) with the paper's fractional weights and add them as features to harness lag regression and LightGBM in core/ (both regimes, same temperature series for every model), labelled secondary and as a partial re-implementation, not the paper's method. The paper's own ablation suggests a small effect (1.2% in PJM against an exponential kernel). The full method (joint break and memory estimation, multiscale fractional Ornstein-Uhlenbeck residual, detector) would have to be written from the equations and refitted at each cutoff; it runs in minutes on a CPU by the paper's account. Re-judge if code appears or a week-ahead or forecast-weather result is published.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261127T084323_judge_youcom_physics-informed-fractional-load_9e57",
+  "session_id": "1dafdcce-ecd2-45f5-92c7-42d8120396ef",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}
