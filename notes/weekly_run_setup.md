@@ -31,8 +31,16 @@ the record of how it was set up.
   `week_budget` for a run that should spend more than the week's $55.
 - **Usage limits:** on Nov 19 a run at `cap` = 60 hit the 5-hour limit after two scans and
   7 judge runs, about $40. A run and an interactive session share that limit.
-- **Confirmed:** GitHub does not start `guard.yml` on a pull request opened by the
-  workflow (#5 had no checks). The guard runs twice inside the weekly run.
+- **The guard check on the pull request waits for approval.** GitHub creates the
+  `guard.yml` run for a pull request opened by the workflow but does not run it until
+  someone approves it: "Approve and run" on the pull request, or
+  `gh api -X POST repos/shlyakh/load-bearing/actions/runs/<run id>/approve`. Unapproved,
+  it shows as "action required" and, once the pull request is merged, as a failure with
+  no jobs (#2 to #6; corrected Nov 27, the earlier line here said GitHub does not start
+  it). The same guard runs twice inside the weekly run whatever happens here.
+- **If the dashboard deploy fails after a merge** with an error about the `github-pages`
+  artifact (Nov 27, after #6), do not re-run it: a re-run finds two artifacts and fails
+  again. Start a new one: `gh workflow run pages.yml`.
 
 ## One-time setup
 
