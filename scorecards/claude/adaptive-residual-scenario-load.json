@@ -1,0 +1,47 @@
+{
+ "candidate_id": "adaptive-residual-scenario-load",
+ "title": "Adaptive Residual Modeling for Scenario Learning in Probabilistic Load Forecasting",
+ "spec_version": "spec-v1",
+ "discovered_via": {"url": "https://arxiv.org/abs/2611.03049", "provider": "claude", "retrieved_at": "2026-11-27T08:33:42Z"},
+ "candidate_type": "paper",
+ "primary_sources": [
+  {"url": "https://arxiv.org/abs/2611.03049", "kind": "arxiv", "paraphrase": "arXiv abstract (v1, 2 Nov 2026, eess.SY): ARMSL, a two-stage method for feeder power. Stage I models weather response, load history, persistent residuals and innovations and draws joint active/reactive scenarios; Stage II calibrates only the extreme quantiles against a simple anchor forecast. Reports a 0.99-quantile pinball loss of 0.1932 on FeederBW. No code or data link.", "evidence_id": "d1a69e69b238"},
+  {"url": "https://arxiv.org/html/2611.03049", "kind": "arxiv", "paraphrase": "Full text: FeederBW (200 German low-voltage feeders, 10-min means, two years) and Rolle (24 Swiss meters, 2018-19, 53-day test). Direct forecasts 10 to 60 minutes ahead from inputs known at issue time. Baselines WI-TFT, DiffLoad and OFDDT are task-specific neural models; no foundation model. No code, weights or pre-registration mentioned.", "evidence_id": "434034ba9f77"}
+ ],
+ "claims": [
+  {"text": "ARMSL's active-power 0.99-quantile pinball loss on FeederBW is 0.1932 (units not stated), against 0.2764 for WI-TFT, 0.4225 for DiffLoad and 1.3170 for OFDDT.", "metric": "pinball loss at the 0.99 quantile, active power", "value": 0.1932, "dataset": "FeederBW, 200 German low-voltage feeders, 10-min resolution, 567,908 evaluation cases", "horizon": "10, 20, 30 and 60 min", "baseline": "WI-TFT (0.2764); DiffLoad (0.4225); OFDDT (1.3170)", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "The 0.99-quantile pinball loss is 30.08% below WI-TFT, the closest baseline; the paper gives a site-clustered 95% interval of 27.40% to 32.50% (no 90% interval).", "metric": "pinball loss reduction vs WI-TFT (%)", "value": 30.08, "dataset": "FeederBW, 200 feeders", "horizon": "10, 20, 30 and 60 min", "baseline": "WI-TFT (weather-informed Temporal Fusion Transformer)", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "The 0.99-quantile pinball loss is 85.33% below OFDDT, the weakest of the three baselines (54.27% below DiffLoad).", "metric": "pinball loss reduction vs OFDDT (%)", "value": 85.33, "dataset": "FeederBW, 200 feeders", "horizon": "10, 20, 30 and 60 min", "baseline": "OFDDT (diffusion Transformer)", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "The 0.99 active-power quantile is exceeded 1.054% of the time against a nominal 1% (WI-TFT 6.946%, DiffLoad 0.126%, OFDDT 36.897%).", "metric": "exceedance rate of the 0.99 quantile (%)", "value": 1.054, "dataset": "FeederBW, 200 feeders", "horizon": "10, 20, 30 and 60 min", "baseline": "nominal 1%", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "On Rolle, the loss falls by 5.39% at the shortest horizon relative to the active-power-only anchor (5.83% at 20 min, 6.29% at 30 min).", "metric": "pinball loss reduction vs P-only anchor (%)", "value": 5.39, "dataset": "Rolle, 24 Swiss distribution-grid meters, 10-min resolution", "horizon": "10 min", "baseline": "active-power-only anchor", "baseline_same_inputs": "unknown", "test_window_days": 53, "citation_idx": 0, "ci90": null},
+  {"text": "On Rolle, the loss falls by 14.40% at the 60-minute horizon relative to the active-power-only anchor.", "metric": "pinball loss reduction vs P-only anchor (%)", "value": 14.40, "dataset": "Rolle, 24 Swiss distribution-grid meters, 10-min resolution", "horizon": "60 min", "baseline": "active-power-only anchor", "baseline_same_inputs": "unknown", "test_window_days": 53, "citation_idx": 0, "ci90": null},
+  {"text": "Predicted and observed feeder event rates correlate at 0.953 across feeders, with Stage I scenarios unchanged.", "metric": "correlation of predicted vs observed feeder event rates", "value": 0.953, "dataset": "FeederBW, 200 feeders, 0.99 apparent-power threshold", "horizon": "10 to 60 min", "baseline": null, "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "90.0% of feeder event-rate errors are within two percentage points.", "metric": "share of feeders with event-rate error within 2 points (%)", "value": 90.0, "dataset": "FeederBW, 200 feeders", "horizon": "10 to 60 min", "baseline": null, "baseline_same_inputs": "unknown", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "Stage I alone beats the diffusion baselines on joint scores: energy score 11.02% below DiffLoad and 23.58% below OFDDT (variogram score 37.46% and 28.49% below).", "metric": "energy score reduction vs DiffLoad (%)", "value": 11.02, "dataset": "FeederBW, 200 feeders, joint active/reactive power, 128 scenarios", "horizon": "10 to 60 min", "baseline": "DiffLoad; OFDDT", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 1, "ci90": null}
+ ],
+ "relevance": {
+  "target_match": 2,
+  "horizon_match": 1,
+  "covariates_match": 2,
+  "rationale": "Electric load, but active and reactive power of single low-voltage feeders and meters at 10-minute resolution, not an hourly zonal series (2). Forecasts are 10 to 60 minutes ahead, against our 168 hours (1). Temperature and irradiance are inputs, but only as values already observed at issue time; the paper describes no known-future weather, and for Rolle does not say how the numerical weather predictions enter (2). The headline result is about calibrating the 1% and 99% quantiles, which our benchmark's point-error ratio does not measure."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "Central model: ARMSL, fitted from scratch on the study's own feeders. No weights, code or repository are named in the paper and one search found none, so there is no weights date and training_overlap_risk is unknown. Pre-registration: none mentioned in the full text. Replication: one search found no third-party rerun, so unknown. Evidence strength is weak under spec.yaml: numbers without code, the FeederBW test window is not dated (only a training cutoff of 31 Mar 2024 and case counts), and the Rolle test is 53 days, under the 90-day minimum. baseline_same_inputs is yes for the FeederBW neural baselines only on the authors' statement that all methods share issue times, targets, causal inputs and evaluation cases; the per-baseline inputs are not listed. For Rolle it is unknown: the comparator is the method's own active-power-only anchor. ci90 is null throughout: the one interval given is a 95% site-clustered bootstrap interval (27.40 to 32.50 for the reduction vs WI-TFT), recorded in the claim text. The abstract's range of 30.08% to 85.33% is entered as its two ends, and the Rolle range of 5.39% to 14.40% likewise. Unverified: (1) the units or normalisation of the pinball loss; (2) whether FeederBW weather is observed or forecast; (3) the length of the FeederBW evaluation period; (4) whether FeederBW data is openly downloadable (a search summary said so; the Scientific Data record and the Rolle Zenodo record were not opened); (5) FeederBW results use no repeated seeds. The abstract and full text were read through a summarising fetch, so table values are as that fetch reported them (the abstract's figures agree with the table). Licence: nothing to run, so null; the paper text is CC BY-NC-ND 4.0."
+ },
+ "evidence_strength": "weak",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "The paper is a primary source on probabilistic electric load with weather inputs, but the evidence is thin and the setup is far from ours: feeder-level power at 10-minute resolution forecast 10 to 60 minutes ahead, no code or weights, an undated FeederBW test window and a 53-day Rolle test. Its headline (tail-quantile calibration against three task-specific neural baselines) cannot be re-measured with any model in runnable_models.",
+ "implementation_hint": "Not runnable: ARMSL is not in runnable_models and has no public code or weights. Measuring it would mean re-implementing both stages from the paper's description and refitting per cutoff under protocol.yaml; the Stage II idea (calibrate only the extreme quantiles outward from a simple anchor) would also need a quantile metric our protocol does not score. None of the study's baselines (WI-TFT, DiffLoad, OFDDT) is on our leaderboard.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261127T083144_judge_claude_adaptive-residual-scenario-load_1712",
+  "session_id": "4fe7048c-29ec-4ff5-964f-336c79135687",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

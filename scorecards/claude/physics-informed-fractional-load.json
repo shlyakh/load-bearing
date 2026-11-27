@@ -1,0 +1,44 @@
+{
+ "candidate_id": "physics-informed-fractional-load",
+ "title": "Physics-Informed Fractional Load Forecasting With Memory-Aware Break Detection for Reserve Scheduling",
+ "spec_version": "spec-v1",
+ "discovered_via": {"url": "https://arxiv.org/abs/2611.19970", "provider": "claude", "retrieved_at": "2026-11-27T08:42:43Z"},
+ "candidate_type": "paper",
+ "primary_sources": [
+  {"url": "https://arxiv.org/abs/2611.19970", "kind": "arxiv", "paraphrase": "arXiv abstract (v1, 15 Nov 2026, eess.SY, single author): a day-ahead load model with a fractional temperature kernel for building thermal inertia, joint estimation of breaks and long memory, and a cone program for reserves. MAPE 15.7% (New England) and 10.3% (Mid-Atlantic) below the best of ten benchmarks. No code or data link.", "evidence_id": "f2d75873bc9e"},
+  {"url": "https://arxiv.org/html/2611.19970", "kind": "arxiv", "paraphrase": "Full text: ISO-NE system load (tests 2008-2016, 3,288 days) and PJM load (tests 2019-2021, 1,065 days), issued 10:00 the day before for the next day's 24 hours, with day-D temperatures taken as observed. MAPE 1.56% vs 1.85% (LSTM) and 2.13% vs 2.38% (GBDT with load lags). No code statement, no pre-registration, no foundation model.", "evidence_id": "d3b1b612df9c"}
+ ],
+ "claims": [
+  {"text": "On New England (ISO-NE system load), day-ahead MAPE is 15.7% below the best of ten benchmarks (1.56% against 1.85% for the LSTM).", "metric": "MAPE reduction vs best benchmark (%)", "value": 15.7, "dataset": "ISO-NE hourly system load, GEFCom2017 files, test years 2008-2016", "horizon": "day-ahead, leads 15 to 38 h", "baseline": "LSTM, the best of ten benchmarks (MAPE 1.85%)", "baseline_same_inputs": "yes", "test_window_days": 3288, "citation_idx": 0, "ci90": null},
+  {"text": "On Mid-Atlantic (PJM) load, day-ahead MAPE is 10.3% below the best of ten benchmarks (2.13% against 2.38% for gradient-boosted trees with load lags).", "metric": "MAPE reduction vs best benchmark (%)", "value": 10.3, "dataset": "PJM hourly load, open dataset of Ruan et al., test years 2019-2021 (includes 2020)", "horizon": "day-ahead, leads 15 to 38 h", "baseline": "GBDT with load lags, the best of ten benchmarks (MAPE 2.38%)", "baseline_same_inputs": "yes", "test_window_days": 1065, "citation_idx": 0, "ci90": null},
+  {"text": "The model's day-ahead MAPE on ISO-NE system load is 1.56%.", "metric": "MAPE (%)", "value": 1.56, "dataset": "ISO-NE hourly system load, test years 2008-2016", "horizon": "day-ahead, leads 15 to 38 h", "baseline": "LSTM (1.85%)", "baseline_same_inputs": "yes", "test_window_days": 3288, "citation_idx": 1, "ci90": null},
+  {"text": "The model's day-ahead MAPE on PJM load is 2.13%; a temperature regression (vanilla MLR) scores 4.45% and its recency-extended form 3.64% in the same test.", "metric": "MAPE (%)", "value": 2.13, "dataset": "PJM hourly load, test years 2019-2021", "horizon": "day-ahead, leads 15 to 38 h", "baseline": "GBDT with load lags (2.38%); recency MLR (3.64%); vanilla MLR (4.45%)", "baseline_same_inputs": "yes", "test_window_days": 1065, "citation_idx": 1, "ci90": null},
+  {"text": "Reserves scheduled with the joint distribution of hourly errors breach the storage energy limit on 4.1% of days in New England, against 36.7% when error correlations are ignored.", "metric": "days breaching the storage energy limit (%)", "value": 4.1, "dataset": "ISO-NE, Northfield Mountain pumped storage", "horizon": "day-ahead", "baseline": "same program with a diagonal error covariance (36.7%)", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0, "ci90": null},
+  {"text": "The same comparison on Mid-Atlantic data gives breaches on 8.5% of days against 57.5%; the paper's own expected rate there is 5.3%.", "metric": "days breaching the storage energy limit (%)", "value": 8.5, "dataset": "PJM, Bath County pumped storage", "horizon": "day-ahead", "baseline": "same program with a diagonal error covariance (57.5%)", "baseline_same_inputs": "yes", "test_window_days": null, "citation_idx": 0, "ci90": null}
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 3,
+  "rationale": "Hourly electric load of ISO-NE and PJM, the region of our zones, though the paper does not say whether its PJM series is the whole RTO or a zone, and its data ends in 2021 (3). Day-ahead: issued at 10:00 for the next day's 24 hours, leads of 15 to 38 hours, against our 168 (2). Temperature for the target day is a known-future input taken as observed, which matches our oracle regime only; the paper has no forecast-weather result (3). Half of the paper is about reserve scheduling from the error distribution, which our point-error benchmark does not measure."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "Central model: the paper's own statistical model, refitted yearly on each system's data. There are no pretrained weights, so no weights date and training_overlap_risk is unknown; a refit under protocol.yaml would see only data before each cutoff. Pre-registration: none mentioned in the full text. Replication: two searches found no journal version, repository or third-party rerun of a 12-day-old single-author preprint, so unknown. Evidence strength is weak under spec.yaml: numbers without code. The input data are public (GEFCom2017 files, the Ruan et al. dataset) and the test windows are long (3,288 and 1,065 days), but no code or software is named and the model has many parts (kernel, joint break and memory estimation, boosted correction, residual process), so the result is not reproducible as published. baseline_same_inputs is yes on the author's statement that all methods share one information set, including observed day-D temperature; per-benchmark inputs were not checked, and the proposed model itself uses no load lags while the best PJM benchmark does. ci90 is null: the paper gives no interval on the MAPE gain; its Diebold-Mariano tests (5% level, all ten benchmarks, both systems) are on squared errors. Things to weigh: (1) the stated PJM gain of 10.3% against 2.13 vs 2.38, which gives about 10.5%; (2) LSTM beats the model in PJM in 2019, when only two training years existed; (3) temperatures are observed, which the author lists as a limitation; (4) the PJM breach rate of 8.5% is above the model's expected 5.3%. Unverified: what the PJM series covers and which three weather stations; the reference details for Ruan et al.; supplementary Table SII (per-year MAPE); the reference list. The pages were read through a summarising fetch, so table values are as it reported them (the abstract's figures agree); the PDF fetch returned no readable text. Licence: no code or weights to run, so null."
+ },
+ "evidence_strength": "weak",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "The paper is a primary source and close to our problem (hourly ISO-NE and PJM load, temperature as a known-future input, a temperature regression among its benchmarks), but the evidence is thin: a single-author preprint with no code, no pre-registration and no replication, tested day-ahead with observed temperatures on data ending in 2021. Its headline compares a bespoke statistical model with ten task-specific benchmarks, none of them in runnable_models, so it cannot be re-measured on our benchmark without re-implementing the method.",
+ "implementation_hint": "Not runnable: the model is not in runnable_models and has no public code or weights. Measuring it would mean re-implementing the fractional temperature kernel, the joint break and long-memory estimation, the boosted correction and the residual process from the paper, then refitting per cutoff under protocol.yaml (the paper reports 3 to 4 minutes per test year on an 8-core CPU, so runtime is not the obstacle). Two of its benchmarks resemble rows we have (vanilla MLR with temperature; GBDT with load lags, like our LightGBM), which would give a sanity check for a re-implementation. The oracle regime is the like-for-like one, since the paper uses observed temperatures.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261127T084100_judge_claude_physics-informed-fractional-load_99dc",
+  "session_id": "d614dae7-717d-420e-a32b-9ea719d22699",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

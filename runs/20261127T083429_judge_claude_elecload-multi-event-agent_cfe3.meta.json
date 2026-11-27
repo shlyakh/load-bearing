@@ -1,0 +1,112 @@
+{
+ "run_id": "20261127T083429_judge_claude_elecload-multi-event-agent_cfe3",
+ "skill": "judge",
+ "provider": "claude",
+ "args": [
+  "elecload-multi-event-agent"
+ ],
+ "note": "Weekly run. The candidate row is in candidates/merged/queue_2026-11-27.jsonl. Write the scorecard to scorecards/claude/elecload-multi-event-agent.json.",
+ "model_requested": "claude-fable-5-2",
+ "provider_tools_allowed": [
+  "WebSearch",
+  "WebFetch"
+ ],
+ "provider_tools_denied": [],
+ "mcp_server": null,
+ "mcp_servers": [],
+ "search_tools_present": [
+  "WebFetch",
+  "WebSearch"
+ ],
+ "git_commit": "e106e4c-dirty",
+ "cli_version": "2.1.323 (Claude Code)",
+ "started_at": "2026-11-27T08:34:29+00:00",
+ "wall_seconds": 186.2,
+ "exit_code": 0,
+ "timed_out": false,
+ "session_id": "695395fc-d7c1-43c2-8177-14bd974601c5",
+ "is_error": false,
+ "api_error_status": null,
+ "error_text": null,
+ "num_turns": 18,
+ "total_cost_usd": 1.5695084999999998,
+ "usage": {
+  "input_tokens": 20,
+  "cache_creation_input_tokens": 47386,
+  "cache_read_input_tokens": 449360,
+  "output_tokens": 16934,
+  "output_tokens_details": {
+   "thinking_tokens": 1888
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 47386,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1142,
+    "cache_read_input_tokens": 59136,
+    "cache_creation_input_tokens": 4394,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4394
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-fable-5-2": {
+   "inputTokens": 20,
+   "outputTokens": 16934,
+   "cacheReadInputTokens": 449360,
+   "cacheCreationInputTokens": 47386,
+   "webSearchRequests": 0,
+   "costUSD": 1.525568,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1888,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 47386,
+   "canonicalModel": "claude-fable-5-2",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 137170,
+   "outputTokens": 20447,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.04394050000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 13670,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 0,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "tool_calls": {
+  "Bash": 8,
+  "ToolSearch": 1,
+  "WebFetch": 5,
+  "WebSearch": 2,
+  "Write": 1
+ },
+ "failure": null,
+ "scorecards_stamped": [
+  "scorecards/claude/elecload-multi-event-agent.json"
+ ]
+}

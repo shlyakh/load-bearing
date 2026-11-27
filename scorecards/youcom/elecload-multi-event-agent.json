@@ -1,0 +1,292 @@
+{
+ "candidate_id": "elecload-multi-event-agent",
+ "title": "ElecLoad: Adaptive Electricity Load Forecasting Guided by Multiple Events",
+ "spec_version": "spec-v1",
+ "discovered_via": {
+  "url": "https://arxiv.org/abs/2611.06508",
+  "provider": "youcom",
+  "retrieved_at": "2026-11-27T08:37:08Z"
+ },
+ "candidate_type": "paper",
+ "primary_sources": [
+  {
+   "url": "https://arxiv.org/abs/2611.06508",
+   "kind": "arxiv",
+   "paraphrase": "Abstract page, v1 of 4 Nov 2026, cs.AI and cs.LG, the only version. A trained LLM agent analyses events described in notices, weather alerts and schedules, then forecasts the horizon in one pass or in event-defined segments that are reviewed and selectively refined. Says it is state of the art in most evaluation scenarios. Links a code repository.",
+   "evidence_id": "c797d0adc59b"
+  },
+  {
+   "url": "https://arxiv.org/html/2611.06508v1",
+   "kind": "arxiv",
+   "paraphrase": "Full text. Hourly load, 24 h and 96 h horizons, eight sources including PJM (Data Miner 2 native load and EIA-930 demand, test origins Jan 2025 to Jul 2026). 14 baselines including Chronos-2, TimesFM-3 and LightGBM. Table 2: first in 13 of 22 metric comparisons, behind the foundation models on ERCOT. Built on Qwen3.5-4B, fully fine-tuned on four H100 GPUs.",
+   "evidence_id": "0a8f949e1d4e"
+  },
+  {
+   "url": "https://github.com/zhjai/ElecLoad",
+   "kind": "github",
+   "paraphrase": "The repository the paper links: one commit of 2 Nov 2026, no releases, no licence file listed. Runtime, prompts, inference, evaluation and fine-tuning entry points. The README says data sets, trained checkpoints and paper results are not included and the snapshot is not verified as the revision behind the reported numbers; the demo runs scripted responses.",
+   "evidence_id": "e3f66ef51c77"
+  },
+  {
+   "url": "https://github.com/zhjai/ElecLoad/blob/main/docs/release.md",
+   "kind": "github",
+   "paraphrase": "Release notes, version 0.3.0: no data sets, trained weights, checkpoints or distributed training are shipped; the included tests check implementation mechanics and are stated not to be a reproduction of the paper's results.",
+   "evidence_id": "8313d0326d6e"
+  },
+  {
+   "url": "https://github.com/zhjai/ElecLoad/blob/main/docs/data.md",
+   "kind": "github",
+   "paraphrase": "Data interface notes: the example case is synthetic; data set construction, the selected splits and the paper's final predictions are not distributed, and users must rebuild inputs from each data provider.",
+   "evidence_id": "bfea5fd67c42"
+  }
+ ],
+ "claims": [
+  {
+   "text": "Across 22 metric comparisons (WAPE and NRMSE on 11 dataset-horizon settings) against 14 baselines, ElecLoad ranks first in 13.",
+   "metric": "number of first places out of 22 metric comparisons",
+   "value": 13,
+   "dataset": "GEFCom2014, Nord, PJM, SPP, LCL, iFlex (in-domain); AEMO, ERCOT (out-of-domain); hourly",
+   "horizon": "24 h and 96 h",
+   "baseline": "14 baselines: ARIMAX, LightGBM, PatchTST, TimeXer, EventTSF, Chronos-2, TimesFM-3, TimeReasoner, MemCast, AlphaCast, CastFSR, MMGPT4LF, NACF, ITA-LF",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "ElecLoad is in the top two in all 18 in-domain metric comparisons.",
+   "metric": "number of top-two places out of 18 in-domain metric comparisons",
+   "value": 18,
+   "dataset": "GEFCom2014, Nord, PJM, SPP, LCL, iFlex",
+   "horizon": "24 h and 96 h",
+   "baseline": "the same 14 baselines",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On the two power systems held out of training (AEMO and ERCOT), ElecLoad ranks second to fourth of 15 methods in the four metric comparisons; it is first in none.",
+   "metric": null,
+   "value": null,
+   "dataset": "AEMO (96 h), ERCOT (24 h)",
+   "horizon": "24 h and 96 h",
+   "baseline": "the same 14 baselines",
+   "baseline_same_inputs": "partly",
+   "test_window_days": null,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On GEFCom2014 at 96 hours ElecLoad's WAPE is 6.68%, against 8.18% for the strongest baseline, MemCast.",
+   "metric": "WAPE (%)",
+   "value": 6.68,
+   "dataset": "GEFCom2014 load track, 200 test cases of which 170 carry synthetic events written into the target",
+   "horizon": "96 h",
+   "baseline": "MemCast (8.18); LightGBM 9.03, TimesFM-3 9.40, Chronos-2 9.92",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 372,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The paper states that this is an 18.3% reduction in WAPE relative to MemCast.",
+   "metric": "relative reduction in WAPE against MemCast (%)",
+   "value": 18.3,
+   "dataset": "GEFCom2014 load track with synthetic events",
+   "horizon": "96 h",
+   "baseline": "MemCast",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 372,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The paper states an 18.6% reduction in NRMSE relative to MemCast on the same cases (8.42 against 10.35).",
+   "metric": "relative reduction in NRMSE against MemCast (%)",
+   "value": 18.6,
+   "dataset": "GEFCom2014 load track with synthetic events",
+   "horizon": "96 h",
+   "baseline": "MemCast",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 372,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On PJM day-ahead ElecLoad's WAPE is 3.13%, against 3.43% for TimesFM-3, 3.61% for Chronos-2 and 4.89% for LightGBM.",
+   "metric": "WAPE (%)",
+   "value": 3.13,
+   "dataset": "PJM hourly load (Data Miner 2 native load and EIA-930 balancing-area demand), 112 test cases",
+   "horizon": "24 h",
+   "baseline": "TimesFM-3 (3.43), Chronos-2 (3.61), LightGBM (4.89), ARIMAX (7.01)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 563,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On PJM at 96 hours ElecLoad's WAPE is 6.03%, against 6.11% for TimesFM-3, 6.90% for Chronos-2 and 7.07% for LightGBM.",
+   "metric": "WAPE (%)",
+   "value": 6.03,
+   "dataset": "PJM hourly load, 28 test cases",
+   "horizon": "96 h",
+   "baseline": "TimesFM-3 (6.11), MemCast (6.32), Chronos-2 (6.90), LightGBM (7.07), ARIMAX (10.09)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 563,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On SPP day-ahead ElecLoad's WAPE is 2.36%, against 2.64% for Chronos-2 and 2.66% for TimesFM-3.",
+   "metric": "WAPE (%)",
+   "value": 2.36,
+   "dataset": "SPP hourly balancing-area demand (EIA-930), 48 test cases",
+   "horizon": "24 h",
+   "baseline": "Chronos-2 (2.64), TimesFM-3 (2.66)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 559,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On SPP at 96 hours ElecLoad's WAPE is 3.63%, second to MemCast's 3.59%.",
+   "metric": "WAPE (%)",
+   "value": 3.63,
+   "dataset": "SPP hourly balancing-area demand, 12 test cases",
+   "horizon": "96 h",
+   "baseline": "MemCast (3.59), Chronos-2 (4.30)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 559,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On ERCOT day-ahead, a system not used in training, ElecLoad's WAPE is 4.33%, behind TimesFM-3 at 3.99% and Chronos-2 at 4.28%.",
+   "metric": "WAPE (%)",
+   "value": 4.33,
+   "dataset": "ERCOT hourly system load, 71 system-level cases",
+   "horizon": "24 h",
+   "baseline": "TimesFM-3 (3.99), Chronos-2 (4.28)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 2021,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On AEMO at 96 hours, also held out of training, ElecLoad's WAPE is 13.49%, behind TimeReasoner at 12.61% and MemCast at 12.78%, ahead of Chronos-2 at 13.99%.",
+   "metric": "WAPE (%)",
+   "value": 13.49,
+   "dataset": "AEMO operational demand, 150 cases",
+   "horizon": "96 h",
+   "baseline": "TimeReasoner (12.61), MemCast (12.78), Chronos-2 (13.99)",
+   "baseline_same_inputs": "partly",
+   "test_window_days": 412,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On PJM day-ahead the full agent's WAPE is 0.35 percentage points below that of its own direct-only variant (same model, same inputs, whole horizon in one pass); the paper's 95% interval is -0.58 to -0.12.",
+   "metric": "paired WAPE difference, full minus direct-only (percentage points)",
+   "value": -0.35,
+   "dataset": "PJM hourly load, 112 test cases",
+   "horizon": "24 h",
+   "baseline": "ElecLoad direct-only variant (3.48)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 563,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On GEFCom2014 the same paired difference is -1.14 percentage points, with a 95% interval of -1.31 to -0.98.",
+   "metric": "paired WAPE difference, full minus direct-only (percentage points)",
+   "value": -1.14,
+   "dataset": "GEFCom2014 load track with synthetic events",
+   "horizon": "96 h",
+   "baseline": "ElecLoad direct-only variant (7.82)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 372,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On LCL household load the paired difference is -0.97 percentage points and its 95% interval, -1.95 to +0.07, includes zero.",
+   "metric": "paired WAPE difference, full minus direct-only (percentage points)",
+   "value": -0.97,
+   "dataset": "Low Carbon London smart-meter load, 48 test cases",
+   "horizon": "24 h",
+   "baseline": "ElecLoad direct-only variant (42.91)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 16,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "On PJM day-ahead cases with multiple events the full agent's WAPE is 3.69% against 4.31% for the direct-only variant; with no event it is 2.63% against 2.80%.",
+   "metric": "WAPE (%), multiple-event cases",
+   "value": 3.69,
+   "dataset": "PJM hourly load, 32 multiple-event cases (28 in the relevance grouping)",
+   "horizon": "24 h",
+   "baseline": "ElecLoad direct-only variant (4.31)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 563,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "Removing the numerical covariates raises PJM day-ahead WAPE from 3.13% to 3.79%, more than removing the event text does (3.51%).",
+   "metric": "WAPE (%), variant without covariates",
+   "value": 3.79,
+   "dataset": "PJM hourly load, 112 test cases",
+   "horizon": "24 h",
+   "baseline": "ElecLoad full (3.13); without event text (3.51)",
+   "baseline_same_inputs": "no",
+   "test_window_days": 563,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The full agent uses a mean of 15.3 thousand input and output tokens per PJM case, against 7.0 thousand for the direct-only variant.",
+   "metric": "mean tokens per case (thousands)",
+   "value": 15.3,
+   "dataset": "PJM hourly load",
+   "horizon": "24 h",
+   "baseline": "ElecLoad direct-only variant (7.0)",
+   "baseline_same_inputs": "yes",
+   "test_window_days": 563,
+   "citation_idx": 1,
+   "ci90": null
+  },
+  {
+   "text": "The code repository does not include the trained ElecLoad checkpoint, the data sets, the selected test cases or the paper's predictions, and says its snapshot has not been verified as the revision that produced the paper's numbers.",
+   "metric": null,
+   "value": null,
+   "citation_idx": 2
+  }
+ ],
+ "relevance": {
+  "target_match": 3,
+  "horizon_match": 2,
+  "covariates_match": 2,
+  "rationale": "The target matches: hourly electric load, and one of the test sources is PJM itself, built partly from the EIA-930 demand series our benchmark uses (the paper does not say which PJM entities or zones, so JC and DOM are not confirmed). Horizons are 24 hours and 96 hours; nothing is forecast a week ahead, so horizon_match is 2 (day-ahead, with a four-day setting that is still short of 168 hours). The inputs that define the method are event texts (weather alerts, operator notices, tariff schedules) plus unspecified numerical and calendar covariates; a temperature forecast available at the origin is stated only for GEFCom2014, so covariates_match is 2, not 3. Our benchmark has no event-text input, so the method's distinguishing ingredient has nothing to act on in our setup."
+ },
+ "checks": {
+  "pre_registered": "no",
+  "training_overlap_risk": "unknown",
+  "independent_replication": "unknown",
+  "notes": "Central model: ElecLoad, the authors' fully fine-tuned Qwen3.5-4B agent; it is the model in the headline claim and is not in runnable_models. pre_registered: no. The paper describes no protocol fixed in advance and the research task found none; test windows were selected by the authors for coverage of entities, quarters and event counts. training_overlap_risk: unknown by the date rule, because no ElecLoad weights file exists on any repository (repository README and release notes, both fetched). For the record, had weights been released: the paper's PJM training origins end 2022-12-10 and validation runs to 2024-11-06, both before our first scored week, but its PJM test origins (2025-01-01 to 2026-07-18) and checkpoint selection sit partly inside our scored window, and the base model's card cites February 2026. independent_replication: unknown; one research task and one search found no replication, critique, citing work or discussion (the preprint is 23 days old). evidence_strength: weak. There is a public repository, but by its own statement it carries no trained weights, no data, no selected cases and no predictions, and is not verified as the revision behind the paper, so the numbers cannot be reproduced from it; they rest on one unreviewed v1 preprint. The PJM, SPP, GEFCom2014, AEMO and ERCOT test spans exceed 90 days; LCL (16 days) and iFlex (20 days) do not. test_window_days is the span between the first and last test date in the paper's Table 6, not continuous coverage: PJM is 112 day-ahead and 28 four-day cases picked from 563 days. baseline_same_inputs: partly for every comparison with external baselines. The paper says baselines saw the same cases through the inputs each supports; models with no text input (ARIMAX, LightGBM, PatchTST, TimeXer, Chronos-2, TimesFM-3) therefore cannot have received the event text, and the paper does not itemise which covariates or settings Chronos-2 and TimesFM-3 were given, nor their weights revisions. It is yes for comparisons with the direct-only variant on the paper's statement (same model and inputs), and no for the covariate ablation, which changes the inputs by design. ci90 is null throughout: the only intervals given are 95% paired intervals for full against direct-only, and Table 2 has no intervals at all, so the margins over TimesFM-3 on PJM (0.30 points at 24 h on 112 cases, 0.08 points at 96 h on 28 cases) come without any uncertainty estimate. Other cautions from the paper itself: the GEFCom2014 result, the source of the headline percentage, is mostly on synthetic cases in which the authors modify the future load to match an event description that only text-reading methods receive; ElecLoad is trained on the same systems it is tested on in-domain, while Chronos-2 and TimesFM-3 are zero-shot; on the held-out systems it is behind both foundation models on ERCOT; LCL and iFlex test households also appear in training; the 9B variant is no better than the 4B one. The paper's in-text table references are off by one in places (the ablation table is cited as Table 4 and captioned Table 3); numbers here are taken from the table bodies. Secondary observation, not a claim of the candidate: in the paper's own Table 2 Chronos-2 beats LightGBM on PJM at both horizons (3.61 against 4.89 at 24 h; 6.90 against 7.07 at 96 h), with inputs to each not itemised. license: null, since the thing we would run, the trained checkpoint, is not published and the repository listing shows no licence file; the article is CC BY 4.0. Base model licence: the fetched Qwen3.5-4B card text showed no licence line; the research task's source entry for the card's raw README lists Apache-2.0. Not verified: the licence and file dates of the base model on its repository; whether a LICENSE exists deeper in the code repository; docs/training.md and docs/runtime.md (not fetched); the PDF and figures (Figures 3, 4 and 6 are plots whose values the HTML does not carry); most of the reference list; which PJM series and zones are used; the baselines' configurations. discovered_via.provider is youcom: the lead first appears from a search provider in candidates/youcom/scan_2026-11-14_run2.jsonl (the arXiv feed listed it a day earlier, on Nov 13). Tool use: one research task at the standard tier, one search, 7 pages fetched in 4 calls, none failed; the fetched full text was read except for the body of the reference list."
+ },
+ "evidence_strength": "weak",
+ "license": null,
+ "license_ok_for_commercial": null,
+ "runnable_class": "not_runnable",
+ "label": "PARTIAL",
+ "label_reason": "On target (hourly load including PJM, with Chronos-2, TimesFM-3 and LightGBM as baselines) and it has a primary source, but the evidence is thin: the trained model, the data sets, the selected test cases and the predictions are all unreleased, the repository says it is not verified as the revision behind the paper, and the baselines did not receive the event text the method relies on. Nothing can be run: the headline comparison needs the ElecLoad checkpoint, which is not public, at 24 and 96 hours rather than a week, on event-text inputs our benchmark does not have.",
+ "implementation_hint": "No run. ElecLoad is not in runnable_models and its weights are not published; the repository (github.com/zhjai/ElecLoad, castfactory package) has the T1 to T4 runtime and scripts/predict.py but requires a local trained checkpoint and states that the untrained base model, Qwen/Qwen3.5-4B, is not an ElecLoad model. Reproducing it would mean rebuilding the event corpus from NWS alerts and PJM emergency notices, generating teacher demonstrations with an API model and fully fine-tuning a 4B model in four stages (the paper used four H100 GPUs), which is beyond a CPU laptop and the 60-minute limit; inference alone is about 15 thousand tokens per 24-hour case. The paper's baselines Chronos-2 (models/chronos2.py, direct_adapter) and TimesFM 3.0 (FoundationForecast wrapper) are runnable here, but they are not its headline claim and our leaderboard already covers Chronos-2 against the regression. Re-judge if the authors release the checkpoint and the PJM case list.",
+ "receipt": null,
+ "provenance": {
+  "run_id": "20261127T083514_judge_youcom_elecload-multi-event-agent_935e",
+  "session_id": "009104aa-2a3b-47cb-95f9-66e13df17552",
+  "cli_version": "2.1.323 (Claude Code)"
+ }
+}

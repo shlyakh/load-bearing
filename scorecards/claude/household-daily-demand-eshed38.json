@@ -1,0 +1,166 @@
+{
+  "candidate_id": "household-daily-demand-eshed38",
+  "title": "Forecasting Daily Household Electricity Demand in a Hot-Arid City: A Comparative Benchmark of Local, Global, Deep and Foundation Models on ESHED-38",
+  "spec_version": "spec-v1",
+  "discovered_via": {
+    "url": "https://arxiv.org/abs/2611.14535",
+    "provider": "claude",
+    "retrieved_at": "2026-11-27T08:40:00Z"
+  },
+  "candidate_type": "benchmark",
+  "primary_sources": [
+    {
+      "url": "https://arxiv.org/abs/2611.14535",
+      "kind": "arxiv",
+      "paraphrase": "Single-author preprint (B. Neupane, stat.AP, v1, 2026-10-12). 24 configurations on ESHED-38 (38 homes in Erbil, daily, 2020-2025), 48 weekly origins over a 359-day test, leads to 30 days. Best configurations cut seasonal-naive scaled error by 20-25%; zero-shot Chronos-2 is significantly best at 1 day and tied at 1 week. Recorded weather improved no model; the weather record looks reused.",
+      "evidence_id": "1dfa717599d1"
+    },
+    {
+      "url": "https://arxiv.org/html/2611.14535",
+      "kind": "arxiv",
+      "paraphrase": "Full text. Test 2024-06-24 to 2025-06-17, Sunday origins, scored at h1, h7, h30 relative to seasonal naive: Chronos-2 gMASE 0.746 (h1) and 0.780 (h7); weather ensemble 0.797 (h30). Weather track uses recorded weather of the forecast days. Code is a notebook available on request; no pre-registration stated; no Chronos-2 revision given; no intervals on headline metrics.",
+      "evidence_id": "eaf7e7874e99"
+    },
+    {
+      "url": "https://data.mendeley.com/datasets/dkts3x2yh5/2",
+      "kind": "docs",
+      "paraphrase": "ESHED-38 on Mendeley Data, version 2, by Jaf and Hamarash, published 2026-05-20, CC BY 4.0: daily kWh for 38 Erbil homes from ministry smart meters, 14 May 2020 to 17 June 2025, with a building survey and weather from sensors near the houses. Files were not inspected.",
+      "evidence_id": "870a46f32225"
+    },
+    {
+      "url": "https://huggingface.co/api/models/amazon/chronos-2",
+      "kind": "hf_card",
+      "paraphrase": "amazon/chronos-2 metadata: licence apache-2.0, created 2025-10-30, head 29ec3766 (2026-06-05), weights file model.safetensors.",
+      "evidence_id": "d33d62d68de3"
+    },
+    {
+      "url": "https://huggingface.co/api/models/amazon/chronos-2/commits/main",
+      "kind": "hf_card",
+      "paraphrase": "Commit history of amazon/chronos-2: the commit titled as adding weights and config is 95a9710e on 2025-10-30; the ten other commits are README, tag or guide changes by title.",
+      "evidence_id": "d67e199eeeac"
+    }
+  ],
+  "claims": [
+    {
+      "text": "The best of 24 configurations reduce the geometric-mean scaled error of a seasonal-naive forecast by 20 to 25%, and the leading models beat it in all 38 houses.",
+      "metric": "relative geometric-mean MASE",
+      "value": null,
+      "dataset": "ESHED-38, 38 homes in Erbil, daily kWh, test 2024-06-24 to 2025-06-17",
+      "horizon": "1 to 30 days, 48 weekly (Sunday) origins",
+      "baseline": "seasonal naive",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 359,
+      "citation_idx": 0,
+      "ci90": null
+    },
+    {
+      "text": "Zero-shot Chronos-2 at one day ahead: relative gMASE 0.746 against seasonal naive, significantly ahead of all 23 other configurations.",
+      "metric": "relative geometric-mean MASE",
+      "value": 0.746,
+      "dataset": "ESHED-38, 38 homes in Erbil, daily kWh, test 2024-06-24 to 2025-06-17",
+      "horizon": "1 day (h1), 48 weekly origins",
+      "baseline": "seasonal naive (1.000)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 359,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "Zero-shot Chronos-2 at one day ahead: relative scaled CRPS 0.722 against seasonal naive.",
+      "metric": "relative scaled CRPS",
+      "value": 0.722,
+      "dataset": "ESHED-38, 38 homes in Erbil, daily kWh, test 2024-06-24 to 2025-06-17",
+      "horizon": "1 day (h1), 48 weekly origins",
+      "baseline": "seasonal naive (1.000)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 359,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "At one week, zero-shot Chronos-2 has relative gMASE 0.780, the same as TimesFM-2.5 and the pre-specified univariate ensemble; the three are statistically tied (adjusted p 0.51).",
+      "metric": "relative geometric-mean MASE",
+      "value": 0.78,
+      "dataset": "ESHED-38, 38 homes in Erbil, daily kWh, test 2024-06-24 to 2025-06-17",
+      "horizon": "7 days (h7), 48 weekly origins",
+      "baseline": "seasonal naive (1.000)",
+      "baseline_same_inputs": "yes",
+      "test_window_days": 359,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "At 30 days the weather ensemble leads with relative gMASE 0.797, statistically tied with the univariate ensemble, TimesFM-2.5 and Chronos-2.",
+      "metric": "relative geometric-mean MASE",
+      "value": 0.797,
+      "dataset": "ESHED-38, 38 homes in Erbil, daily kWh, test 2024-06-24 to 2025-06-17",
+      "horizon": "30 days (h30), 48 weekly origins",
+      "baseline": "seasonal naive (1.000)",
+      "baseline_same_inputs": "no",
+      "test_window_days": 359,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "At 30 days the weather ensemble has relative scaled CRPS 0.739 against seasonal naive.",
+      "metric": "relative scaled CRPS",
+      "value": 0.739,
+      "dataset": "ESHED-38, 38 homes in Erbil, daily kWh, test 2024-06-24 to 2025-06-17",
+      "horizon": "30 days (h30), 48 weekly origins",
+      "baseline": "seasonal naive (1.000)",
+      "baseline_same_inputs": "no",
+      "test_window_days": 359,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "Giving a model the recorded weather of the forecast days improved none of the models run in both tracks, Chronos-2 included; the author attributes this to a weather record in which 68% of dates carry a temperature repeated on other dates and treats the value of weather as unresolved.",
+      "metric": null,
+      "value": null,
+      "dataset": "ESHED-38, 38 homes in Erbil, daily kWh, test 2024-06-24 to 2025-06-17",
+      "horizon": "1 to 30 days, 48 weekly origins",
+      "baseline": "the same model without weather",
+      "baseline_same_inputs": "no",
+      "test_window_days": 359,
+      "citation_idx": 1,
+      "ci90": null
+    },
+    {
+      "text": "Deep networks trained from scratch (N-HiTS, PatchTST, TFT, DeepAR) do not beat per-house exponential smoothing on average.",
+      "metric": null,
+      "value": null,
+      "dataset": "ESHED-38, 38 homes in Erbil, daily kWh, test 2024-06-24 to 2025-06-17",
+      "horizon": "1 to 30 days, 48 weekly origins",
+      "baseline": "AutoETS per house",
+      "baseline_same_inputs": "partly",
+      "test_window_days": 359,
+      "citation_idx": 0,
+      "ci90": null
+    }
+  ],
+  "relevance": {
+    "target_match": 2,
+    "horizon_match": 3,
+    "covariates_match": 3,
+    "rationale": "Electric load, but daily energy of single households, not hourly zonal demand; the scale has no entry for non-hourly load, so 2 rather than 3 or 1 is a judgement, as on an earlier scorecard for daily national load. Weekly origins with a one-week bucket (h7) match a week-ahead issue cycle, at daily rather than hourly steps (3); 1-day and 30-day buckets are also reported. A weather track gives recorded weather of the forecast days as a known-future input, which corresponds to our oracle regime only, with no forecast regime (3); the paper itself doubts that weather record."
+  },
+  "checks": {
+    "pre_registered": "no",
+    "training_overlap_risk": "low",
+    "independent_replication": "unknown",
+    "notes": "Central model: Chronos-2, zero-shot, the only model named in the headline claim. pre_registered: the paper states no registration; only the ensemble membership is said to be fixed before testing, with nothing public to date it. training_overlap_risk (about our run): the amazon/chronos-2 commit titled as adding the weights is dated 2025-10-30, before the first scored week (2025-11-10), so all 52 scored weeks start after it; the date is inferred from the commit title, per-commit files were not listed. independent_replication: three searches found no replication, re-run or code; the paper calls itself the first benchmark on this dataset. evidence_strength is moderate and that is a judgement: the data are public (CC BY 4.0), the test window is 359 days, the method uses named open libraries and the seasonal-naive baseline has the same inputs as the univariate models; it misses pre-registration and replication, and the code is only available from the author on request (the conclusion says the pipeline is released, which the availability statement contradicts). A stricter reading of 'numbers without code' would make it weak. baseline_same_inputs: yes for univariate Chronos-2 against seasonal naive; no for the weather ensemble against seasonal naive; partly for the 20-25% range, which spans univariate and weather configurations. Limits of the study: one city, one test year, 38 houses, a single author, no intervals on headline metrics (significance from rank tests with houses as pairs), a weather record the author suspects is a reused annual sequence (unconfirmed with the data owners), and recorded rather than forecast weather. In the study's own test, 2024-06-24 to 2025-06-17 lies before the Chronos-2 weights date; whether Chronos-2's training data could include this period was not checked (the dataset itself was published in May 2026). Unverified: all numbers were read through fetch summaries of the arXiv HTML in two chunks, no table was read directly; whether the 0.746 and 0.780 belong to the univariate or the weather run of Chronos-2 (taken as univariate, since weather improved no model); whether h7 means lead day 7 or days 1 to 7; which Chronos-2 revision and chronos-forecasting version were used (not stated); context length given to the foundation models; the Mendeley files were not opened; the TimesFM-2.5 and Chronos-Bolt weights dates were not checked."
+  },
+  "evidence_strength": "moderate",
+  "license": "Apache-2.0",
+  "license_ok_for_commercial": true,
+  "runnable_class": "direct_adapter",
+  "label": "ACCEPT_RUN",
+  "label_reason": "A sourced benchmark on electric load with weekly origins and a one-week lead whose headline comparison, zero-shot Chronos-2 against seasonal naive, can be re-measured with models already in runnable_models, with weights dated before our scored window. The fit is partial and the evidence only moderate: daily household energy rather than hourly zonal load, code available only on request, no pre-registration, replication or intervals, and a weather record the author considers unreliable, so the weather finding is not usable as a claim.",
+  "implementation_hint": "Central model amazon/chronos-2 (apache-2.0), direct_adapter via models/chronos2.py, weights commit 95a9710e (2025-10-30), 52 of 52 scored weeks after the weights. The headline maps to the existing univariate Chronos-2 row against seasonal_naive, a secondary comparison that needs no new run if both rows are on the leaderboard under the current protocol; the receipt must state the horizon mismatch (the study's one-week bucket of daily household energy against 168 hourly steps of zonal load) and that the study's baseline is seasonal naive, not the temperature-only regression. The no-gain-from-weather finding would correspond to Chronos-2 with and without temperature in the oracle regime only, but the study's weather record is doubted by its own author, so it should not be framed as a claim to transfer. Other models in the study: google/timesfm-2.5-200m-pytorch (ff_univariate, models_ff/run_ff.py) tied at one week; Chronos-Bolt (FoundationForecast wrapper, ff_univariate); the two ensembles, AutoETS, AutoARIMA, ARIMAX, AutoTheta, LightGBM, XGBoost, N-HiTS, PatchTST, TFT and DeepAR are trained per dataset and are not rows we have.",
+  "receipt": null,
+  "provenance": {
+    "run_id": "20261127T083736_judge_claude_household-daily-demand-eshed38_7497",
+    "session_id": "de965d41-557d-4493-bc35-63e986a1e0c0",
+    "cli_version": "2.1.323 (Claude Code)"
+  }
+}
